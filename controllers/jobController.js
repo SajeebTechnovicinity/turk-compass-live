@@ -25,6 +25,35 @@ const jobController={
            error:error
         })
     }
+    },
+
+    apply:async(req,res)=>{
+        const user_info= await AuthUser(req);
+        const user_id=user_info.id;
+        const {job_id,cv,cover_letter}=req.body;
+
+        const base64Data = cv; // Get the base64 data from the request body
+        // Decode the base64 data
+        const decodedData = Buffer.from(base64Data, 'base64');
+    
+        // Specify the file path and name where the file will be saved
+        const filePath = path.join(__dirname, 'uploads', 'uploaded-file.jpg'); // Change the file extension as needed
+    
+        // Write the decoded data to the file
+        fs.writeFile(filePath, decodedData, (err) => {
+            if (err) {
+                console.error(err);
+                return res.status(500).send('Failed to upload file.');
+            }
+            res.send('File uploaded successfully.');
+        });
+
+
+
+
+
+        // jobApplyModel.create({job_id,cv,cover_letter})
+
     }
 
 
