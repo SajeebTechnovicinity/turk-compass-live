@@ -40,6 +40,12 @@ app.use("/api/v1/category",require("./routes/categoryRoutes"))
 app.use("/api/v1/subcategory",require("./routes/subCategoryRoutes"))
 //business post
 app.use("/api/v1/business-post",require("./routes/businessPostRoutes"))
+//country
+app.use("/api/v1/country",require("./routes/countryRoutes"))
+//state
+app.use("/api/v1/state",require("./routes/stateRoutes"))
+//city
+app.use("/api/v1/city",require("./routes/cityRoutes"))
 
 app.get("/",(req,res)=>{
     return res.status(200).send("<h1> Welcome to turk compass server app </h1>")

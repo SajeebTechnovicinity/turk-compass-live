@@ -1,15 +1,15 @@
 const mongoose = require('mongoose');
 
 const businessPostSchema = new mongoose.Schema({
-    user_id: {
+    user: {
         type: mongoose.Schema.Types.ObjectId,
         required: true,
     },
-    category_id: {
+    category: {
         type: mongoose.Schema.Types.ObjectId,
         required: true,
     },
-    sub_category_id: {
+    sub_category: {
         type: mongoose.Schema.Types.ObjectId,
         required: true,
     },
@@ -25,21 +25,51 @@ const businessPostSchema = new mongoose.Schema({
         type: String,
         required: false
     },
+    cover_image: {
+        type: String,
+        required: false
+    },
     address: {
         type: String,
         required: false
     },
-    located_in: {
+    country: {
+        type: mongoose.Schema.Types.ObjectId,
+        required: true,
+    },
+    state: {
+        type: mongoose.Schema.Types.ObjectId,
+        required: true,
+    },
+    city: {
+        type: mongoose.Schema.Types.ObjectId,
+        required: true,
+    },
+    contact_address: {
         type: String,
         required: false
     },
-    phone: {
+    contact_located_in: {
         type: String,
         required: false
     },
-    website: {
+    contact_phone: {
         type: String,
         required: false
+    },
+    contact_website: {
+        type: String,
+        required: false
+    },
+    is_reservation_available: {
+        type: Number,
+        default: 0,
+        enum: [0, 1]
+    },
+    is_multiple_reservation_available: {
+        type: Number,
+        default: 0,
+        enum: [0, 1]
     },
     status: {
         type: Number,
