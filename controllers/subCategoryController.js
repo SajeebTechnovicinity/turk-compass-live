@@ -1,4 +1,5 @@
 // Import necessary modules
+const businessPostModel = require("../models/businessPostModel");
 const subCategoryModel = require("../models/subCategoryModel");
 const { AuthUser,uploadImageToCloudinary } = require("../utils/helper");
 
@@ -48,11 +49,20 @@ const subCategoryController = {
         const totalPages = Math.ceil(count / limit);
 
         try {
-            const subCategories = await subCategoryModel.find(query).populate({
-                'path':"category",
-                'model':'Category'
-            }).sort({createdAt:-1}) .skip(skip)
-            .limit(limit);
+            let subCategories = await subCategoryModel.find(query).populate({
+                path: "category",
+                model: "Category"
+            }).sort({ createdAt: -1 }).skip(skip).limit(limit);
+            
+            // Iterate through each subcategory
+            for (let subCategory of subCategories) {
+                // Count the number of business posts for the current subcategory
+                let businessPostCount = await businessPostModel.countDocuments({ sub_category: subCategory._id });
+                
+                console.log(`Subcategory: ${subCategory.name}, Business Post Count: ${businessPostCount}`);
+                // Attach the businessPostCount to the current subcategory object
+                subCategory.business_post_count = businessPostCount;
+            }
 
             res.status(200).send({
                 success: true,
