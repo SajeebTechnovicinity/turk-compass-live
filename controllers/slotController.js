@@ -36,7 +36,7 @@ const slotController = {
                     });
                     const countryInfo = await slotModel.create({
                         business_post:business_post,
-                        date: currentDate,
+                        date: currentDate.toISOString().slice(0, 10),
                         start_time: formattedSlotStartTime,
                         end_time: formattedSlotEndTime,
                         duration:duration,
@@ -66,14 +66,21 @@ const slotController = {
         }
     },
     
-    // Method to list all categories
+    // Method to list date and business post wise slot
     list: async (req, res) => {
+        const info = new URL(req.url, `http://${req.headers.host}`);
+        const searchParams = info.searchParams;
+        let business_post = searchParams.get('business_post');
+        let date = searchParams.get('date');
+        let page = Number(searchParams.get('page')) || 1;
+        let limit = Number(searchParams.get('limit')) || 12;
+        let skip = (page - 1) * limit;
         try {
-            const categories = await slotModel.find();
+            const slots = await slotModel.find({business_post:business_post,date:date});
             res.status(200).send({
                 success: true,
-                message: "Categories Retrieved Successfully",
-                categories
+                message: "Slots Retrieved Successfully",
+                slots
             });
         } catch (error) {
             console.log(error);

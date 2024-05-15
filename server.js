@@ -48,6 +48,8 @@ app.use("/api/v1/state",require("./routes/stateRoutes"))
 app.use("/api/v1/city",require("./routes/cityRoutes"))
 //slot
 app.use("/api/v1/slot",require("./routes/slotRoutes"))
+//slot
+app.use("/api/v1/reservation",require("./routes/reservationRoutes"))
 
 app.get("/",(req,res)=>{
     return res.status(200).send("<h1> Welcome to turk compass server app </h1>")
