@@ -9,6 +9,10 @@ const subCategorySchema = new mongoose.Schema({
         type: String,
         required: [true, 'Name is required']
     },
+    image: {
+        type: String,
+        required: false
+    },
     status: {
         type: Number,
         default: 1,

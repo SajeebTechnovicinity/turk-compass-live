@@ -48,15 +48,23 @@ const businessPostController = {
         try {
             const info = new URL(req.url, `http://${req.headers.host}`);
             const searchParams = info.searchParams;
+            let sub_category = searchParams.get('sub_category');
             let page = Number(searchParams.get('page')) || 1;
             let limit = Number(searchParams.get('limit')) || 12;
             let skip = (page - 1) * limit;
+
+            let query = {};
+
+            if(sub_category!=null)
+            {
+                query={sub_category:sub_category};
+            }
     
-            const count = await businessPostModel.countDocuments();
+            const count = await businessPostModel.countDocuments(query);
             
             const totalPages = Math.ceil(count / limit);
     
-            const businessPosts = await businessPostModel.find()
+            const businessPosts = await businessPostModel.find(query)
                 .populate([
                     { path: "category", model: "Category" },
                     { path: "sub_category", model: "SubCategory" },
@@ -91,6 +99,7 @@ const businessPostController = {
         try {
             const info = new URL(req.url, `http://${req.headers.host}`);
             const searchParams = info.searchParams;
+            let sub_category = searchParams.get('sub_category');
             let page = Number(searchParams.get('page')) || 1;
             let limit = Number(searchParams.get('limit')) || 12;
             let skip = (page - 1) * limit;

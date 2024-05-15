@@ -1,14 +1,16 @@
 // Import necessary modules
 const subCategoryModel = require("../models/subCategoryModel");
-const { AuthUser } = require("../utils/helper");
+const { AuthUser,uploadImageToCloudinary } = require("../utils/helper");
 
 // Define subcategoryController methods
 const subCategoryController = {
     // Method to create a new subcategory
     create: async (req, res) => {
-        const { category,name } = req.body;
+        let { category,name,image } = req.body;
+        //upload image & cover image
+        image = await uploadImageToCloudinary(image);
         try {
-            const subCategoryInfo = await subCategoryModel.create({ category,name });
+            const subCategoryInfo = await subCategoryModel.create({ category,name,image });
             res.status(201).send({
                 success: true,
                 message: "Sub Category Created Successfully",
@@ -26,14 +28,37 @@ const subCategoryController = {
 
     // Method to list all subcategories
     list: async (req, res) => {
+        const info = new URL(req.url, `http://${req.headers.host}`);
+        const searchParams = info.searchParams;
+        let category  = searchParams.get('category');
+        let page = Number(searchParams.get('page')) || 1;
+        let limit = Number(searchParams.get('limit')) || 12;
+        let skip = (page - 1) * limit;
+
+        let query = {};
+
+        if(category!=null)
+        {
+            query={category:category};
+            console.log(category);
+        }
+
+        const count = await subCategoryModel.countDocuments(query);
+            
+        const totalPages = Math.ceil(count / limit);
+
         try {
-            const subCategories = await subCategoryModel.find().populate({
+            const subCategories = await subCategoryModel.find(query).populate({
                 'path':"category",
                 'model':'Category'
-            });
+            }).sort({createdAt:-1}) .skip(skip)
+            .limit(limit);
+
             res.status(200).send({
                 success: true,
                 message: "SubCategories Retrieved Successfully",
+                totalPages,
+                currentPage: page,
                 subCategories
             });
         } catch (error) {
