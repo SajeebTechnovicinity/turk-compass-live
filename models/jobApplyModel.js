@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 const jobApplySchema = new mongoose.Schema({
     // job_id,cv,cover_letter
-    cv:{
+    cv_path:{
     type: String,
     },
     cover_letter: {
@@ -14,8 +14,8 @@ const jobApplySchema = new mongoose.Schema({
         required: true,
     },
     apply_by: {
-        type: String,
-        required: [true, 'apply_by is required']
+        type: mongoose.Schema.Types.ObjectId,
+        required: true,
     },
     status: {
         type: Number,

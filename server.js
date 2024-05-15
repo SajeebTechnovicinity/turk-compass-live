@@ -31,7 +31,6 @@ app.use("/api/v1/test",require("./routes/testRoute"))
 app.use("/api/v1/auth",require("./routes/authRoutes"))
 app.use("/api/v1/package",require("./routes/packageRoutes"))
 app.use("/api/v1/payment",require("./routes/paymentRoutes"))
-
 // job
 app.use("/api/v1/job",require("./routes/jobRoutes"))
 //category
@@ -46,8 +45,7 @@ app.use("/api/v1/country",require("./routes/countryRoutes"))
 app.use("/api/v1/state",require("./routes/stateRoutes"))
 //city
 app.use("/api/v1/city",require("./routes/cityRoutes"))
-//slot
-app.use("/api/v1/slot",require("./routes/slotRoutes"))
+app.use("/api/v1/faq",require("./routes/settingRoutes"))
 
 app.get("/",(req,res)=>{
     return res.status(200).send("<h1> Welcome to turk compass server app </h1>")
