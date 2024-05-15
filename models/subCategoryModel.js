@@ -13,6 +13,10 @@ const subCategorySchema = new mongoose.Schema({
         type: String,
         required: false
     },
+    business_post_count: {
+        type: String,
+        required: false
+    },
     status: {
         type: Number,
         default: 1,
