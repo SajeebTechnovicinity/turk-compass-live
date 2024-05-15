@@ -21,6 +21,14 @@ const userSchema=new mongoose.Schema({
         default:'client',
         enum:['client','admin','business-owner'],
     },
+    reset_code:{
+        type:String,
+        default:null,
+    },
+    reset_code_time:{
+        type:String,
+        default:null,
+    },
     package_type:{
         type:String,
         default:'free',
