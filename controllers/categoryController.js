@@ -1,14 +1,16 @@
 // Import necessary modules
 const categoryModel = require("../models/categoryModel");
-const { AuthUser } = require("../utils/helper");
+const { AuthUser,uploadImageToCloudinary } = require("../utils/helper");
 
 // Define categoryController methods
 const categoryController = {
     // Method to create a new category
     create: async (req, res) => {
-        const { name } = req.body;
+        let { name,image } = req.body;
+        //upload image & cover image
+        image = await uploadImageToCloudinary(image);
         try {
-            const categoryInfo = await categoryModel.create({ name });
+            const categoryInfo = await categoryModel.create({ name,image });
             res.status(201).send({
                 success: true,
                 message: "Category Created Successfully",

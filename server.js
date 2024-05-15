@@ -49,8 +49,10 @@ app.use("/api/v1/faq",require("./routes/settingRoutes"))
 
 //slot
 app.use("/api/v1/slot",require("./routes/slotRoutes"))
-//slot
+//reservation
 app.use("/api/v1/reservation",require("./routes/reservationRoutes"))
+//member of perlamant
+app.use("/api/v1/member-of-perlamant",require("./routes/memberPerlamantRoutes"))
 
 
 app.get("/",(req,res)=>{
