@@ -21,6 +21,10 @@ const businessPostSchema = new mongoose.Schema({
         type: String,
         required: false
     },
+    speciality: {
+        type: String,
+        required: false
+    },
     image: {
         type: String,
         required: false

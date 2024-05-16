@@ -49,64 +49,49 @@ const reservationController = {
         const user_id = user_info.id;
     
         try {
-            const reservations = await reservationModel.aggregate([
-                {
-                    $match: {
-                        user: new ObjectId(user_id),
-                        createdAt: { $gte: new Date(from_date), $lte: new Date(to_date) }
+            const currentDate = new Date(from_date);
+            const endDate = new Date(to_date);
+            const reservationsByDate = [];
+    
+            while (currentDate <= endDate) {
+                const date = currentDate.toISOString().split('T')[0]; // Format date as 'YYYY-MM-DD'
+    
+                // Fetch slots for the current date
+                const slots = await slotModel.find({ date });
+    
+                // Extract slot IDs from the slots found
+                const slotIds = slots.map(slot => slot._id);
+    
+                // Find reservations associated with the slots found
+                const reservations = await reservationModel.find({
+                    user: user_id,
+                    slot: { $in: slotIds } // Filter reservations based on slot IDs within the date range
+                }).populate([
+                    {
+                        path: 'business_post',
+                        model: 'BusinessPost'
+                    },
+                    {
+                        path: 'slot',
+                        model: 'Slot'
                     }
-                },
-                {
-                    $lookup: {
-                        from: "slots", // Assuming the collection name is "slots"
-                        localField: "slot",
-                        foreignField: "_id",
-                        as: "slot"
-                    }
-                },
-                {
-                    $unwind: "$slot" // Unwind the slot array created by the $lookup stage
-                },
-                {
-                    $group: {
-                        _id: {
-                            slot: "$slot",
-                            date: { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } }
-                        },
-                        reservations: { $push: "$$ROOT" },
-                        count: { $sum: 1 }
-                    }
-                },
-                {
-                    $group: {
-                        _id: "$_id.slot",
-                        dates: {
-                            $push: {
-                                date: "$_id.slot.date",
-                                reservations: "$reservations",
-                                count: "$count"
-                            }
-                        }
-                    }
-                }
-            ]);
-        
-            // Reformatting the result to match the desired structure
-            const formattedReservations = {};
-            reservations.forEach(item => {
-                formattedReservations[item._id._id] = {};
-                item.dates.forEach(date => {
-                    formattedReservations[item._id._id][date.date] = {
-                        reservations: date.reservations,
-                        count: date.count
-                    };
+                ]);
+    
+                // Push the date along with reservations and count into reservationsByDate array
+                reservationsByDate.push({
+                    date,
+                    reservations,
+                    count: reservations.length // Count of reservations for this date
                 });
-            });
-        
+    
+                // Move to the next date
+                currentDate.setDate(currentDate.getDate() + 1);
+            }
+    
             res.status(200).send({
                 success: true,
                 message: "Reservations Retrieved Successfully",
-                reservations: formattedReservations
+                reservationsByDate
             });
         } catch (error) {
             console.log(error);
@@ -116,11 +101,43 @@ const reservationController = {
                 error: error.message
             });
         }
-        
-        
-        
-        
+    },
+
+    details: async (req, res) => {
+      
+        const info = new URL(req.url, `http://${req.headers.host}`);
+        const searchParams = info.searchParams;
+        let id = searchParams.get('id');
+    
+        try {
+            const reservationDetails= await reservationModel.findById(id).populate([
+                {
+                    path: 'business_post',
+                    model: 'BusinessPost'
+                },
+                {
+                    path: 'slot',
+                    model: 'Slot'
+                }
+            ]);;
+            res.status(200).send({
+                success: true,
+                message: "Reservations Retrieved Successfully",
+                reservationDetails
+            });
+        } catch (error) {
+            console.log(error);
+            res.status(500).send({
+                success: false,
+                message: 'Error in fetching reservations',
+                error: error.message
+            });
+        }
     }
+    
+    
+
+
     
 };
 
