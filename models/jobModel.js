@@ -9,19 +9,33 @@ const jobSchema = new mongoose.Schema({
         type: String,
         required: [true, 'description is required']
     },
+    job_industry: {
+        type: String,
+        required: [true, 'description is required']
+    },
+    job_type:{
+        type: String,
+        required: [true, 'description is required']
+    },
+    candidate_require:{
+        type: String,
+    },
+    location:{
+        type: String,
+    },
     skill: {
         type: String,
         required: [true, 'skill is required']
     },
+    benefit: {
+        type: String,
+    },
+    salary:{
+        type: String,
+    },
     requirement: {
         type: String,
         required: [true, 'requirement is required'],
-    },
-    benefit: {
-        type: [{
-            name: String,
-            description: String
-        }]
     },
     question: {
         type: [{

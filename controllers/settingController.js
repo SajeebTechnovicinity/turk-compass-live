@@ -23,6 +23,13 @@ const settingController={
                 error: error.message
             });
         }
+    },
+    faqGet: async (req, res) => {
+        const faqInfo = await faqModel.find();
+        res.status(201).send({
+            success: true,
+            faqInfo
+        });
     }
 }
 
