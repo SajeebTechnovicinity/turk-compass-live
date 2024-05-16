@@ -9,4 +9,5 @@ router.post('/login',loginController)
 router.post('/social/login',socialLoginController)
 // reset password
 router.post('/reset',resetPasswordController)
+router.post('update/reset-password',resetPasswordController)
 module.exports=router

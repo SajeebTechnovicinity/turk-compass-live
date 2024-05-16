@@ -6,16 +6,60 @@ const { AuthUser, uploadImageToCloudinary } = require("../utils/helper");
 const multer = require('multer');
 const fs = require('fs');
 const path = require('path');
+const jobIndustryModel = require("../models/jobIndustryModel");
+
 
 
 // Set storage engine
 
+
 const jobController={
+    industry:async(req,res)=>{
+        const {title}=req.body;
+      const industry= await jobIndustryModel.create({title:title});
+        res.status(201).send({
+            success:true,
+            message:"Successfully",
+            industry,
+        });
+    },
+    industryGet:async(req,res)=>{
+      const industry= await jobIndustryModel.find();
+        res.status(201).send({
+            success:true,
+            message:"Successfully",
+            industry,
+        });
+    },
     create:async(req,res)=>{
-        const {description,skill,requirement,benifit,question}=req.body;
+        const {
+            description,
+            skill,
+            requirement,
+            benifit,
+            question,
+            job_industry,
+            job_type,
+            candidate_require,
+            location,
+            salary}=req.body;
+
         const user_info= await AuthUser(req);
         const user_id=user_info.id;
-        const jobInfo= await jobModel.create({user_id,description,skill,requirement,benifit,question});
+
+        const jobInfo= await jobModel.create({
+            user_id,
+            description,
+            skill,
+            requirement,
+            benifit,
+            question,
+            job_industry,
+            job_type,
+            candidate_require,
+            location,
+            salary,
+        });
 
         try{
         res.status(201).send({
