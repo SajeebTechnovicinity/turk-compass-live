@@ -9,7 +9,7 @@ const { AuthUser } = require("../utils/helper");
 const businessPostController = {
     // Method to create a new businessPost
     create: async (req, res) => {
-        let { user_id,user_name,email,password,category,sub_category,business_name,description,image,cover_image,address,country,state,city,contact_address,contact_located_in,contact_phone,contact_website,is_reservation_available } = req.body;
+        let { user_id,user_name,email,password,speciality,category,sub_category,business_name,description,image,cover_image,address,country,state,city,contact_address,contact_located_in,contact_phone,contact_website,is_reservation_available } = req.body;
         try {
             if(user_name!=null & email!=null && password!=null)
             {
@@ -40,7 +40,7 @@ const businessPostController = {
             image = await uploadImageToCloudinary(image);
             cover_image = await uploadImageToCloudinary(cover_image);
    
-            const businessPostInfo = await businessPostModel.create({ user:user_id,category,sub_category,country,state,city,business_name,description,image,cover_image,address,country,state,city,contact_address,contact_located_in,contact_phone,contact_website,is_reservation_available });
+            const businessPostInfo = await businessPostModel.create({ user:user_id,category,sub_category,speciality,country,state,city,business_name,description,image,cover_image,address,country,state,city,contact_address,contact_located_in,contact_phone,contact_website,is_reservation_available });
             res.status(201).send({
                 success: true,
                 message: "Business Post Created Successfully",
