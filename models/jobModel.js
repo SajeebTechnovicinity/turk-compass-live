@@ -10,7 +10,7 @@ const jobSchema = new mongoose.Schema({
         required: [true, 'description is required']
     },
     job_industry: {
-        type: String,
+        type: mongoose.Schema.Types.ObjectId,
         required: [true, 'description is required']
     },
     job_type:{
