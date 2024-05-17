@@ -9,7 +9,7 @@ const nodemailer = require('nodemailer');
 
 const registerController =async(req,res)=>{
     try{
-        const {userName,email,password,}=req.body;
+        const {userName,email,password}=req.body;
         // validation
         if(!userName || !email || !password){
             return res.status(500).send({
@@ -28,13 +28,16 @@ const registerController =async(req,res)=>{
             })
         }
         const srcky=process.env.BCRYP_KEY
-        const user=await userModel.create({userName:userName,email:email,password:hashPassword})
+        const user=await userModel.create({userName:userName,email:email,password:hashPassword,slot_duration:30,is_multiple_reservation_available:0,is_reservation_available:0})
         const id=user.id;
         const user_type=user.usertype;
         const package_type=user.package_type;
+        const slot_duration=user.slot_duration;
+        const is_multiple_reservation_available=user.is_multiple_reservation_available;
+        const is_reservation_available=user.is_reservation_available;
     
 
-        let token = jwt.sign({userName,email,user_type,package_type,id},srcky,{ expiresIn: '1h' });
+        let token = jwt.sign({userName,email,user_type,package_type,id,is_multiple_reservation_available,slot_duration,is_reservation_available},srcky,{ expiresIn: '1h' });
         const info={
             token:token,
             user_info:user,
@@ -82,8 +85,11 @@ const loginController=async(req,res)=>{
         const id=user.id;
         const user_type=user.usertype;
         const package_type=user.package_type;
+        const is_multiple_reservation_available=user.is_multiple_reservation_available;
+        const is_reservation_available=user.is_reservation_available;
+        const slot_duration=user.slot_duration;
         const srcky=process.env.BCRYP_KEY
-        let token = jwt.sign({userName,email,user_type,package_type,id},srcky,{ expiresIn: '1h' });
+        let token = jwt.sign({userName,email,user_type,package_type,id,is_multiple_reservation_available,slot_duration,is_reservation_available},srcky,{ expiresIn: '1h' });
         const info={
             token:token,
             user_info:user,

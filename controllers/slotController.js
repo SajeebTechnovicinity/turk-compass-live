@@ -1,17 +1,40 @@
 // Import necessary modules
+const businessPostModel = require("../models/businessPostModel");
 const slotModel = require("../models/slotModel");
 const { AuthUser } = require("../utils/helper");
 
 // Define slotController methods
 const slotController = {
     // Method to create a new slot
-    create: async (req, res) => {
-        const { business_post,duration, from_date, to_date } = req.body;
+    beforeCreate: async (req, res) => {
+        const { from_date, to_date } = req.body;
+        let business_post,duration;
         try {
             // Iterate through each date within the range
             const currentDate = new Date(from_date);
             const endDate = new Date(to_date);
             const slots = [];
+            const user_info= await AuthUser(req);
+            user_id=user_info.id;
+            let business_post_details=await businessPostModel.findOne({user:user_id});
+            business_post=business_post_details._id;
+            duration=user_info.slot_duration;
+
+            // Count documents within the date range
+            const slotCount = await slotModel.countDocuments({
+                date: {
+                    $gte: from_date,
+                    $lte: to_date
+                }
+            });
+            console.log(slotCount);
+            if(slotCount>0)
+            {
+                return res.status(500).send({
+                    success: false,
+                    message: 'Already slot created for this schedule'
+                });
+            }
     
             while (currentDate <= endDate) {
                 // Assuming the slots start from 12:00 AM to 11:59 PM for each date
@@ -40,7 +63,8 @@ const slotController = {
                         start_time: formattedSlotStartTime,
                         end_time: formattedSlotEndTime,
                         duration:duration,
-                        amount_of_reservation:0
+                        amount_of_reservation:0,
+                        status:0
                     });
                     // Move to the next slot
                     currentTime = slotEndTime.getTime();
