@@ -3,6 +3,7 @@ const { AuthUser } = require('../utils/helper');
 const jwt=require('jsonwebtoken');
 const userModel = require('../models/userModel');
 const faqModel = require('../models/faqModel');
+const settingModel = require('../models/settingModel');
 const stripe = require('stripe')(process.env.STRIPE_KEY);
 
 const settingController={
@@ -30,6 +31,22 @@ const settingController={
             success: true,
             faqInfo
         });
+    },
+    abountTermsPrivacy:(req, res) => {
+        let setting=settingModel.findOne();
+        if(setting){
+            settingModel.create({
+                "about_us":about_us,
+                "terms":terms,
+                "privacy_policy":privacy_policy,
+            })
+        }else{
+            settingModel.updateOne({
+                "about_us":about_us,
+                "terms":terms,
+                "privacy_policy":privacy_policy,
+            })
+        }
     }
 }
 

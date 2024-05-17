@@ -59,6 +59,11 @@ app.get("/",(req,res)=>{
     return res.status(200).send("<h1> Welcome to turk compass server app </h1>")
 })
 
+// app info
+app.use("/api/v1/app-info",require("./routes/appInfoRoute"))
+// app info
+
+
 // port 
 const PORT=process.env.PORT || 8080;
 
