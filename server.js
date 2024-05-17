@@ -65,6 +65,10 @@ app.get("/",(req,res)=>{
 app.use("/api/v1/app-info",require("./routes/appInfoRoute"))
 // app info
 
+// user 
+app.use("/api/v1/user",require("./routes/authRoutes"))
+// user 
+
 
 // port 
 const PORT=process.env.PORT || 8080;
