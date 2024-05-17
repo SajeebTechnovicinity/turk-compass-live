@@ -7,6 +7,8 @@ const multer = require('multer');
 const fs = require('fs');
 const path = require('path');
 const jobIndustryModel = require("../models/jobIndustryModel");
+const http = require('http');
+const { URL } = require('url');
 
 
 
@@ -15,8 +17,9 @@ const jobIndustryModel = require("../models/jobIndustryModel");
 
 const jobController={
     industry:async(req,res)=>{
-        const {title}=req.body;
-      const industry= await jobIndustryModel.create({title:title});
+        const {title,icone}=req.body;
+        image = await uploadImageToCloudinary(icone);
+      const industry= await jobIndustryModel.create({title:title,image});
         res.status(201).send({
             success:true,
             message:"Successfully",
@@ -24,11 +27,53 @@ const jobController={
         });
     },
     industryGet:async(req,res)=>{
+        
       const industry= await jobIndustryModel.find();
         res.status(201).send({
             success:true,
             message:"Successfully",
             industry,
+        });
+    },
+    jobDetails:async(req,res)=>{
+        const info = new URL(req.url, `http://${req.headers.host}`);
+        const searchParams = info.searchParams;
+        const job_id = searchParams.get('job_id');
+        let jobDetails = await jobModel.findOne({_id:job_id}).populate([
+            { path: "job_industry", model: "JobIndustry" }]);
+        res.status(201).send({
+            success:true,
+            message:"Successfully",
+            jobDetails,
+        });
+
+    } ,
+
+    jobGet:async(req,res)=>{
+        // const industry= await jobController.find();
+        const info = new URL(req.url, `http://${req.headers.host}`);
+        const searchParams = info.searchParams;
+        const industry_id = searchParams.get('industry_id');
+        let page = Number(searchParams.get('page')) || 1;
+        let limit = Number(searchParams.get('limit')) || 12;
+        let skip = (page - 1) * limit;
+        let query={}
+        if(industry_id){
+            query ={"job_industry":industry_id}
+        }
+
+        let job= await jobModel.find(query).sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(limit);
+
+        const count = await jobModel.find(query).countDocuments(); 
+        const totalPages = Math.ceil(count / limit);
+        res.status(201).send({
+            success:true,
+            message:"Successfully",
+            totalPages,
+            currentPage: page,
+            job
         });
     },
     create:async(req,res)=>{

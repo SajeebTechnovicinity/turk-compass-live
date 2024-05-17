@@ -1,10 +1,11 @@
 const mongoose = require('mongoose');
-const jobIndustrySchema = new mongoose.Schema({
-    title: {
-        type:String,
+
+const settingSchema = new mongoose.Schema({
+    about_us:{
+        type: String,
     },
-    image: {
-        type:String,
+    privacy_policy:{
+        type: String,
     },
     status: {
         type: Number,
@@ -17,4 +18,4 @@ const jobIndustrySchema = new mongoose.Schema({
     }
 }, { timestamps: true });
 
-module.exports = mongoose.model("JobIndustry", jobIndustrySchema);
+module.exports = mongoose.model("Setting", settingSchema);
