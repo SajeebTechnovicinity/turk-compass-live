@@ -46,6 +46,18 @@ const userSchema=new mongoose.Schema({
         type:String,
         default:null
     },
+    is_reservation_available:{
+        type:Boolean,
+        default:0
+    },
+    is_multiple_reservation_available:{
+        type:Boolean,
+        default:0
+    },  
+    slot_duration:{
+        type:Number,
+        default:30
+    },
     status: {
         type: Number,
         default: 1, // Default value if not provided

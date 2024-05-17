@@ -9,15 +9,17 @@ const { AuthUser } = require("../utils/helper");
 const businessPostController = {
     // Method to create a new businessPost
     create: async (req, res) => {
-        let { user_id,user_name,email,password,speciality,category,sub_category,business_name,description,image,cover_image,address,country,state,city,contact_address,contact_located_in,contact_phone,contact_website,is_reservation_available } = req.body;
+        let { user_id,user_name,email,password,speciality,category,sub_category,business_name,description,image,cover_image,address,country,state,city,contact_address,contact_located_in,contact_phone,contact_website } = req.body;
         try {
+            let is_reservation_available;
+            let is_multiple_reservation_available;
             if(user_name!=null & email!=null && password!=null)
             {
                 // check 
                 const exisiting=await userModel.findOne({email});
                     
                 if(exisiting){
-                    return res.status(500).send({
+                    return res.status(200).send({
                         success:false,
                         message:'Email already Registerd'
                     })
@@ -28,19 +30,35 @@ const businessPostController = {
                 const userInfo = await userModel.create({ userName:user_name,email,password:hashPassword,usertype:'business-owner' });
 
                 user_id=userInfo._id;
+                is_multiple_reservation_available=userInfo.is_multiple_reservation_available;
+                is_reservation_available=userInfo.is_reservation_available;
             }
             else
             {
                 const user_info= await AuthUser(req);
                 user_id=user_info.id;
+                is_multiple_reservation_available=user_info.is_multiple_reservation_available;
+                is_reservation_available=user_info.is_reservation_available;
+            }
+
+            let businessPostCount=await businessPostModel.countDocuments({user:user_id});
+            console.log(businessPostCount);
+
+            if(businessPostCount>0)
+            {
+                return res.status(200).send({
+                    success: false,
+                    message: 'Already a business post created for this user'
+                });
             }
             
 
             //upload image & cover image
             image = await uploadImageToCloudinary(image);
             cover_image = await uploadImageToCloudinary(cover_image);
+
    
-            const businessPostInfo = await businessPostModel.create({ user:user_id,category,sub_category,speciality,country,state,city,business_name,description,image,cover_image,address,country,state,city,contact_address,contact_located_in,contact_phone,contact_website,is_reservation_available });
+            const businessPostInfo = await businessPostModel.create({ user:user_id,category,sub_category,speciality,country,state,city,business_name,description,image,cover_image,address,country,state,city,contact_address,contact_located_in,contact_phone,contact_website,is_reservation_available,is_multiple_reservation_available });
             res.status(201).send({
                 success: true,
                 message: "Business Post Created Successfully",
