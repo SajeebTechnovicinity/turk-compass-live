@@ -19,7 +19,7 @@ const businessPostSchema = new mongoose.Schema({
     },
     tag: {
         type: String,
-        required: true
+        required: false
     },
     description: {
         type: String,

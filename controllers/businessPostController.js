@@ -13,8 +13,8 @@ const businessPostController = {
         try {
             let is_reservation_available;
             let is_multiple_reservation_available;
-            if(user_name!=null & email!=null && password!=null)
-            {
+            // if(email!=null && password!=null)
+            // {
                 // check 
                 const exisiting=await userModel.findOne({email});
                     
@@ -32,14 +32,15 @@ const businessPostController = {
                 user_id=userInfo._id;
                 is_multiple_reservation_available=userInfo.is_multiple_reservation_available;
                 is_reservation_available=userInfo.is_reservation_available;
-            }
-            else
-            {
-                const user_info= await AuthUser(req);
-                user_id=user_info.id;
-                is_multiple_reservation_available=user_info.is_multiple_reservation_available;
-                is_reservation_available=user_info.is_reservation_available;
-            }
+            // }
+            // else
+            // {
+            //     // const user_info= await AuthUser(req);
+            //     // user_id=user_info.id;
+            //     // is_multiple_reservation_available=user_info.is_multiple_reservation_available;
+            //     // is_reservation_available=user_info.is_reservation_available;
+            //     user_id="664738537b2f20f9da14b2af";
+            // }
 
             let businessPostCount=await businessPostModel.countDocuments({user:user_id});
             console.log(businessPostCount);
@@ -66,7 +67,7 @@ const businessPostController = {
             });
         } catch (error) {
             console.log(error);
-            res.status(500).send({
+            res.status(200).send({
                 success: false,
                 message: 'Error in creating business post',
                 error: error.message
@@ -116,7 +117,7 @@ const businessPostController = {
             });
         } catch (error) {
             console.log(error);
-            res.status(500).send({
+            res.status(200).send({
                 success: false,
                 message: 'Error in fetching categories',
                 error: error.message
@@ -214,7 +215,7 @@ const businessPostController = {
             });
         } catch (error) {
             console.log(error);
-            res.status(500).send({
+            res.status(200).send({
                 success: false,
                 message: "Error in fetching categories",
                 error: error.message
