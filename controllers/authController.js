@@ -94,7 +94,7 @@ const loginController=async(req,res)=>{
             token:token,
             user_info:user,
         }
-        res.status(201).send({
+        res.status(200).send({
             success:true,
             message:"Login Successfully",
             info
@@ -144,7 +144,7 @@ const socialLoginController=async(req,res)=>{
             token:token,
             user_info:user,
         }
-        res.status(201).send({
+        res.status(200).send({
             success:true,
             message:"Login Successfully",
             info
@@ -219,21 +219,49 @@ const resetPasswordController=async(req,res)=>{
 
 const updateResetPasswordController=async(req,res)=>{
 
-    const {email,password}=req.body;
+    const {email,password,code}=req.body;
 
-    const hashPassword = await bcrypt.hash(password, 10);
+    if(!password){
+        const userInfo = await userModel.findOne({ email: email, reset_code: code });
+        if(userInfo){
+            res.status(200).send({
+                success:true,
+                message:'code is valid',
+                userInfo,
+             })
+        }else{
+            res.status(401).send({
+                success:false,
+                message:'code is  not  valid',
+                userInfo,
+             })
+        }
+    }else{
 
-    userInfo = await userModel.findOneAndUpdate(
-        { email:email,reset_code:code }, 
-        { password:hashPassword}, // Update object
-        { new: true } // Option to return the updated document
-    );
+        const hashPassword = await bcrypt.hash(password, 10);
+        const userInfo = await userModel.findOneAndUpdate(
+            { email: email, reset_code: code },  // Filter criteria
+            { password: hashPassword,reset_code:""},          // Update operation
+            { new: true }       // Options: return the updated document
+        );
+        if(userInfo){
+            res.status(200).send({
+                success:true,
+                message:'successfully password updated',
+                userInfo,
+             })
+        }else{
+            res.status(401).send({
+                success:true,
+                message:'Code is not valid',
+             }) 
+        }
 
-    res.status(200).send({
-        success:true,
-        message:'successfully password updated',
-        userInfo,
-     })
+    }
+
+
+
+ 
 
 }
 module.exports={registerController,loginController,socialLoginController,resetPasswordController,updateResetPasswordController};
