@@ -6,6 +6,7 @@ const path = require('path');
 const ejs=require('ejs')
 const fs=require('fs')
 const nodemailer = require('nodemailer');
+const userController = require("./userController");
 
 const registerController =async(req,res)=>{
     try{
@@ -211,6 +212,8 @@ const resetPasswordController=async(req,res)=>{
  })
 }
 
+
+
 const updateResetPasswordController=async(req,res)=>{
 
     const {email,password,code}=req.body;
@@ -253,9 +256,18 @@ const updateResetPasswordController=async(req,res)=>{
 
     }
 
-
-
- 
-
 }
-module.exports={registerController,loginController,socialLoginController,resetPasswordController,updateResetPasswordController};
+
+const userInfoGetController=async(req,res)=>{
+    let userList=await userModel.find();
+    res.status(200).send({
+        success:true,
+        message:'successfully password updated',
+        userList,
+     })
+}
+
+
+
+
+module.exports={registerController,loginController,socialLoginController,resetPasswordController,updateResetPasswordController,userInfoGetController};
