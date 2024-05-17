@@ -17,6 +17,10 @@ const businessPostSchema = new mongoose.Schema({
         type: String,
         required: [true, 'Name is required']
     },
+    tag: {
+        type: String,
+        required: true
+    },
     description: {
         type: String,
         required: false
