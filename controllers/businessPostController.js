@@ -19,7 +19,7 @@ const businessPostController = {
                 const exisiting=await userModel.findOne({email});
                     
                 if(exisiting){
-                    return res.status(500).send({
+                    return res.status(200).send({
                         success:false,
                         message:'Email already Registerd'
                     })
@@ -43,10 +43,10 @@ const businessPostController = {
 
             let businessPostCount=await businessPostModel.countDocuments({user:user_id});
             console.log(businessPostCount);
-            
+
             if(businessPostCount>0)
             {
-                return res.status(500).send({
+                return res.status(200).send({
                     success: false,
                     message: 'Already a business post created for this user'
                 });

@@ -119,7 +119,7 @@ const socialLoginController=async(req,res)=>{
     const record = {email: email};
     // validation
     if(!email || !(key==="tk19992")){
-        return res.status(500).send({
+        return res.status(200).send({
             success:false,
             message:'please provide all fields correctly'
         })
@@ -210,7 +210,7 @@ const resetPasswordController=async(req,res)=>{
 
    // Send the email
    await transporter.sendMail(mailOptions);
-   res.status(500).send({
+   res.status(200).send({
     success:true,
     message:'successfully reset code send to your mail',
     userInfo,
