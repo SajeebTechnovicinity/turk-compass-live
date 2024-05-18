@@ -56,8 +56,8 @@ const profileController = {
             const user_info= await AuthUser(req);
             user_id=user_info.id;
             const { duration,is_reservation_available,is_multiple_reservation_available } = req.body;
-            const profile = await userModel.findOneAndUpdate({_id:user_id},{duration,is_reservation_available,is_multiple_reservation_available});
-    
+            const profile = await userModel.findOneAndUpdate({_id:user_id},{slot_duration:duration,is_reservation_available,is_multiple_reservation_available});
+            const business_post_Update = await businessPostModel.findOneAndUpdate({user:user_id},{is_reservation_available,is_multiple_reservation_available});
             const startTime = new Date().setHours(0, 0, 0, 0); // Start from midnight
             const endTime = new Date().setHours(23, 59, 59, 999); // End at 11:59:59 PM
             
@@ -68,7 +68,15 @@ const profileController = {
             let business_post=business_post_details._id;
             console.log(business_post_details._id);
 
-            await durationSlotModel.findOneAndUpdate({ business_post: business_post }, { $set: { is_delete: 1 } });
+            let alreadySlotCreated=await durationSlotModel.countDocuments({ duration: duration, is_delete: 0 });
+
+            if(alreadySlotCreated>0){
+                return res.status(200).send({
+                    success: true,
+                    message: "User Profile Retrieved Successfully",
+                    profile
+                });
+            }
             
             // Iterate through the day and create slots based on the provided duration
             while (currentTime < endTime) {
@@ -88,7 +96,6 @@ const profileController = {
                 
 
                 await durationSlotModel.create({
-                    business_post:business_post,
                     start_time: formattedSlotStartTime,
                     end_time: formattedSlotEndTime,
                     duration:duration,

@@ -1,10 +1,6 @@
 const mongoose = require('mongoose');
 
 const dslotSchema = new mongoose.Schema({
-    business_post: {
-        type: mongoose.Schema.Types.ObjectId,
-        required: true,
-    },
     start_time: {
         type: String,
         required: true

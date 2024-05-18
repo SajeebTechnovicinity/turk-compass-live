@@ -1,8 +1,10 @@
 // Import necessary modules
+const { duration } = require("moment");
 const businessPostModel = require("../models/businessPostModel");
 const durationSlotModel = require("../models/durationSlotModel");
 const slotModel = require("../models/slotModel");
 const { AuthUser } = require("../utils/helper");
+const userModel = require("../models/userModel");
 
 // Define slotController methods
 const slotController = {
@@ -107,90 +109,112 @@ const slotController = {
 
     // Method to list date and business post wise slot
     slotManageList: async (req, res) => {
-    const info = new URL(req.url, `http://${req.headers.host}`);
-    const searchParams = info.searchParams;
-    let business_post = searchParams.get('business_post');
-    let date = searchParams.get('date');
-    let page = Number(searchParams.get('page')) || 1;
-    let limit = Number(searchParams.get('limit')) || 12;
-    let skip = (page - 1) * limit;
-    try {
-        // Build the match object
-        const match = {};
-        if (business_post) match.business_post = business_post;
-        if (date) match.date = date;
+        const info = new URL(req.url, `http://${req.headers.host}`);
+        const searchParams = info.searchParams;
+        let business_post = searchParams.get('business_post');
+        let date = searchParams.get('date');
+        let page = Number(searchParams.get('page')) || 1;
+        let limit = Number(searchParams.get('limit')) || 12;
+        let skip = (page - 1) * limit;
+        try {
+            // Build the match object
+            const match = {};
+            if (business_post) match.business_post = business_post;
+            if (date) match.date = date;
 
-        // Aggregate slots to get the count of slots for each date and business post
-        const aggregatedSlots = await slotModel.aggregate([
-            { 
-                $match: { 
-                    amount_of_reservation: 0 // Filter slots where amount_of_reservation is 0
-                } 
-            },
-            { 
-                $group: { 
-                    _id: { 
-                        date: "$date", 
-                        business_post: "$business_post",
-                        total_slot: { $sum: 1 }, 
+            let user_info= await AuthUser(req);
+            user_id=user_info.id;
+
+            let business_post_details=await businessPostModel.findOne({user:user_id});
+            business_post=business_post_details._id;
+
+            // Aggregate slots to get the count of slots for each date and business post
+            const aggregatedSlots = await slotModel.aggregate([
+                { 
+                    $match: { 
+                        business_post: business_post
+                    } 
+                },
+                { 
+                    $group: { 
+                        _id: { 
+                            date: "$date", 
+                            business_post: "$business_post"
+                        },
+                        total_slot: { $sum: 1 }, // Count the total slots
+                        is_multiple_reservation_available: { $first: business_post_details.is_multiple_reservation_available }, // Get the is_multiple_reservation_available value
                         total_available_slots: { 
-                            $sum: 1 // Sum the available slots
-                        } 
-                    },
-                   
-                    
-                } 
-            },
-            { 
-                $skip: skip 
-            },
-            { 
-                $limit: limit 
-            }
-        ]);
+                            $sum: {
+                                $cond: {
+                                    if: { $eq: ["$is_multiple_reservation_available", 1] }, // Check if multiple reservations are available
+                                    then: "$total_slot", // If true, set total available slots same as total slots
+                                    else: { $cond: { // If false, count only the slots where amount_of_reservation is 0
+                                        if: { $eq: ["$amount_of_reservation", 0] },
+                                        then: 1,
+                                        else: 0
+                                    }}
+                                }
+                            }
+                        }  
+                    } 
+                },
+                { 
+                    $sort: { 
+                        '_id.date': -1 // Sort by date in descending order
+                    } 
+                },
+                { 
+                    $skip: skip 
+                },
+                { 
+                    $limit: limit 
+                }
+            ]);
 
-        // Get total count for pagination
-        const totalSlots = await slotModel.countDocuments(match);
+            // Get total count for pagination
+            const totalSlots = await slotModel.countDocuments(match);
 
-        res.status(200).send({
-            success: true,
-            message: "Slots Retrieved Successfully",
-            slots:aggregatedSlots,
-            data: {
-                totalSlots,
-                page,
-                totalPages: Math.ceil(totalSlots / limit),
-            },
-        });
-    } catch (error) {
-        console.error(error);
-        res.status(500).send({
-            success: false,
-            message: 'Error in fetching slots',
-            error: error.message,
-        });
-    }
+            res.status(200).send({
+                success: true,
+                message: "Slots Retrieved Successfully",
+                slots:aggregatedSlots,
+                data: {
+                    totalSlots,
+                    page,
+                    totalPages: Math.ceil(totalSlots / limit),
+                },
+            });
+        } catch (error) {
+            console.error(error);
+            res.status(500).send({
+                success: false,
+                message: 'Error in fetching slots',
+                error: error.message,
+            });
+        }
     },
 
     durationWise: async (req, res) => {
         const user_info= await AuthUser(req);
         user_id=user_info.id;
-        let businessPostCount=await businessPostModel.countDocuments({user:user_id});
-        console.log(businessPostCount);
+        // let businessPostCount=await businessPostModel.countDocuments({user:user_id});
+        // console.log(businessPostCount);
 
-        if(businessPostCount==0)
-        {
-            return res.status(200).send({
-                success: false,
-                message: 'No business post available'
-            });
-        }
-        let business_post_details=await businessPostModel.findOne({user:user_id});
-        console.log(business_post_details);
-        business_post=business_post_details._id;
-        duration=user_info.slot_duration;
+        // if(businessPostCount==0)
+        // {
+        //     return res.status(200).send({
+        //         success: false,
+        //         message: 'No business post available'
+        //     });
+        // }
+        // let business_post_details=await businessPostModel.findOne({user:user_id});
+        // console.log(business_post_details);
+        // let business_post=business_post_details._id;
+        let userDetails=await userModel.findById(user_id);
+        let duration=userDetails.slot_duration;
+        console.log(duration);
         try {
-            const slots = await durationSlotModel.find({business_post:business_post,is_delete:0});
+            const slots = await durationSlotModel.find({duration:duration,is_delete:0});
             res.status(200).send({
                 success: true,
                 message: "Slots Retrieved Successfully",
