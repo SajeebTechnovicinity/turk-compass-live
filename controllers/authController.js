@@ -29,7 +29,7 @@ const registerController =async(req,res)=>{
             })
         }
         const srcky=process.env.BCRYP_KEY
-        const user=await userModel.create({userName:userName,email:email,password:hashPassword,slot_duration:30,is_multiple_reservation_available:0,is_reservation_available:0})
+        const user=await userModel.create({userName:userName,email:email,password:hashPassword,slot_duration:0,is_multiple_reservation_available:0,is_reservation_available:0})
         const id=user.id;
         const user_type=user.usertype;
         const package_type=user.package_type;

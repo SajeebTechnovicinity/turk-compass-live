@@ -56,7 +56,7 @@ const userSchema=new mongoose.Schema({
     },  
     slot_duration:{
         type:Number,
-        default:30
+        default:0
     },
     status: {
         type: Number,
