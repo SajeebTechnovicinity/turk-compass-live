@@ -118,7 +118,13 @@ const profileController = {
                 error: error.message
             });
         }
+    },
+    jobProfileCreate:async (req, res) =>{
+        const { business_post,slot,number_of_person,note } = req.body;
+
     }
+
+
     
 };
 
