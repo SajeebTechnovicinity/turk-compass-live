@@ -143,6 +143,7 @@ const jobController = {
             success: true,
             message: "Successfully",
             totalPages,
+            currentPage: page,
             jobList
         });
     },
