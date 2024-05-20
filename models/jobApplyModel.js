@@ -17,6 +17,11 @@ const jobApplySchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         required: true,
     },
+    job_status:{
+        type: Number,
+        default: 0,
+        enum: [0, 1],  // The allowed values for job_status are 0=not shot_list and 1=short List
+    },
     status: {
         type: Number,
         default: 1,
