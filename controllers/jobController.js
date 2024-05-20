@@ -140,7 +140,7 @@ const jobController = {
             const totalPages = Math.ceil(count / limit);
 
 
-            
+
         res.status(201).send({
             success: true,
             message: "Successfully",
@@ -149,15 +149,48 @@ const jobController = {
             job
         });
     },
+
+     jobCandidateListyGet: async (req, res) => {
+        const info = new URL(req.url, `http://${req.headers.host}`);
+        const searchParams = info.searchParams;
+        let job_id = searchParams.get('job_id');
+        let page = Number(searchParams.get('page')) || 1;
+        let limit = Number(searchParams.get('limit')) || 12;
+        let skip = (page - 1) * limit;
+
+        const candidate_list = await jobApplyModel.find({ job_id: job_id }).populate([
+            { path: "apply_by",model:"User"}])
+            .skip(skip)
+            .limit(limit);
+
+            const count = await jobApplyModel.find({ job_id: job_id }).countDocuments();
+            const totalPages = Math.ceil(count / limit);
+        res.status(200).send({
+            success: true,
+            message: "Successfully",
+            totalPages,
+            currentPage: page,
+            candidate_list
+        });
+    },
+
+
     apply: async (req, res) => {
         const user_info = await AuthUser(req);
         const apply_by = user_info.id;
         const { job_id, cv, cover_letter } = req.body;
         const base64DataGet = cv; // Get the base64 data from the request body
         const cv_path = await uploadImageToCloudinary(base64DataGet);
+        let isapply=await jobApplyModel.findOne({job_id:job_id,apply_by:apply_by});
+        if(isapply){
+            res.status(401).send({
+                success: false,
+                message: "Already applied",
+            });
+        }
 
         const store_data = await jobApplyModel.create({ job_id, apply_by, cv_path, cover_letter, })
-        res.status(201).send({
+        res.status(200).send({
             success: true,
             message: " Successfully",
             store_data

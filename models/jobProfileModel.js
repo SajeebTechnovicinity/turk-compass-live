@@ -5,13 +5,18 @@ const jobSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         required: true,
     },
-    description: {
+    summary: {
         type: String,
-        required: [true, 'description is required']
     },
-    job_industry: {
-        type: mongoose.Schema.Types.ObjectId,
-        required: [true, 'description is required']
+    work_history: {
+        type: [{
+            designation: String,
+            company: String,
+            start_date:String,
+            end_date:String,
+
+        }],
+        default: []
     },
     job_type:{
         type: String,
