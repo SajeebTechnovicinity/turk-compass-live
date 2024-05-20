@@ -10,4 +10,7 @@ router.post('/apply',jobController.apply)
 router.post('/industry-create',jobController.industry)
 router.get('/industry-get',jobController.industryGet)
 router.get('/my-list',jobController.myJobListyGet)
+
+router.get('/add/short-list',jobController.addShortList)
+router.get('/short-list',jobController.myJobShortList)
 module.exports=router
