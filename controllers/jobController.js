@@ -131,7 +131,7 @@ const jobController = {
         let limit = Number(searchParams.get('limit')) || 12;
         let skip = (page - 1) * limit;
 
-        const jobList = await jobModel.find({ user_id: user_id }).populate([
+        const job = await jobModel.find({ user_id: user_id }).populate([
             { path: "job_industry", model: "JobIndustry" }])
             .skip(skip)
             .limit(limit);
@@ -144,7 +144,7 @@ const jobController = {
             message: "Successfully",
             totalPages,
             currentPage: page,
-            jobList
+            job
         });
     },
     apply: async (req, res) => {
