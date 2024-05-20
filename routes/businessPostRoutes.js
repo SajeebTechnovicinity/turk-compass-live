@@ -11,4 +11,7 @@ router.get('/list', businessPostController.list);
 // Route to list all business search 
 router.post('/search', businessPostController.search);
 
+// Route to user id wise business post
+router.get('/details', businessPostController.details);
+
 module.exports = router;

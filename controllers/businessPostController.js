@@ -220,6 +220,30 @@ const businessPostController = {
                 error: error.message
             });
         }
+    },
+
+    details: async (req, res) => {
+        try {
+            const info = new URL(req.url, `http://${req.headers.host}`);
+            const searchParams = info.searchParams;
+            let user_id = searchParams.get('user_id');
+
+            const profile = await userModel.findById(user_id);
+            const businessProfile=await businessPostModel.findOne({user:user_id});
+    
+            res.status(200).send({
+                success: true,
+                message: "User Profile Retrieved Successfully",
+                businessProfile
+            });
+        } catch (error) {
+            console.log(error);
+            res.status(500).send({
+                success: false,
+                message: 'Error in fetching categories',
+                error: error.message
+            });
+        }
     }
     
 };

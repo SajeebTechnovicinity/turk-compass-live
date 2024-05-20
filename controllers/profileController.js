@@ -64,9 +64,9 @@ const profileController = {
             const slots = [];
             let currentTime = startTime;
 
-            let business_post_details=await businessPostModel.findOne({user:user_id});
-            let business_post=business_post_details._id;
-            console.log(business_post_details._id);
+            // let business_post_details=await businessPostModel.findOne({user:user_id});
+            // let business_post=business_post_details._id;
+            // console.log(business_post_details._id);
 
             let alreadySlotCreated=await durationSlotModel.countDocuments({ duration: duration, is_delete: 0 });
 

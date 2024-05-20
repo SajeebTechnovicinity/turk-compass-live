@@ -20,6 +20,15 @@ const slotController = {
             const user_info= await AuthUser(req);
             user_id=user_info.id;
             let business_post_details=await businessPostModel.findOne({user:user_id});
+            let business_post_count=await businessPostModel.countDocuments({user:user_id});
+            if(business_post_count==0)
+            {
+                return res.status(200).send({
+                    success: false,
+                    message: 'Please first create business profile',
+                    error:null
+                });
+            }
             business_post=business_post_details._id;
             duration=user_info.slot_duration;
 
