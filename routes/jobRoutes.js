@@ -9,4 +9,5 @@ router.get('/job-details',jobController.jobDetails)
 router.post('/apply',jobController.apply)
 router.post('/industry-create',jobController.industry)
 router.get('/industry-get',jobController.industryGet)
+router.get('/my-list',jobController.myJobListyGet)
 module.exports=router
