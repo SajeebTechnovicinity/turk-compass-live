@@ -121,6 +121,17 @@ const jobController={
         })
     }
     },
+    myJobListyGet:async(req,res)=>{
+        const user_info= await AuthUser(req);
+        const user_id=user_info.id;
+        const jobList=await jobModel.find({user_id:user_id}).populate([
+            { path: "job_industry", model: "Job" }]);
+        res.status(201).send({
+            success:true,
+            message:" Successfully",
+            jobList
+        });
+    },
     apply:async(req,res)=>{
         const user_info= await AuthUser(req);
         const apply_by=user_info.id;
