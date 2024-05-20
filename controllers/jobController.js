@@ -149,7 +149,6 @@ const jobController = {
             job
         });
     },
-
      jobCandidateListyGet: async (req, res) => {
         const info = new URL(req.url, `http://${req.headers.host}`);
         const searchParams = info.searchParams;
@@ -173,8 +172,6 @@ const jobController = {
             candidate_list
         });
     },
-
-
     apply: async (req, res) => {
         const user_info = await AuthUser(req);
         const apply_by = user_info.id;
@@ -183,7 +180,7 @@ const jobController = {
         const cv_path = await uploadImageToCloudinary(base64DataGet);
         let isapply=await jobApplyModel.findOne({job_id:job_id,apply_by:apply_by});
         if(isapply){
-            res.status(401).send({
+            res.status(403).send({
                 success: false,
                 message: "Already applied",
             });
@@ -195,7 +192,6 @@ const jobController = {
             message: " Successfully",
             store_data
         });
-
         // jobApplyModel.create({job_id,cv,cover_letter})
     },
 

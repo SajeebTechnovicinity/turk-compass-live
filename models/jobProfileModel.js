@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const jobSchema = new mongoose.Schema({
+const jobProfileSchema = new mongoose.Schema({
     user_id: {
         type: mongoose.Schema.Types.ObjectId,
         required: true,
@@ -12,42 +12,38 @@ const jobSchema = new mongoose.Schema({
         type: [{
             designation: String,
             company: String,
+            responsibility: String,
             start_date:String,
             end_date:String,
+            total_experience:String
+        }],
+        default: []
+    },
 
-        }],
-        default: []
-    },
-    job_type:{
-        type: String,
-        required: [true, 'description is required']
-    },
-    candidate_require:{
-        type: String,
-    },
-    location:{
-        type: String,
-    },
-    skill: {
-        type: String,
-        required: [true, 'skill is required']
-    },
-    benefit: {
-        type: String,
-    },
-    salary:{
-        type: String,
-    },
-    requirement: {
-        type: String,
-        required: [true, 'requirement is required'],
-    },
-    question: {
+    education: {
         type: [{
-            name: String,
-            options: []
+            degree: String,
+            institute_name: String,
+            start_date:String,
+            end_date:String,
         }],
         default: []
+    },
+    skill:{
+        type: [],
+        default: []
+    },
+    language:{
+        type: [],
+        default: []
+    },
+    eligibility:{
+        type: Number,
+        default: 0,
+        enum: [0, 1]
+    },
+    defalut_cv:{
+        type: String,
     },
     status: {
         type: Number,
@@ -60,4 +56,4 @@ const jobSchema = new mongoose.Schema({
     }
 }, { timestamps: true });
 
-module.exports = mongoose.model("Job", jobSchema);
+module.exports = mongoose.model("JobProfile", jobProfileSchema);
