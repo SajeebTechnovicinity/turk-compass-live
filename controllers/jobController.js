@@ -180,7 +180,7 @@ const jobController = {
         const cv_path = await uploadImageToCloudinary(base64DataGet);
         let isapply=await jobApplyModel.findOne({job_id:job_id,apply_by:apply_by});
         if(isapply){
-            res.status(401).send({
+            res.status(403).send({
                 success: false,
                 message: "Already applied",
             });
