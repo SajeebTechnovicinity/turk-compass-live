@@ -5,6 +5,7 @@ const { uploadImageToCloudinary } = require("../utils/helper");
 const { AuthUser } = require("../utils/helper");
 const durationSlotModel = require("../models/durationSlotModel");
 const businessPostModel = require("../models/businessPostModel");
+const jobProfileModel = require("../models/jobProfileModel");
 
 // Define profile Controller methods
 const profileController = {
@@ -119,13 +120,82 @@ const profileController = {
             });
         }
     },
-    jobProfileCreate:async (req, res) =>{
-        const { business_post,slot,number_of_person,note } = req.body;
+    jobProfileCreateUpdate:async (req, res) =>{
+        var { 
+            summary,
+            work_history,
+            education,
+            skill,
+            language,
+            eligibility,
+            defalut_cv,
+          } = req.body;
 
+          const user_info= await AuthUser(req);
+          var user_id=user_info.id;
+          if(defalut_cv){
+            defalut_cv = await uploadImageToCloudinary(base64DataGet);
+          }
+         var profile_info;
+         let is_created=await jobProfileModel.findOne({user_id:user_id});
+         if(is_created){
+            var query={};
+            if(summary){
+                query={summary:summary}
+            }
+            if(work_history){
+                query={work_history:work_history}
+            }
+            if(education){
+                query={education:education}
+            }
+            if(skill){
+                query={skill:skill}
+            }
+            if(language){
+                query={language:language}
+            }
+            if(eligibility){
+                query={eligibility:eligibility}
+            }
+            if(defalut_cv){
+                query={defalut_cv:defalut_cv}
+            }
+
+            profile_info=await jobProfileModel.findOneAndUpdate({user_id:user_id},query)
+
+         }else{
+            profile_info=await jobProfileModel.create({ 
+                user_id,
+                summary,
+                work_history,
+                education,
+                skill,
+                language,
+                eligibility,
+                defalut_cv,
+              })
+         }
+        
+         res.status(200).send({
+            success: true,
+            message: "Successfully updated",
+            profile_info
+        });
+
+    },
+    jobProfileGet:async (req, res) =>{
+        const user_info= await AuthUser(req);
+        user_id=user_info.id;
+       var profile_info=await jobProfileModel.findOne({user_id:user_id})
+
+        res.status(200).send({
+            success: true,
+            message:"Successfully",
+            profile_info
+        });
     }
 
-
-    
 };
 
 // Export profileController
