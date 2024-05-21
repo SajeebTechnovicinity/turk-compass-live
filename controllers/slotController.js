@@ -13,9 +13,36 @@ const slotController = {
         const { from_date, to_date,slot_ids } = req.body;
         let business_post,duration;
         try {
+            const todayDate = new Date();
+            todayDate.setHours(0, 0, 0, 0);
+
+           
             // Iterate through each date within the range
             const currentDate = new Date(from_date);
             const endDate = new Date(to_date);
+
+            if (currentDate < todayDate) {
+                return res.status(200).send({
+                    success: false,
+                    message: 'From date do not greater than today',
+                    error:null
+                });
+            }
+            if (endDate < todayDate) {
+                return res.status(200).send({
+                    success: false,
+                    message: 'To date do not greater than today',
+                    error:null
+                });
+            }
+            if (endDate < currentDate) {
+                return res.status(200).send({
+                    success: false,
+                    message: 'From date should be greater than To Date',
+                    error:null
+                });
+            }
+
             const slots = [];
             const user_info= await AuthUser(req);
             user_id=user_info.id;
@@ -82,9 +109,9 @@ const slotController = {
             });
         } catch (error) {
             console.log(error);
-            res.status(500).send({
+            res.status(200).send({
                 success: false,
-                message: 'Error in creating slots',
+                message: error.message,
                 error: error.message
             });
         }
@@ -133,6 +160,16 @@ const slotController = {
 
             let user_info= await AuthUser(req);
             user_id=user_info.id;
+
+            let business_post_count=await businessPostModel.countDocuments({user:user_id});
+            if(business_post_count==0)
+            {
+                return res.status(200).send({
+                    success: false,
+                    message: 'Please first create business profile',
+                    error:'Please first create business profile'
+                });
+            }
 
             let business_post_details=await businessPostModel.findOne({user:user_id});
             business_post=business_post_details._id;
@@ -195,9 +232,9 @@ const slotController = {
             });
         } catch (error) {
             console.error(error);
-            res.status(500).send({
+            res.status(200).send({
                 success: false,
-                message: 'Error in fetching slots',
+                message: error.message,
                 error: error.message,
             });
         }
@@ -222,6 +259,15 @@ const slotController = {
         let userDetails=await userModel.findById(user_id);
         let duration=userDetails.slot_duration;
         console.log(duration);
+        if(duration==0)
+        {
+           return res.status(200).send({
+                success: false,
+                message: "Please first set duration in settings",
+                error:"Please first set duration in settings"
+            });
+        }
+
         try {
             const slots = await durationSlotModel.find({duration:duration,is_delete:0});
             res.status(200).send({

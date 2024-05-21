@@ -9,7 +9,8 @@ const { AuthUser } = require("../utils/helper");
 const businessPostController = {
     // Method to create a new businessPost
     create: async (req, res) => {
-        let { user_id,user_name,email,password,tag,speciality,category,sub_category,business_name,description,image,cover_image,address,country,state,city,contact_address,contact_located_in,contact_phone,contact_website } = req.body;
+        let { user_id,user_name,email,password,tag,contact_email,speciality,category,sub_category,business_name,description,image,cover_image,address,country,state,city,contact_address,contact_located_in,contact_phone,contact_website } = req.body;
+        console.log(req.body);
         try {
             let is_reservation_available;
             let is_multiple_reservation_available;
@@ -58,7 +59,7 @@ const businessPostController = {
             cover_image = await uploadImageToCloudinary(cover_image);
 
    
-            const businessPostInfo = await businessPostModel.create({ user:user_id,tag,category,sub_category,speciality,country,state,city,business_name,description,image,cover_image,address,country,state,city,contact_address,contact_located_in,contact_phone,contact_website,is_reservation_available,is_multiple_reservation_available });
+            const businessPostInfo = await businessPostModel.create({ user:user_id,contact_email,tag,category,sub_category,speciality,country,state,city,business_name,description,image,cover_image,address,country,state,city,contact_address,contact_located_in,contact_phone,contact_website,is_reservation_available,is_multiple_reservation_available });
             res.status(201).send({
                 success: true,
                 message: "Business Post Created Successfully",
@@ -66,9 +67,68 @@ const businessPostController = {
             });
         } catch (error) {
             console.log(error);
-            res.status(500).send({
+            res.status(200).send({
                 success: false,
-                message: 'Error in creating business post',
+                message: error.message,
+                error: error.message
+            });
+        }
+    },
+
+    // Method to edit businessPost
+    edit: async (req, res) => {
+        let { tag,contact_email,speciality,category,sub_category,business_name,description,image,cover_image,address,country,state,city,contact_address,contact_located_in,contact_phone,contact_website } = req.body;
+        console.log(req.body);
+        try {
+            const info = new URL(req.url, `http://${req.headers.host}`);
+            const searchParams = info.searchParams;
+            let businessPostId = searchParams.get('id');
+            let is_reservation_available;
+            let is_multiple_reservation_available;
+          
+            let businessPostCount=await businessPostModel.countDocuments({_id:businessPostId});
+            if(businessPostCount==0)
+            {
+                res.status(200).send({
+                    success: false,
+                    message: "No Business Post available"
+                });
+            }
+            let businessPostDetails=await businessPostModel.findOne({_id:businessPostId});
+
+
+
+            //upload image & cover image
+            if(image!=null)
+            {
+                image = await uploadImageToCloudinary(image);
+            }
+            else
+            {
+                image = businessPostDetails.image;
+            }
+            if(cover_image!=null)
+            {
+                cover_image = await uploadImageToCloudinary(cover_image);
+            }
+            else
+            {
+                cover_image = businessPostDetails.cover_image;
+            }
+
+   
+            const businessPostInfo = await businessPostModel.findOneAndUpdate({_id:businessPostDetails._id},{ contact_email,tag,category,sub_category,speciality,country,state,city,business_name,description,image,cover_image,address,country,state,city,contact_address,contact_located_in,contact_phone,contact_website,is_reservation_available,is_multiple_reservation_available });
+            res.status(201).send({
+                success: true,
+                message: "Business Post Updated Successfully",
+                businessPostInfo
+            });
+
+        } catch (error) {
+            console.log(error);
+            res.status(200).send({
+                success: false,
+                message: error.message,
                 error: error.message
             });
         }
@@ -230,6 +290,30 @@ const businessPostController = {
 
             const profile = await userModel.findById(user_id);
             const businessProfile=await businessPostModel.findOne({user:user_id});
+    
+            res.status(200).send({
+                success: true,
+                message: "User Profile Retrieved Successfully",
+                businessProfile
+            });
+        } catch (error) {
+            console.log(error);
+            res.status(500).send({
+                success: false,
+                message: 'Error in fetching categories',
+                error: error.message
+            });
+        }
+    },
+
+    idWiseDetails: async (req, res) => {
+        try {
+            const info = new URL(req.url, `http://${req.headers.host}`);
+            const searchParams = info.searchParams;
+            let id = searchParams.get('id');
+
+            const profile = await userModel.findById(user_id);
+            const businessProfile=await businessPostModel.findOne({_id:id});
     
             res.status(200).send({
                 success: true,
