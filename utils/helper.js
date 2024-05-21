@@ -36,6 +36,34 @@ async function AuthUser(req) {
     }
 }
 
+function isBase64Image(str) {
+    if (typeof str !== 'string') {
+        return false;
+    }
+    // Check if the string starts with 'data:image/png;base64,'
+    const base64ImagePattern = /^data:image\/(png|jpeg|jpg|gif);base64,[A-Za-z0-9+/]+={0,2}$/;
+    // Split the string into header and the base64 part
+    const parts = str.split(',');
+    if (parts.length !== 2) {
+        return false;
+    }
+    // Validate the header
+    const header = parts[0];
+    const base64Part = parts[1];
+    
+    if (!/^data:image\/(png|jpeg|jpg|gif);base64$/.test(header)) {
+        return false;
+    }
+
+    // Validate the Base64 part
+    const base64Pattern = /^[A-Za-z0-9+/]+={0,2}$/;
+    if (!base64Pattern.test(base64Part)) {
+        return false;
+    }
+    return true;
+}
+
+
 
 // Image Upload to Cloudinary
 async function uploadImageToCloudinary(base64String) {
@@ -50,4 +78,4 @@ async function uploadImageToCloudinary(base64String) {
     }
 }
 
-module.exports = { AuthUser, uploadImageToCloudinary };
+module.exports = { AuthUser, uploadImageToCloudinary,isBase64Image};

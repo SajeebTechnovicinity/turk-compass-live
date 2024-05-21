@@ -73,10 +73,13 @@ app.get("/",(req,res)=>{
 app.use("/api/v1/app-info",require("./routes/appInfoRoute"))
 // app info
 
+// App Event
+app.use("/api/v1/vent",require("./routes/eventRoute"))
+// App Event
+
 // user 
 app.use("/api/v1/user",require("./routes/authRoutes"))
 // user 
-
 
 // port 
 const PORT=process.env.PORT || 8080;

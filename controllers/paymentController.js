@@ -67,15 +67,16 @@ const stripePaymentSuccess=async(req,res)=>{
             // Package
             if(amount==499) planType="premium";
             if(amount==999) planType="premium_employer";
+            if(amount==199) planType="job_seeker";
             // Package
 
-            user_data= await userModel.updateOne({ _id: userInfo.id }, { $set: {package_type:planType,package_start_date:startDate,package_end_date:endDate,package_duration:durationInDays} })
-            
             const startDate = moment.unix(subscription.current_period_start).format('YYYY-MM-DD');
             const endDate = moment.unix(subscription.current_period_end).format('YYYY-MM-DD');
             const durationInSeconds = subscription.current_period_end - subscription.current_period_start;
             const durationInDays = moment.duration(durationInSeconds, 'seconds').asDays();
 
+            user_data=await userModel.updateOne({ _id: userInfo.id }, { $set: {package_type:planType,package_start_date:startDate,package_end_date:endDate,package_duration:durationInDays} })
+            
             res.status(200).send(
                 {
                     success:true,
@@ -105,5 +106,30 @@ const stripePaymentSuccess=async(req,res)=>{
       }
 
 }
+const freeSubscription=async(req,res)=>{
+    const info = new URL(req.url, `http://${req.headers.host}`);
+    const searchParams = info.searchParams;
+    const user_info = await AuthUser(req);
+    const user_id = user_info.id;
+    const package_type=searchParams.get('package_type');
+    if(package_type=="job_seeker"){
+        var now = new Date();
+        var dateString = moment(now).format('YYYY-MM-DD');
+        job_seeker_free_start_date=dateString;
+    }else{
+        job_seeker_free_start_date=null;
+    }
+    var user_data=await userModel.findOneAndUpdate({ _id: user_id }, {package_type:package_type,job_seeker_free_start_date:job_seeker_free_start_date} );
 
-module.exports={stripePaymentController,stripePaymentSuccess}
+    res.status(200).send(
+        {
+            success:true,
+            message:"stripe payment",
+            user_data
+        }
+    )
+}
+
+
+
+module.exports={stripePaymentController,stripePaymentSuccess,freeSubscription}
