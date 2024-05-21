@@ -127,7 +127,7 @@ const reservationController = {
             if(businessPostCount==0)
             {
                 return res.status(200).send({
-                    success: true,
+                    success: false,
                     message: "No business post available",
                     error: "No business post available"
                 });
