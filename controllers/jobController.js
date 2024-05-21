@@ -78,6 +78,10 @@ const jobController = {
     },
     create: async (req, res) => {
         const {
+            job_title,
+            job_country,
+            job_city,
+            job_state,
             description,
             skill,
             requirement,
@@ -94,6 +98,10 @@ const jobController = {
 
         const jobInfo = await jobModel.create({
             user_id,
+            job_title,
+            job_country,
+            job_city,
+            job_state,
             description,
             skill,
             requirement,
