@@ -219,7 +219,7 @@ const jobController = {
         const info = new URL(req.url, `http://${req.headers.host}`);
         const searchParams = info.searchParams;
         const job_id = searchParams.get("job_id");
-        var jobShortList = await jobApplyModel.find(
+        var candidate_list = await jobApplyModel.find(
             {
                 "job_id": job_id,
             },
@@ -228,7 +228,7 @@ const jobController = {
         res.status(200).send({
             success: true,
             message: " Successfully",
-            jobShortList
+            candidate_list
         });
 
     }
