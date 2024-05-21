@@ -13,9 +13,36 @@ const slotController = {
         const { from_date, to_date,slot_ids } = req.body;
         let business_post,duration;
         try {
+            const todayDate = new Date();
+            todayDate.setHours(0, 0, 0, 0);
+
+           
             // Iterate through each date within the range
             const currentDate = new Date(from_date);
             const endDate = new Date(to_date);
+
+            if (currentDate < todayDate) {
+                return res.status(200).send({
+                    success: false,
+                    message: 'From date do not greater than today',
+                    error:null
+                });
+            }
+            if (endDate < todayDate) {
+                return res.status(200).send({
+                    success: false,
+                    message: 'To date do not greater than today',
+                    error:null
+                });
+            }
+            if (endDate < currentDate) {
+                return res.status(200).send({
+                    success: false,
+                    message: 'From date should be greater than To Date',
+                    error:null
+                });
+            }
+
             const slots = [];
             const user_info= await AuthUser(req);
             user_id=user_info.id;
