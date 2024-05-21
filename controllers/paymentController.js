@@ -106,7 +106,6 @@ const stripePaymentSuccess=async(req,res)=>{
       }
 
 }
-
 const freeSubscription=async(req,res)=>{
     const info = new URL(req.url, `http://${req.headers.host}`);
     const searchParams = info.searchParams;
@@ -130,5 +129,7 @@ const freeSubscription=async(req,res)=>{
         }
     )
 }
+
+
 
 module.exports={stripePaymentController,stripePaymentSuccess,freeSubscription}
