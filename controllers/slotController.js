@@ -82,9 +82,9 @@ const slotController = {
             });
         } catch (error) {
             console.log(error);
-            res.status(500).send({
+            res.status(200).send({
                 success: false,
-                message: 'Error in creating slots',
+                message: error.message,
                 error: error.message
             });
         }
@@ -133,6 +133,16 @@ const slotController = {
 
             let user_info= await AuthUser(req);
             user_id=user_info.id;
+
+            let business_post_count=await businessPostModel.countDocuments({user:user_id});
+            if(business_post_count==0)
+            {
+                return res.status(200).send({
+                    success: false,
+                    message: 'Please first create business profile',
+                    error:'Please first create business profile'
+                });
+            }
 
             let business_post_details=await businessPostModel.findOne({user:user_id});
             business_post=business_post_details._id;
@@ -195,9 +205,9 @@ const slotController = {
             });
         } catch (error) {
             console.error(error);
-            res.status(500).send({
+            res.status(200).send({
                 success: false,
-                message: 'Error in fetching slots',
+                message: error.message,
                 error: error.message,
             });
         }
@@ -222,6 +232,15 @@ const slotController = {
         let userDetails=await userModel.findById(user_id);
         let duration=userDetails.slot_duration;
         console.log(duration);
+        if(duration==0)
+        {
+           return res.status(200).send({
+                success: false,
+                message: "Please first set duration in settings",
+                error:"Please first set duration in settings"
+            });
+        }
+
         try {
             const slots = await durationSlotModel.find({duration:duration,is_delete:0});
             res.status(200).send({

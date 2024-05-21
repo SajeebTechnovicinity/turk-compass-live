@@ -3,6 +3,7 @@ const cors=require('cors')
 const morgan=require('morgan')
 const dotenv=require('dotenv')
 const connectDb = require('./config/db')
+const bodyParser = require('body-parser');
 
 
 // dot en configuration
@@ -15,10 +16,17 @@ connectDb()
 // rest object 
 const app =express()
 
+app.use(express.json({ limit: "10mb", extended: true }));
+app.use(
+  express.urlencoded({ limit: "10mb", extended: true, parameterLimit: 50000 })
+);
+
 // middleware
 
 app.use(cors())
 app.use(express.json())
+
+
 
 // using morgan we can see all router hit information in console terminal
 app.use(morgan("dev"))

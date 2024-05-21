@@ -57,6 +57,10 @@ const businessPostSchema = new mongoose.Schema({
         type: String,
         required: false
     },
+    contact_email: {
+        type: String,
+        required: false
+    },
     contact_located_in: {
         type: String,
         required: false
