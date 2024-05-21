@@ -208,13 +208,13 @@ const slotController = {
                     $sort: { 
                         '_id.date': -1 // Sort by date in descending order
                     } 
-                },
-                { 
-                    $skip: skip 
-                },
-                { 
-                    $limit: limit 
                 }
+                // { 
+                //     $skip: skip 
+                // },
+                // { 
+                //     $limit: limit 
+                // }
             ]);
 
             // Get total count for pagination

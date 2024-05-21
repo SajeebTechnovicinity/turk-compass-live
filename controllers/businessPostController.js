@@ -97,7 +97,6 @@ const businessPostController = {
             let businessPostDetails=await businessPostModel.findOne({_id:businessPostId});
 
 
-
             //upload image & cover image
             if(image!=null)
             {

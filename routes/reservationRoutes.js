@@ -4,6 +4,7 @@ const reservationController = require('../controllers/reservationController');
 
 router.post('/create', reservationController.create);
 router.get('/list', reservationController.list);
+router.get('/business-owner-list', reservationController.businessOwnerList);
 router.get('/details', reservationController.details);
 
 module.exports = router;
