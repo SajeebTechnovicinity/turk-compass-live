@@ -7,11 +7,22 @@ const jobSchema = new mongoose.Schema({
     },
     description: {
         type: String,
-        required: [true, 'description is required']
     },
     job_industry: {
         type: mongoose.Schema.Types.ObjectId,
         required: [true, 'description is required']
+    },
+    job_title:{
+        type: String,
+    },
+    job_country:{
+        type: mongoose.Schema.Types.ObjectId,
+    },
+    job_city:{
+        type: mongoose.Schema.Types.ObjectId,
+    },
+    job_state:{
+        type: mongoose.Schema.Types.ObjectId,
     },
     job_type:{
         type: String,
@@ -35,7 +46,6 @@ const jobSchema = new mongoose.Schema({
     },
     requirement: {
         type: String,
-        required: [true, 'requirement is required'],
     },
     question: {
         type: [{

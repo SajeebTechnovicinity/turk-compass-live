@@ -6,26 +6,25 @@ const faqModel = require('../models/faqModel');
 const settingModel = require('../models/settingModel');
 const appInfoModel = require('../models/appInfoModel');
 
-
 const appInfoController={
     abountTermsPrivacy:async(req, res) => {
         const {about_us,terms_condition,privacy_policy}=req.body;
         let appinfo=appInfoModel.findOne();
         if(appinfo){
-            appinfo = await appInfoModel.create({
-                "about_us":about_us,
-                "terms_condition":terms_condition,
-                "privacy_policy":privacy_policy,
-            })
-        }
-        else{
             appInfoModel.updateOne({
                 "about_us":about_us,
                 "terms_condition":terms_condition,
                 "privacy_policy":privacy_policy,
             })
         }
+        else{
+            appinfo = await appInfoModel.create({
+                "about_us":about_us,
+                "terms_condition":terms_condition,
+                "privacy_policy":privacy_policy,
+            })
 
+        }
         res.status(200).send({
             success:true,
             message:'successfully password updated',
