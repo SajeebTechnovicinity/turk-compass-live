@@ -74,7 +74,7 @@ app.use("/api/v1/app-info",require("./routes/appInfoRoute"))
 // app info
 
 // App Event
-app.use("/api/v1/vent",require("./routes/eventRoute"))
+app.use("/api/v1/event",require("./routes/eventRoute"))
 // App Event
 
 // user 

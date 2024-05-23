@@ -239,7 +239,35 @@ const jobController = {
             candidate_list
         });
 
-    }
+    },
+    AllJobListyGet: async (req, res) => {
+        const user_info = await AuthUser(req);
+        const user_id = user_info.id;
+
+        const info = new URL(req.url, `http://${req.headers.host}`);
+        const searchParams = info.searchParams;
+        let page = Number(searchParams.get('page')) || 1;
+        let limit = Number(searchParams.get('limit')) || 12;
+        let skip = (page - 1) * limit;
+
+        const job = await jobModel.find({ user_id: user_id }).populate([
+            { path: "job_industry", model: "JobIndustry" }])
+            .skip(skip)
+            .limit(limit);
+
+            const count = await jobModel.find({ user_id: user_id }).countDocuments();
+            const totalPages = Math.ceil(count / limit);
+
+
+
+        res.status(201).send({
+            success: true,
+            message: "Successfully",
+            totalPages,
+            currentPage: page,
+            job
+        });
+    },
 
 }
 
