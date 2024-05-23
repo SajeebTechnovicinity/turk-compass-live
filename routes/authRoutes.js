@@ -1,5 +1,5 @@
 const express= require('express')
-const { registerController, loginController,socialLoginController, resetPasswordController, updateResetPasswordController, userInfoGetController} = require('../controllers/authController')
+const { registerController, loginController,socialLoginController, resetPasswordController, updateResetPasswordController, userInfoGetController, passwordResetController} = require('../controllers/authController')
 const router=express.Router()
 
 router.post('/register',registerController)
@@ -11,4 +11,5 @@ router.post('/social/login',socialLoginController)
 router.post('/reset',resetPasswordController)
 router.post('/update/password',updateResetPasswordController)
 router.get('/get',userInfoGetController)
+router.get('/passeord-reset',passwordResetController)
 module.exports=router
