@@ -14,7 +14,6 @@ const { URL } = require('url');
 
 // Set storage engine
 
-
 const jobController = {
     industry: async (req, res) => {
         const { title, icone } = req.body;
@@ -26,6 +25,20 @@ const jobController = {
             industry,
         });
     },
+    industryUpdate: async (req, res) => {
+        let  industry
+        var {title,icone,id} =req.body;
+        if(icone){
+            image = await uploadImageToCloudinary(icone);
+            await jobIndustryModel.findOneAndUpdate({_id:id},{ image});
+        }
+         industry = await jobIndustryModel.findOneAndUpdate({_id:id},{ title:title});
+        res.status(200).send({
+            success: true,
+            message: "Successfully Updated sdfsd",
+            industry
+        });
+    },
     industryGet: async (req, res) => {
         const industry = await jobIndustryModel.find();
         res.status(201).send({
@@ -33,7 +46,7 @@ const jobController = {
             message: "Successfully",
             industry,
         });
-        
+
     },
     jobDetails: async (req, res) => {
         const info = new URL(req.url, `http://${req.headers.host}`);
@@ -146,7 +159,6 @@ const jobController = {
 
             const count = await jobModel.find({ user_id: user_id }).countDocuments();
             const totalPages = Math.ceil(count / limit);
-
 
         res.status(201).send({
             success: true,

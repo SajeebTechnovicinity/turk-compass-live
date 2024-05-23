@@ -23,6 +23,23 @@ const cityController = {
             });
         }
     },
+    edit: async (req, res) => {
+        const { name,country,state,id} = req.body;
+        try {
+            const cityInfo = await cityModel.findOneAndUpdate({ name,country,state,id});
+            res.status(201).send({
+                success: true,
+                message: "City updated Successfully",
+                cityInfo
+            });
+        } catch (error) {
+            res.status(500).send({
+                success: false,
+                message: 'Error in creating city',
+                error: error.message
+            });
+        }
+    },
 
     // Method to list all citys
     list: async (req, res) => {
