@@ -18,6 +18,15 @@ const slotController = {
             const slots = [];
             const user_info = await AuthUser(req);
             const user_id = user_info.id;
+
+            const business_post_count=await businessPostModel.countDocuments({ user: user_id });
+            if(business_post_count==0)
+            {
+                return res.status(200).send({
+                    success: false,
+                    message: 'No business post available'
+                });
+            }
             const business_post_details = await businessPostModel.findOne({ user: user_id });
             const business_post = business_post_details._id;
             const duration = user_info.slot_duration;
@@ -103,6 +112,7 @@ const slotController = {
             });
         }
     },
+    
 
     // Method to list date and business post wise slot
     slotManageList: async (req, res) => {
@@ -244,8 +254,218 @@ const slotController = {
                 error: error.message
             });
         }
-    }
+    },
+
+    dateWiseSlot: async (req, res) => {
+        const { date } = req.body;
+        try {
+            // Parse dates and initialize variables
+            const user_info = await AuthUser(req);
+            const user_id = user_info.id;
+            let business_post_count=await businessPostModel.countDocuments({user:user_id});
+            if(business_post_count==0)
+            {
+                return res.status(200).send({
+                    success: false,
+                    message: 'Please first create business profile',
+                    error:'Please first create business profile'
+                });
+            }
+            const business_post_details = await businessPostModel.findOne({ user: user_id });
+            const business_post = business_post_details._id;
+            const duration = user_info.slot_duration;
+    
+            // Fetch all duration slots outside the loop to minimize database calls
+            const durationSlots = await durationSlotModel.find({ duration: user_info.slot_duration });
+
+ 
+            // Generate slots for each date within the range
+
+             // Check if each business post is in the user's wishlist
+            const slotInfo = await Promise.all(durationSlots.map(async (slot) => {
+                const slotList = await slotModel.countDocuments({
+                    duration_slot: slot._id,
+                    date:date,
+                    business_post: business_post
+                });
+
+                return {
+                    ...slot.toObject(),
+                    is_already_added: slotList
+                };
+            }));
+
+    
+            res.status(201).send({
+                success: true,
+                message: "Slots Created Successfully",
+                slots:slotInfo
+            });
+        } catch (error) {
+            console.log(error);
+            res.status(500).send({
+                success: false,
+                message: 'Error in creating slots',
+                error: error.message
+            });
+        }
+    },
+
+
+    // Method to edit an existing slot
+    edit: async (req, res) => {
+        const { date, slot_ids } = req.body;
+        try {
+            // Parse dates and initialize variables
+            const currentDate = new Date(date);
+            const slots = [];
+            const user_info = await AuthUser(req);
+            const user_id = user_info.id;
+            const business_post_details = await businessPostModel.findOne({ user: user_id });
+            const business_post = business_post_details._id;
+            const duration = user_info.slot_duration;
+
+
+            // Fetch all duration slots outside the loop to minimize database calls
+            const durationSlots2 = await durationSlotModel.find({ duration: user_info.slot_duration });
+
+        
+            // Generate slots for each date within the range
+
+            // Check if each business post is in the user's wishlist
+            const slotInfo = await Promise.all(durationSlots2.map(async (slot) => {
+                const slotList = await slotModel.find({
+                    duration_slot: slot._id,
+                    date:date,
+                    business_post: business_post
+                });
+
+                if(slotList.amount_of_reservation>0)
+                {
+                    res.status(200).send({
+                        success: false,
+                        message: 'Edit not possible.As, Already reservation in this slot',
+                    });
+                }
+
+                return {
+                    ...slot.toObject(),
+                    is_already_added: slotList
+                };
+            }));
+
+             // Fetch all duration slots outside the loop to minimize database calls
+             const durationSlots = await durationSlotModel.find({ _id: { $in: slot_ids } });
+    
+ 
+            for (let durationSlot of durationSlots) {
+                if (durationSlot) {
+                    const slotAlready = await slotModel.countDocuments({
+                        duration_slot: durationSlot._id,
+                        date:date,
+                        business_post: business_post
+                    });
+                    if(slotAlready==0)
+                    {
+                        slots.push({
+                            business_post: business_post,
+                            date: currentDate.toISOString().slice(0, 10),
+                            duration_slot: durationSlot._id,
+                            start_time: durationSlot.start_time,
+                            end_time: durationSlot.end_time,
+                            duration: durationSlot.duration,
+                            amount_of_reservation: 0,
+                            status: 0
+                        });
+                    }
+                   
+                }
+            }
+               
+     
+             // Bulk insert slots
+             await slotModel.insertMany(slots);
+    
+            res.status(201).send({
+                success: true,
+                message: "Slots Edited Successfully",
+                slots
+            });
+        } catch (error) {
+            console.log(error);
+            res.status(500).send({
+                success: false,
+                message: 'Error in creating slots',
+                error: error.message
+            });
+        }
+    },
+
+
+    // Method to edit an existing slot
+    delete: async (req, res) => {
+        const { date, slot_ids } = req.body;
+        try {
+            // Parse dates and initialize variables
+            const currentDate = new Date(date);
+            const slots = [];
+            const user_info = await AuthUser(req);
+            const user_id = user_info.id;
+            const business_post_details = await businessPostModel.findOne({ user: user_id });
+            const business_post = business_post_details._id;
+            const duration = user_info.slot_duration;
+
+
+            // Fetch all duration slots outside the loop to minimize database calls
+            const durationSlots2 = await durationSlotModel.find({ duration: user_info.slot_duration });
+
+        
+            // Generate slots for each date within the range
+
+            // Check if each business post is in the user's wishlist
+            const slotInfo = await Promise.all(durationSlots2.map(async (slot) => {
+                const slotList = await slotModel.find({
+                    duration_slot: slot._id,
+                    date:date,
+                    business_post: business_post
+                });
+
+                if(slotList.amount_of_reservation>0)
+                {
+                    res.status(200).send({
+                        success: false,
+                        message: 'Delete not possible.As, Already reservation in this slot',
+                    });
+                }
+
+                return {
+                    ...slot.toObject(),
+                    is_already_added: slotList
+                };
+            }));
+     
+             // Bulk insert slots
+             await slotModel.deleteMany({duration_slot: { $in: slot_ids },date:date,business_post:business_post });
+    
+            res.status(201).send({
+                success: true,
+                message: "Slots Deleted Successfully",
+                slots
+            });
+        } catch (error) {
+            console.log(error);
+            res.status(500).send({
+                success: false,
+                message: 'Error in creating slots',
+                error: error.message
+            });
+        }
+    },
+
 };
+
+
+
 
 // Export slotController
 module.exports = slotController;

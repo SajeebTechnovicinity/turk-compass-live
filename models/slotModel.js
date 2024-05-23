@@ -5,6 +5,10 @@ const slotSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         required: true,
     },
+    duration_slot: {
+        type: mongoose.Schema.Types.ObjectId,
+        required: true,
+    },
     date: {
         type: String,
         required: true
