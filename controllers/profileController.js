@@ -57,6 +57,15 @@ const profileController = {
             const user_info= await AuthUser(req);
             user_id=user_info.id;
             const { duration,is_reservation_available,is_multiple_reservation_available } = req.body;
+            const businessPostCount=  await businessPostModel.countDocuments({user:user_id});
+            if(businessPostCount==0)
+            {
+                return res.status(200).send({
+                    success: false,
+                    message: "Please Business Profile Create first",
+                    error: "Please Business Profile Create first"
+                });
+            }
             const profile = await userModel.findOneAndUpdate({_id:user_id},{slot_duration:duration,is_reservation_available,is_multiple_reservation_available});
             const business_post_Update = await businessPostModel.findOneAndUpdate({user:user_id},{is_reservation_available,is_multiple_reservation_available});
             const startTime = new Date().setHours(0, 0, 0, 0); // Start from midnight
