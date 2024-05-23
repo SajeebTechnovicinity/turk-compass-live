@@ -33,6 +33,7 @@ const jobController = {
             message: "Successfully",
             industry,
         });
+        
     },
     jobDetails: async (req, res) => {
         const info = new URL(req.url, `http://${req.headers.host}`);
