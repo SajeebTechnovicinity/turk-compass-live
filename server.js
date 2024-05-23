@@ -80,7 +80,7 @@ app.use("/api/v1/event",require("./routes/eventRoute"))
 // user 
 app.use("/api/v1/user",require("./routes/authRoutes"))
 // user 
-
+app.use("/api/v1/whistlist",require("./routes/whishlistRoutes"))
 // port 
 const PORT=process.env.PORT || 8080;
 
