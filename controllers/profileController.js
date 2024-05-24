@@ -63,7 +63,7 @@ const profileController = {
 // =======
             const user_info= await AuthUser(req);
             user_id=user_info.id;
-            const { duration,is_reservation_available,is_multiple_reservation_available } = req.body;
+            let { duration,is_reservation_available,is_multiple_reservation_available } = req.body;
             const businessPostCount=  await businessPostModel.countDocuments({user:user_id});
             if(businessPostCount==0)
             {
@@ -72,6 +72,11 @@ const profileController = {
                     message: "Please Business Profile Create first",
                     error: "Please Business Profile Create first"
                 });
+            }
+            const userDetails= await userModel.find({_id:user_id});
+            if(userDetails.slot_duration>0)
+            {
+                duration=user_info.slot_duration;
             }
             const profile = await userModel.findOneAndUpdate({_id:user_id},{slot_duration:duration,is_reservation_available,is_multiple_reservation_available});
             const business_post_Update = await businessPostModel.findOneAndUpdate({user:user_id},{is_reservation_available,is_multiple_reservation_available});
