@@ -3,7 +3,7 @@ const router = express.Router();
 const cityController = require('../controllers/cityController');
 
 router.post('/create', cityController.create);
-router.post('/edit', cityController.create);
+router.post('/edit', cityController.edit);
 router.get('/list', cityController.list);
 
 module.exports = router;
