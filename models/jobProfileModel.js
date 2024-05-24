@@ -31,12 +31,15 @@ const jobProfileSchema = new mongoose.Schema({
     },
     country:{
         type: mongoose.Schema.Types.ObjectId,
+        required: false
     },
     city:{
         type: mongoose.Schema.Types.ObjectId,
+        required: false
     },
     state:{
         type: mongoose.Schema.Types.ObjectId,
+        required: false
     },
     summary: {
         type: String,
