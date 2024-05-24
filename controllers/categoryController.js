@@ -25,6 +25,35 @@ const categoryController = {
             });
         }
     },
+    edit: async (req, res) => {
+        let { name,image,id} = req.body;
+        //upload image & cover image
+        var updateObj={};
+
+        if(image){
+            image = await uploadImageToCloudinary(image);
+            updateObj={...updateObj,image}
+        }
+        if(name){
+            updateObj={...updateObj,name}
+        }
+  
+        try {
+            const categoryInfo = await categoryModel.findOneAndUpdate({_id:id},updateObj);
+            res.status(201).send({
+                success: true,
+                message: "Category Updated Successfully",
+                categoryInfo
+            });
+        } catch (error) {
+            console.log(error);
+            res.status(500).send({
+                success: false,
+                message: 'Error in creating category',
+                error: error.message
+            });
+        }
+    },
 
     // Method to list all categories
     list: async (req, res) => {
