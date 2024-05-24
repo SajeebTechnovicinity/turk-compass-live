@@ -6,10 +6,8 @@ const { AuthUser } = require("../utils/helper");
 const durationSlotModel = require("../models/durationSlotModel");
 const businessPostModel = require("../models/businessPostModel");
 const jobProfileModel = require("../models/jobProfileModel");
-
 // Define profile Controller methods
 const profileController = {
-
     list: async (req, res) => {
         try {
             const user_info = await AuthUser(req);
@@ -142,6 +140,7 @@ const profileController = {
         }
     },
     jobProfileCreateUpdate: async (req, res) => {
+        try {
         var {
             expart,
             addition_info,
@@ -165,6 +164,11 @@ const profileController = {
 
         const user_info = await AuthUser(req);
         var user_id = user_info.id;
+
+
+
+
+
         if (defalut_cv) {
             defalut_cv = await uploadImageToCloudinary(defalut_cv);
         }
@@ -173,85 +177,76 @@ const profileController = {
         }
         var profile_info;
         let is_created = await jobProfileModel.findOne({ user_id: user_id });
-        if (is_created) {
-            var query = {};
-            if (summary) {
-                query = { summary: summary }
-            }
-            if (work_history) {
-                query = { work_history: work_history }
-            }
-            if (education) {
-                query = { education: education }
-            }
-            if (skill) {
-                query = { skill: skill }
-            }
-            if (language) {
-                query = { language: language }
-            }
-            if (eligibility) {
-                query = { eligibility: eligibility }
-            }
-            if (defalut_cv) {
-                query = { defalut_cv: defalut_cv }
-            }
-            if (photo) {
-                query = { photo }
-            }
-            if (country && city && state) {
-                query = { country, city, state }
-            }
-            if (gender) {
-                query = { gender }
-            }
-            if (name) {
-                query = { name }
-            }
-            if (total_experience) {
-                query = { total_experience }
-            }
-            if (expart) {
-                query = {expart}
-            }
-            if (addition_info) {
-                query = {addition_info}
-            }
-            if (name && phone && email) {
-                query = {name,expart,phone,email}
-            }
-    
-            profile_info = await jobProfileModel.findOneAndUpdate({ user_id: user_id }, query)
 
+        var query = {};
+        if (summary) {
+            query = { summary: summary }
+        }
+        if (work_history) {
+            query = { work_history: work_history }
+        }
+        if (education) {
+            query = { education: education }
+        }
+        if (skill) {
+            query = { skill: skill }
+        }
+        if (language) {
+            query = { language: language }
+        }
+        if (eligibility) {
+            query = { eligibility: eligibility }
+        }
+        if (defalut_cv) {
+            query = { defalut_cv: defalut_cv }
+        }
+        if (photo) {
+            query = { photo }
+        }
+        if (country && city && state) {
+            query = { country, city, state }
+        }
+        if (gender) {
+            query = { gender }
+        }
+        if (name) {
+            query = { name }
+        }
+        if (total_experience) {
+            query = { total_experience }
+        }
+        if (expart) {
+            query = {expart}
+        }
+        if (addition_info) {
+            query = {addition_info}
+        }
+        if (name && phone && email) {
+            query = {name,expart,phone,email}
+        }
+
+
+        if (is_created) {
+            profile_info = await jobProfileModel.findOneAndUpdate({ user_id: user_id }, query);
         } else {
-            profile_info = await jobProfileModel.create({
-                expart,
-                addition_info,
-                phone,
-                email,
-                name,
-                photo,
-                total_experience,
-                country,
-                city,
-                state,
-                gender,
-                summary,
-                work_history,
-                education,
-                skill,
-                language,
-                eligibility,
-                defalut_cv,
-            })
+            query={...query,user_id}
+            profile_info = await jobProfileModel.create(query);
         }
 
         res.status(200).send({
             success: true,
             message: "Successfully updated",
-            is_created,
-            photo
+            profile_info,
         });
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({
+            success: false,
+            message: 'Error in fetching categories',
+            error: error.message
+        });
+    }
 
     },
     jobProfileGet: async (req, res) => {
