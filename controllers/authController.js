@@ -151,8 +151,6 @@ const socialLoginController=async(req,res)=>{
             info
         })
     }
-
- 
 }catch(error){
     console.log(error)
     res.status(500).send({
@@ -162,20 +160,15 @@ const socialLoginController=async(req,res)=>{
     })
 }
 }
-
 const resetPasswordController=async(req,res)=>{
     const {email}=req.body;
-
     var userInfo= await userModel.findOne({email:email});
-
-    
     if(!userInfo){
         res.status(500).send({
             success:false,
             message:'No user found',
          })
     }
-
     var code =  Math.floor(100000 + Math.random() * 900000);
 
     userInfo = await userModel.findOneAndUpdate(
@@ -218,8 +211,6 @@ const resetPasswordController=async(req,res)=>{
  })
 }
 
-
-
 const updateResetPasswordController=async(req,res)=>{
 
     const {email,password,code}=req.body;
@@ -261,7 +252,24 @@ const updateResetPasswordController=async(req,res)=>{
         }
 
     }
+}
 
+const passwordResetController=async(req,res)=>{
+    const info = new URL(req.url, `http://${req.headers.host}`);
+    const searchParams = info.searchParams;
+    let email =searchParams.get('email');
+    let password =searchParams.get('password');
+    const hashPassword = await bcrypt.hash(password, 10);
+    const userInfo = await userModel.findOneAndUpdate(
+        { email: email},  // Filter criteria
+        { password: hashPassword},          // Update operation
+        { new: true }       // Options: return the updated document
+    );
+    res.status(200).send({
+        success:true,
+        message:'Successfully password updated',
+        userInfo,
+     })
 }
 
 const userInfoGetController=async(req,res)=>{
@@ -276,4 +284,4 @@ const userInfoGetController=async(req,res)=>{
 
 
 
-module.exports={registerController,loginController,socialLoginController,resetPasswordController,updateResetPasswordController,userInfoGetController};
+module.exports={registerController,loginController,socialLoginController,resetPasswordController,updateResetPasswordController,userInfoGetController,passwordResetController};

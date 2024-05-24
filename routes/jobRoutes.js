@@ -8,6 +8,7 @@ router.get('/job-details',jobController.jobDetails)
 // job apply
 router.post('/apply',jobController.apply)
 router.post('/industry-create',jobController.industry)
+router.post('/industry-update',jobController.industryUpdate)
 router.get('/industry-get',jobController.industryGet)
 router.get('/my-list',jobController.myJobListyGet)
 
@@ -16,4 +17,5 @@ router.get('/short-list',jobController.myJobShortList)
 
 // job  candidate list
 router.get('/candidate-list',jobController.jobCandidateListyGet)
+router.get('/all-list',jobController.allJobListGet)
 module.exports=router

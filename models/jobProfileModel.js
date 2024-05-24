@@ -5,6 +5,39 @@ const jobProfileSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         required: true,
     },
+    gender:{
+        type: String,
+    },
+    photo:{
+        type: String, 
+    },
+    name:{
+        type: String,
+    },
+    total_experience:{
+        type: Number,
+    },
+    expart:{
+        type: String,
+    },
+    addition_info:{
+        type: String,
+    },
+    phone:{
+        type: String,
+    },
+    email:{
+        type: String, 
+    },
+    country:{
+        type: mongoose.Schema.Types.ObjectId,
+    },
+    city:{
+        type: mongoose.Schema.Types.ObjectId,
+    },
+    state:{
+        type: mongoose.Schema.Types.ObjectId,
+    },
     summary: {
         type: String,
     },

@@ -8,6 +8,9 @@ const jobSchema = new mongoose.Schema({
     description: {
         type: String,
     },
+    salary_type:{
+        type: String,
+    },
     job_industry: {
         type: mongoose.Schema.Types.ObjectId,
         required: [true, 'description is required']
@@ -63,6 +66,6 @@ const jobSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     }
-}, { timestamps: true });
+},{ timestamps: true });
 
 module.exports = mongoose.model("Job", jobSchema);

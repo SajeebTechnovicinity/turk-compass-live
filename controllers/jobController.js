@@ -2,7 +2,7 @@ const jobApplyModel = require("../models/jobApplyModel");
 const jobModel = require("../models/jobModel");
 const { AuthUser, uploadImageToCloudinary } = require("../utils/helper");
 
-
+const mongoose = require('mongoose');
 const multer = require('multer');
 const fs = require('fs');
 const path = require('path');
@@ -13,7 +13,6 @@ const { URL } = require('url');
 
 
 // Set storage engine
-
 
 const jobController = {
     industry: async (req, res) => {
@@ -26,14 +25,28 @@ const jobController = {
             industry,
         });
     },
+    industryUpdate: async (req, res) => {
+        let  industry
+        var {title,icone,id} =req.body;
+        if(icone){
+            image = await uploadImageToCloudinary(icone);
+            await jobIndustryModel.findOneAndUpdate({_id:id},{ image});
+        }
+         industry = await jobIndustryModel.findOneAndUpdate({_id:id},{ title:title});
+        res.status(200).send({
+            success: true,
+            message: "Successfully Updated sdfsd",
+            industry
+        });
+    },
     industryGet: async (req, res) => {
-
         const industry = await jobIndustryModel.find();
         res.status(201).send({
             success: true,
             message: "Successfully",
             industry,
         });
+
     },
     jobDetails: async (req, res) => {
         const info = new URL(req.url, `http://${req.headers.host}`);
@@ -46,7 +59,6 @@ const jobController = {
             message: "Successfully",
             jobDetails,
         });
-
     },
 
     jobGet: async (req, res) => {
@@ -82,6 +94,7 @@ const jobController = {
             job_country,
             job_city,
             job_state,
+            salary_type,
             description,
             skill,
             requirement,
@@ -98,6 +111,7 @@ const jobController = {
 
         const jobInfo = await jobModel.create({
             user_id,
+            salary_type,
             job_title,
             job_country,
             job_city,
@@ -132,7 +146,6 @@ const jobController = {
     myJobListyGet: async (req, res) => {
         const user_info = await AuthUser(req);
         const user_id = user_info.id;
-
         const info = new URL(req.url, `http://${req.headers.host}`);
         const searchParams = info.searchParams;
         let page = Number(searchParams.get('page')) || 1;
@@ -146,8 +159,6 @@ const jobController = {
 
             const count = await jobModel.find({ user_id: user_id }).countDocuments();
             const totalPages = Math.ceil(count / limit);
-
-
 
         res.status(201).send({
             success: true,
@@ -240,27 +251,83 @@ const jobController = {
         });
 
     },
-    AllJobListyGet: async (req, res) => {
+
+    allJobListGet: async (req, res) => {
         const user_info = await AuthUser(req);
         const user_id = user_info.id;
-
         const info = new URL(req.url, `http://${req.headers.host}`);
         const searchParams = info.searchParams;
         let page = Number(searchParams.get('page')) || 1;
         let limit = Number(searchParams.get('limit')) || 12;
+        let job_title = searchParams.get('job_title') || null;
+        let job_type = searchParams.get('job_type') || null;
+        let job_city = searchParams.get('job_city') || null;
         let skip = (page - 1) * limit;
 
-        const job = await jobModel.find({ user_id: user_id }).populate([
-            { path: "job_industry", model: "JobIndustry" }])
-            .skip(skip)
-            .limit(limit);
+    
+    
+        var searchArray = [];
+        if (job_title) {
+            const searchRegex = new RegExp(job_title, 'i');  // it will be search like 
+            searchArray.push({    $match: {
+                job_title: { $regex: searchRegex } // Perform a regex search for job_title
+            } });
+        }
+        if (job_type) {
+            searchArray.push({ $match:{job_type: job_type}});
+        }
+        if (job_city) {
+            searchArray.push({
+                $match: { job_city: new mongoose.Types.ObjectId(job_city) }
+            });
+        }
 
-            const count = await jobModel.find({ user_id: user_id }).countDocuments();
-            const totalPages = Math.ceil(count / limit);
-
-
-
-        res.status(201).send({
+        // res.status(200).send({
+        //     searchArray
+        // });
+    
+        const job = await jobModel.aggregate([
+            ...searchArray, // Spread searchArray into the pipeline stages
+            {
+                $lookup: {
+                    from: 'jobindustries',
+                    localField: 'job_industry', // the field from the Job collection
+                    foreignField: '_id', // the field from the JobIndustries collection
+                    as: 'job_industry_info' // the name of the field to store the joined data
+                }
+            },
+            {
+                $lookup: {
+                    from: 'jobapplies', // the collection name to join with
+                    let: { jobId: '$_id' }, // variables to use in the pipeline
+                    pipeline: [
+                        {
+                            $match: {
+                                $expr: {
+                                    $and: [
+                                        { $eq: ['$job_id', '$$jobId'] },
+                                        { $eq: ['$apply_by', new mongoose.Types.ObjectId('6638a2e7c35d9d33e94211ad')] },
+                                        { $eq: ['$status', 1] }
+                                    ]
+                                }
+                            }
+                        }
+                    ],
+                    as: 'applications'
+                },
+            },
+            {
+                $addFields: {
+                    is_applied: { $cond: { if: { $gt: [{ $size: '$applications' }, 0] }, then: true, else: false } } // check if applications array has any elements
+                }
+            }
+        ]).skip(skip)
+          .limit(limit);
+    
+        const count = await jobModel.find({ user_id: user_id }).countDocuments();
+        const totalPages = Math.ceil(count / limit);
+    
+        res.status(200).send({
             success: true,
             message: "Successfully",
             totalPages,
