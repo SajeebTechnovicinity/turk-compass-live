@@ -13,6 +13,10 @@ const reservationSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         required: true,
     },
+    duration_slot: {
+        type: mongoose.Schema.Types.ObjectId,
+        required: true,
+    },
     number_of_person: {
         type: Number,
         default: 0

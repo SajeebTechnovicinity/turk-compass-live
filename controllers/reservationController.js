@@ -13,7 +13,8 @@ const reservationController = {
         const user_info= await AuthUser(req);
         const user_id=user_info.id;
         try {
-            const reservationInfo = await reservationModel.create({ user:user_id,business_post,slot,number_of_person,note });
+            const slotDetails=await slotModel.findOne({_id:slot});
+            const reservationInfo = await reservationModel.create({ user:user_id,business_post,slot,duration_slot:slotDetails.duration_slot,number_of_person,note });
 
             // Find and update slot
             const updatedSlot = await slotModel.findOneAndUpdate(
