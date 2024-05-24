@@ -386,7 +386,7 @@ const slotController = {
 
     // Method to edit an existing slot
     // Method to edit an existing slot
-    edit: async (req, res) => {
+    delete: async (req, res) => {
         const { date, slot_ids } = req.body;
         try {
             // Parse dates and initialize variables
@@ -407,8 +407,8 @@ const slotController = {
             const business_post = business_post_details._id;
             const duration = user_info.slot_duration;
 
-            const slotReservationCount=await slotModel.countDocuments({date:date,business_post:business_post,amount_of_reservation:0});
-
+            const slotReservationCount=await slotModel.countDocuments({date:date,business_post:business_post, amount_of_reservation: { $gt: 0 }});
+            console.log(slotReservationCount);
             if(slotReservationCount>0)
             {
                 return res.status(200).send({
