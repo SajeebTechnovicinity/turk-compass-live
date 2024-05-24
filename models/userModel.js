@@ -5,6 +5,12 @@ const userSchema=new mongoose.Schema({
         type:String,
         required:[true,'user name is require']
     },
+    photo:{
+        type:String,
+    },
+    cover_photo:{
+        type:String,
+    },
     email:{
         type:String,
         required:[true,'email  is require'],

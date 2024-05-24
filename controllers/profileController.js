@@ -279,16 +279,78 @@ const profileController = {
                 }
             }
             if(name){
-                updateObj={...updateObj,name}
+                let userName=name
+                updateObj={...updateObj,userName}
             }
             const user_info = await AuthUser(req);
             user_id = user_info.id;
 
-            userModel.findOneAndUpdate({_id:user_id},updateObj);
+          var update=await userModel.findOneAndUpdate({_id:user_id},updateObj);
+          let userInfo=await userModel.findOne({_id:user_id});
             res.status(200).send({
                 success: true,
                 message: 'Profile Successfully Updated',
+                userInfo
+              
+            });
+        }catch (error) {
+            console.log(error);
+            res.status(500).send({
+                success: false,
+                message: 'Error in fetching',
                 error: error.message
+            });
+        }
+    },
+    generalInfoGet:async (req, res) =>{
+        try{
+          const user_info = await AuthUser(req);
+          user_id = user_info.id;
+          let userInfo=await userModel.findOne({_id:user_id});
+            res.status(200).send({
+                success: true,
+                userInfo
+              
+            });
+        }catch (error) {
+            console.log(error);
+            res.status(500).send({
+                success: false,
+                message: 'Error in fetching',
+                error: error.message
+            });
+        }
+    },
+    delteProfile:async (req, res) =>{
+        try{
+          const user_info = await AuthUser(req);
+          user_id = user_info.id;
+          let userInfo=await userModel.findOneAndUpdate({_id:user_id},{is_delete:true});
+            res.status(200).send({
+                success: true,
+                message: 'Successfully Account Deleted',
+                userInfo
+            });
+        }catch (error) {
+            console.log(error);
+            res.status(500).send({
+                success: false,
+                message: 'Error in fetching',
+                error: error.message
+            });
+        }
+    },
+    profileActiveInactive:async (req, res) =>{
+        try{
+          const info = new URL(req.url, `http://${req.headers.host}`);
+          const searchParams = info.searchParams;
+          let id = searchParams.get('id');
+          let user=await userModel.findOne({_id:id});
+          let userInfo=await userModel.findOneAndUpdate({_id:id},{is_delete:!user.is_delete});
+            res.status(200).send({
+                success: true,
+                message: 'Successfully Status Updated',
+                userInfo
             });
         }catch (error) {
             console.log(error);

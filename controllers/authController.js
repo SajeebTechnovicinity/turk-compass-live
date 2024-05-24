@@ -71,17 +71,23 @@ const loginController=async(req,res)=>{
         })
     }
     // check 
-    const user=await userModel.findOne({email:email});
+    const user=await userModel.findOne({email:email,is_delete:false});
+    if(!user){
+        return res.status(404).send({
+            success:false,
+            message:'User not found'
+        })
+    }
     const userName=user.userName;
 
     let is_user = await bcrypt.compare(password, user.password);
-
     if(!user || !is_user){
         return res.status(404).send({
             success:false,
-            message:'User not found Or password invalid'
+            message:'Email Or password invalid'
         })
     }
+
     if(is_user){
         const id=user.id;
         const user_type=user.usertype;

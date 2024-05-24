@@ -5,7 +5,10 @@ const profileController = require('../controllers/profileController');
 
 // Route to general profile
 router.get('/list', profileController.list);
-router.get('/general/info-update', profileController.generalInfoUpdate);
+router.post('/general/info-update', profileController.generalInfoUpdate);
+router.get('/general/info-get', profileController.generalInfoGet);
+router.get('/general/delete', profileController.delteProfile);
+router.get('/general/active-inactive', profileController.profileActiveInactive);
 //business profile
 router.get('/business/list', profileController.businessProfilelist);
 //Route to user profile update
