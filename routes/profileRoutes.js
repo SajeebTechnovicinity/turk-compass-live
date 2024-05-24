@@ -5,6 +5,7 @@ const profileController = require('../controllers/profileController');
 
 // Route to general profile
 router.get('/list', profileController.list);
+router.get('/general/info-update', profileController.generalInfoUpdate);
 //business profile
 router.get('/business/list', profileController.businessProfilelist);
 //Route to user profile update

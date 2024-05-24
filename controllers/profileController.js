@@ -1,7 +1,7 @@
 // Import necessary modules
 const userModel = require("../models/userModel");
 const bcrypt = require('bcrypt');
-const { uploadImageToCloudinary } = require("../utils/helper");
+const { uploadImageToCloudinary, isBase64Image } = require("../utils/helper");
 const { AuthUser } = require("../utils/helper");
 const durationSlotModel = require("../models/durationSlotModel");
 const businessPostModel = require("../models/businessPostModel");
@@ -54,17 +54,33 @@ const profileController = {
     },
     update: async (req, res) => {
         try {
-            const user_info = await AuthUser(req);
-            user_id = user_info.id;
-            const { duration, is_reservation_available, is_multiple_reservation_available } = req.body;
-            const profile = await userModel.findOneAndUpdate({ _id: user_id }, { slot_duration: duration, is_reservation_available, is_multiple_reservation_available });
-            const business_post_Update = await businessPostModel.findOneAndUpdate({ user: user_id }, { is_reservation_available, is_multiple_reservation_available });
+// <<<<<<< HEAD
+//             const user_info = await AuthUser(req);
+//             user_id = user_info.id;
+//             const { duration, is_reservation_available, is_multiple_reservation_available } = req.body;
+//             const profile = await userModel.findOneAndUpdate({ _id: user_id }, { slot_duration: duration, is_reservation_available, is_multiple_reservation_available });
+//             const business_post_Update = await businessPostModel.findOneAndUpdate({ user: user_id }, { is_reservation_available, is_multiple_reservation_available });
+// =======
+            const user_info= await AuthUser(req);
+            user_id=user_info.id;
+            const { duration,is_reservation_available,is_multiple_reservation_available } = req.body;
+            const businessPostCount=  await businessPostModel.countDocuments({user:user_id});
+            if(businessPostCount==0)
+            {
+                return res.status(200).send({
+                    success: false,
+                    message: "Please Business Profile Create first",
+                    error: "Please Business Profile Create first"
+                });
+            }
+            const profile = await userModel.findOneAndUpdate({_id:user_id},{slot_duration:duration,is_reservation_available,is_multiple_reservation_available});
+            const business_post_Update = await businessPostModel.findOneAndUpdate({user:user_id},{is_reservation_available,is_multiple_reservation_available});
+// >>>>>>> 25fd94e7136059f8b4dfc8adc80b92beeabc09af
             const startTime = new Date().setHours(0, 0, 0, 0); // Start from midnight
             const endTime = new Date().setHours(23, 59, 59, 999); // End at 11:59:59 PM
 
             const slots = [];
             let currentTime = startTime;
-
             // let business_post_details=await businessPostModel.findOne({user:user_id});
             // let business_post=business_post_details._id;
             // console.log(business_post_details._id);
@@ -243,6 +259,45 @@ const profileController = {
             message: "Successfully",
             profile_info
         });
+    },
+    generalInfoUpdate:async (req, res) =>{
+        try{
+            var {name,photo,cover_photo}=req.body;
+            var updateObj={};
+            if(photo){
+                let is_base64=await isBase64Image(photo);
+                if(is_base64){
+                    photo = await uploadImageToCloudinary(photo);
+                    updateObj={...updateObj,photo}
+                }
+            }
+            if(cover_photo){
+                let is_base64=await isBase64Image(cover_photo);
+                if(is_base64){
+                    cover_photo = await uploadImageToCloudinary(cover_photo);
+                    updateObj={...updateObj,cover_photo}
+                }
+            }
+            if(name){
+                updateObj={...updateObj,name}
+            }
+            const user_info = await AuthUser(req);
+            user_id = user_info.id;
+
+            userModel.findOneAndUpdate({_id:user_id},updateObj);
+            res.status(200).send({
+                success: true,
+                message: 'Profile Successfully Updated',
+                error: error.message
+            });
+        }catch (error) {
+            console.log(error);
+            res.status(500).send({
+                success: false,
+                message: 'Error in fetching',
+                error: error.message
+            });
+        }
     }
 
 };

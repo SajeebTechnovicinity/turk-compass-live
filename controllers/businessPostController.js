@@ -4,6 +4,7 @@ const userModel = require("../models/userModel");
 const bcrypt= require('bcrypt');
 const { uploadImageToCloudinary } = require("../utils/helper");
 const { AuthUser } = require("../utils/helper");
+const whistlistModel = require("../models/whistlistModel");
 
 // Define businessPostController methods
 const businessPostController = {
@@ -97,7 +98,6 @@ const businessPostController = {
             let businessPostDetails=await businessPostModel.findOne({_id:businessPostId});
 
 
-
             //upload image & cover image
             if(image!=null)
             {
@@ -136,6 +136,9 @@ const businessPostController = {
 
     list: async (req, res) => {
         try {
+            const user_info = await AuthUser(req);
+            const userId = user_info.id;
+
             const info = new URL(req.url, `http://${req.headers.host}`);
             const searchParams = info.searchParams;
             let sub_category = searchParams.get('sub_category');
@@ -149,6 +152,8 @@ const businessPostController = {
             {
                 query={sub_category:sub_category};
             }
+
+
     
             const count = await businessPostModel.countDocuments(query);
             
@@ -166,13 +171,26 @@ const businessPostController = {
                 .sort({ createdAt: -1 })
                 .skip(skip)
                 .limit(limit);
+
+            // Check if each business post is in the user's wishlist
+            const businessPostsWithWishlistInfo = await Promise.all(businessPosts.map(async (post) => {
+                const wishlistEntry = await whistlistModel.countDocuments({
+                    user: userId,
+                    business_post: post._id
+                });
+
+                return {
+                    ...post.toObject(),
+                    is_wishlist: wishlistEntry
+                };
+            }));
     
             res.status(200).send({
                 success: true,
                 message: "Business Posts Retrieved Successfully",
                 totalPages,
                 currentPage: page,
-                businessPosts
+                businessPosts:businessPostsWithWishlistInfo
             });
         } catch (error) {
             console.log(error);
