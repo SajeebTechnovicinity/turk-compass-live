@@ -291,12 +291,17 @@ const slotController = {
                     date:date,
                     business_post: business_post
                 });
-
-                const slotReservation = await reservationModel.countDocuments({
-                    duration_slot: slot._id,
-                    business_post: business_post
-                });
-
+                let slotReservation=0;
+                if(slotList>0)
+                {
+                    slotReservation = await reservationModel.countDocuments({
+                        duration_slot: slot._id,
+                        slot_date:date,
+                        business_post: business_post
+                    });
+    
+                }
+              
 
                 return {
                     ...slot.toObject(),
@@ -344,7 +349,10 @@ const slotController = {
             const business_post = business_post_details._id;
             const duration = user_info.slot_duration;
 
-            const slotDelete=await slotModel.deleteMany({date:date,business_post:business_post});
+            const slotDelete=await slotModel.deleteMany({date:date,business_post:business_post,amount_of_reservation: 0 });
+            const slotDeleteCount=await slotModel.countDocuments({date:date,business_post:business_post,amount_of_reservation: 0});
+
+            console.log(slotDeleteCount);
    
             // Fetch all duration slots outside the loop to minimize database calls
             const durationSlots = await durationSlotModel.find({ _id: { $in: slot_ids } });

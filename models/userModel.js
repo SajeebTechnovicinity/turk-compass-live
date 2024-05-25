@@ -64,6 +64,14 @@ const userSchema=new mongoose.Schema({
         type:Boolean,
         default:0
     },  
+    is_notification_on:{
+        type:Boolean,
+        default:1
+    },
+    device_token:{
+        type: String,
+        default:null
+    },
     slot_duration:{
         type:Number,
         default:0

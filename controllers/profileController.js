@@ -52,13 +52,7 @@ const profileController = {
     },
     update: async (req, res) => {
         try {
-// <<<<<<< HEAD
-//             const user_info = await AuthUser(req);
-//             user_id = user_info.id;
-//             const { duration, is_reservation_available, is_multiple_reservation_available } = req.body;
-//             const profile = await userModel.findOneAndUpdate({ _id: user_id }, { slot_duration: duration, is_reservation_available, is_multiple_reservation_available });
-//             const business_post_Update = await businessPostModel.findOneAndUpdate({ user: user_id }, { is_reservation_available, is_multiple_reservation_available });
-// =======
+
             const user_info= await AuthUser(req);
             user_id=user_info.id;
             let { duration,is_reservation_available,is_multiple_reservation_available } = req.body;
@@ -78,15 +72,12 @@ const profileController = {
             }
             const profile = await userModel.findOneAndUpdate({_id:user_id},{slot_duration:duration,is_reservation_available,is_multiple_reservation_available});
             const business_post_Update = await businessPostModel.findOneAndUpdate({user:user_id},{is_reservation_available,is_multiple_reservation_available});
-// >>>>>>> 25fd94e7136059f8b4dfc8adc80b92beeabc09af
+
             const startTime = new Date().setHours(0, 0, 0, 0); // Start from midnight
             const endTime = new Date().setHours(23, 59, 59, 999); // End at 11:59:59 PM
 
             const slots = [];
             let currentTime = startTime;
-            // let business_post_details=await businessPostModel.findOne({user:user_id});
-            // let business_post=business_post_details._id;
-            // console.log(business_post_details._id);
 
             let alreadySlotCreated = await durationSlotModel.countDocuments({ duration: duration, is_delete: 0 });
 
@@ -139,6 +130,34 @@ const profileController = {
             });
         }
     },
+
+    deviceTokenupdate: async (req, res) => {
+        try {
+
+            const user_info= await AuthUser(req);
+            user_id=user_info.id;
+            let { device_token } = req.body;
+
+            const userDetails= await userModel.find({_id:user_id});
+       
+            const profile = await userModel.findOneAndUpdate({_id:user_id},{device_token:device_token});
+
+
+            res.status(200).send({
+                success: true,
+                message: "Device Token Updated Successfully",
+                profile
+            });
+        } catch (error) {
+            console.log(error);
+            res.status(500).send({
+                success: false,
+                message: 'Error in fetching categories',
+                error: error.message
+            });
+        }
+    },
+
     jobProfileCreateUpdate: async (req, res) => {
         try {
         var {
