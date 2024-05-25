@@ -1,8 +1,10 @@
 // Import necessary modules
+const { token } = require("morgan");
 const businessPostModel = require("../models/businessPostModel");
+const notificationModel = require("../models/notificationModel");
 const reservationModel = require("../models/reservationModel");
 const slotModel = require("../models/slotModel");
-const { AuthUser } = require("../utils/helper");
+const { AuthUser, sendPushNotification } = require("../utils/helper");
 const { ObjectId } = require('mongodb');
 
 // Define reservationController methods
@@ -13,7 +15,8 @@ const reservationController = {
         const user_info= await AuthUser(req);
         const user_id=user_info.id;
         try {
-            const reservationInfo = await reservationModel.create({ user:user_id,business_post,slot,number_of_person,note });
+            const slotDetails=await slotModel.findOne({_id:slot});
+            const reservationInfo = await reservationModel.create({ user:user_id,business_post,slot,duration_slot:slotDetails.duration_slot,slot_date:slotDetails.date,number_of_person,note });
 
             // Find and update slot
             const updatedSlot = await slotModel.findOneAndUpdate(
@@ -141,7 +144,7 @@ const reservationController = {
                 const date = currentDate.toISOString().split('T')[0]; // Format date as 'YYYY-MM-DD'
     
                 // Fetch slots for the current date
-                const slots = await slotModel.find({ date });
+                const slots = await slotModel.find({ date,business_post:businessPostDetails._id });
     
                 // Extract slot IDs from the slots found
                 const slotIds = slots.map(slot => slot._id);
@@ -186,6 +189,100 @@ const reservationController = {
             res.status(500).send({
                 success: false,
                 message: 'Error in fetching reservations',
+                error: error.message
+            });
+        }
+    },
+
+    cancelReservation: async (req, res) => {
+        const info = new URL(req.url, `http://${req.headers.host}`);
+        const searchParams = info.searchParams;
+        let from_date = searchParams.get('from_date');
+        let to_date = searchParams.get('to_date');
+        let page = Number(searchParams.get('page')) || 1;
+        let limit = Number(searchParams.get('limit')) || 12;
+        let skip = (page - 1) * limit;
+    
+        const user_info = await AuthUser(req);
+        const user_id = user_info.id;
+    
+        try {
+            const currentDate = new Date(from_date);
+            const endDate = new Date(to_date);
+            const reservationsByDate = [];
+    
+            let businessPostCount = await businessPostModel.countDocuments({ user: user_id });
+            console.log(businessPostCount);
+    
+            if (businessPostCount == 0) {
+                return res.status(200).send({
+                    success: false,
+                    message: "No business post available",
+                    error: "No business post available"
+                });
+            }
+    
+            let businessPostDetails = await businessPostModel.findOne({ user: user_id });
+    
+            // Iterate through each date in the date range
+            while (currentDate <= endDate) {
+                const date = currentDate.toISOString().split('T')[0]; // Format date as 'YYYY-MM-DD'
+    
+                // Fetch slots for the current date
+                const slots = await slotModel.find({ date, business_post: businessPostDetails._id });
+    
+                // Extract slot IDs from the slots found
+                const slotIds = slots.map(slot => slot._id);
+    
+                // Find reservations associated with the slots found
+                const reservations = await reservationModel.find({
+                    business_post: businessPostDetails._id,
+                    slot: { $in: slotIds },
+                }).populate([
+                    {
+                        path: 'business_post',
+                        model: 'BusinessPost'
+                    },
+                    {
+                        path: 'slot',
+                        model: 'Slot'
+                    },
+                    {
+                        path: 'user',
+                        model: 'User'
+                    },
+                ]);
+    
+                // Update reservations to set is_canceled to 1
+                for (let reservation of reservations) {
+                    reservation.is_canceled = 1;
+                    await reservation.save();
+                    let title = "Reservation Canceled";
+                    let description = "Your reservation is canceled from authority";
+                    await notificationModel.create({user:reservation.user,title:title,description:description});
+
+                    if(reservation.user.is_notification_on==1)
+                    {
+                        console.log(reservation.user.device_token);
+                        sendPushNotification(title,description,reservation.user.device_token);
+                    }
+                    // Send notification to the user
+                    //await sendNotification(reservation.user, `Your reservation on ${date} has been canceled.`);
+                }
+    
+                // Move to the next date
+                currentDate.setDate(currentDate.getDate() + 1);
+            }
+    
+            res.status(200).send({
+                success: true,
+                message: "Reservations Canceled Successfully"
+            });
+        } catch (error) {
+            console.log(error);
+            res.status(500).send({
+                success: false,
+                message: 'Error in fetching or canceling reservations',
                 error: error.message
             });
         }
