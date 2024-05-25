@@ -23,6 +23,8 @@ const notificationController = {
 
             const notifications = await notificationModel.find({user:user_id}).sort({createdAt:-1}).skip(skip)
             .limit(limit);
+
+            const notificationUpdate =  await notificationModel.findOneAndUpdate({user:user_id},{is_seen:1});
             res.status(200).send({
                 success: true,
                 message: "Notifications Retrieved Successfully",

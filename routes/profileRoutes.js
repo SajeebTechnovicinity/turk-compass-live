@@ -13,6 +13,7 @@ router.get('/general/active-inactive', profileController.profileActiveInactive);
 router.get('/business/list', profileController.businessProfilelist);
 //Route to user profile update
 router.post('/update', profileController.update);
+router.post('/device-token/update', profileController.deviceTokenupdate);
 
 //Route job Profile
 router.post('/job-profile/create-update', profileController.jobProfileCreateUpdate);
