@@ -13,6 +13,10 @@ const reservationSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         required: true,
     },
+    slot_date: {
+        type: String,
+        required: false,
+    },
     duration_slot: {
         type: mongoose.Schema.Types.ObjectId,
         required: true,
@@ -24,6 +28,11 @@ const reservationSchema = new mongoose.Schema({
     note: {
         type: String,
         required: false,
+    },
+    is_canceled: {
+        type: Number,
+        default: 0, // 0 --> not canceled, 1 --> calceled
+        enum: [0, 1]
     },
     status: {
         type: Number,

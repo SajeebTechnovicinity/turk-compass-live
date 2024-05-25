@@ -291,12 +291,17 @@ const slotController = {
                     date:date,
                     business_post: business_post
                 });
-
-                const slotReservation = await reservationModel.countDocuments({
-                    duration_slot: slot._id,
-                    business_post: business_post
-                });
-
+                let slotReservation=0;
+                if(slotList>0)
+                {
+                    slotReservation = await reservationModel.countDocuments({
+                        duration_slot: slot._id,
+                        slot_date:date,
+                        business_post: business_post
+                    });
+    
+                }
+              
 
                 return {
                     ...slot.toObject(),
