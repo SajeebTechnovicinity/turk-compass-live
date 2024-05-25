@@ -511,7 +511,14 @@ const jobController = {
             const user_id = user_info.id;
             const info = new URL(req.url, `http://${req.headers.host}`);
             const searchParams = info.searchParams;
-            var wishlist=await jobWishListModel.find({user_id:user_id});
+            var wishlist=await jobWishListModel.find({user_id:user_id}).populate([
+                { path: "job_id", model: "Job",        
+                populate: [
+                    {
+                        path: 'job_industry', // assuming 'job_industry' is a reference field inside the 'Job' model
+                        model: 'JobIndustry' // the model to populate
+                    }
+                ] }]);
             res.status(200).send({
                 success: true,
                 message: "Wish List",
