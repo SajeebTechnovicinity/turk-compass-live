@@ -98,6 +98,21 @@ const slotController = {
         let limit = Number(searchParams.get('limit')) || 12;
         let skip = (page - 1) * limit;
         try {
+            const business_post_details=await businessPostModel.findOne({_id:business_post});
+            const userDetails=await userModel.findOne({_id:business_post_details.user});
+            console.log(userDetails.from_date_vacation,userDetails.to_date_vacation,date);
+            const currentDate = new Date(date);
+            const fromDateVacation = new Date(userDetails.from_date_vacation);
+            const toDateVacation = new Date(userDetails.to_date_vacation);
+            
+            // Check if the current date is within the vacation period
+            if (currentDate >= fromDateVacation && currentDate <= toDateVacation) {
+                return res.status(200).send({
+                    success: false,
+                    message: "This Business Post is set on vacation mode",
+                    slots: []
+                });
+            }
             const slots = await slotModel.find({business_post:business_post,date:date});
             res.status(200).send({
                 success: true,

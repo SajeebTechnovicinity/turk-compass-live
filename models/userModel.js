@@ -72,6 +72,14 @@ const userSchema=new mongoose.Schema({
         type: String,
         default:null
     },
+    from_date_vacation:{
+        type: String,
+        default:null
+    },
+    to_date_vacation:{
+        type: String,
+        default:null
+    },
     slot_duration:{
         type:Number,
         default:0

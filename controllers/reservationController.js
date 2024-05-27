@@ -6,6 +6,7 @@ const reservationModel = require("../models/reservationModel");
 const slotModel = require("../models/slotModel");
 const { AuthUser, sendPushNotification } = require("../utils/helper");
 const { ObjectId } = require('mongodb');
+const userModel = require("../models/userModel");
 
 // Define reservationController methods
 const reservationController = {
@@ -223,6 +224,8 @@ const reservationController = {
             }
     
             let businessPostDetails = await businessPostModel.findOne({ user: user_id });
+
+            let userProfileUpdate = await userModel.findOneAndUpdate({_id:user_id},{from_date_vacation:from_date,to_date_vacation:to_date});
     
             // Iterate through each date in the date range
             while (currentDate <= endDate) {
