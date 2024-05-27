@@ -29,6 +29,51 @@ const memberPerlamentController = {
         }
     },
 
+
+    // Method to create a new memberPerlament
+    edit: async (req, res) => {
+        let { name,image,cover_image,country,state,city,zip,political_affiliation,constituency,perferred_language,contact_email,contact_website,hill_office_house_of_commons,hill_office_telephone,hill_office_fax,constituency_office_main_office,constituency_telephone,constituency_fax } = req.body;
+        const info = new URL(req.url, `http://${req.headers.host}`);
+        const searchParams = info.searchParams;
+        let id = searchParams.get('id');
+
+        let memberPerlamentInfo = await memberPerlamentModel.findOne({_id:id});
+        
+        //upload image & cover image
+        if(image!=null)
+        {
+            image = await uploadImageToCloudinary(image);
+        }
+        else
+        {
+            image = memberPerlamentInfo.image;
+        }
+        if(cover_image!=null)
+        {
+            cover_image = await uploadImageToCloudinary(cover_image);
+        }
+        else
+        {
+            cover_image = memberPerlamentInfo.cover_image;
+        }
+        
+        try {
+            const memberPerlamentInfo = await memberPerlamentModel.findOneAndUpdate({_id:id},{ name,image,cover_image,country,state,city,zip,political_affiliation,constituency,perferred_language,contact_email,contact_website,hill_office_house_of_commons,hill_office_telephone,hill_office_fax,constituency_office_main_office,constituency_telephone,constituency_fax });
+            res.status(201).send({
+                success: true,
+                message: "Member of Perlament Updated Successfully",
+                memberPerlamentInfo
+            });
+        } catch (error) {
+            console.log(error);
+            res.status(500).send({
+                success: false,
+                message: 'Error in creating memberPerlament',
+                error: error.message
+            });
+        }
+    },
+
     // Method to list all categories
     list: async (req, res) => {
         const info = new URL(req.url, `http://${req.headers.host}`);
@@ -56,6 +101,41 @@ const memberPerlamentController = {
                     'model':'City'
                 }
             ]).sort({ createdAt: -1 })
+            .skip(skip)
+            .limit(limit);
+
+            res.status(200).send({
+                success: true,
+                message: "Member of Perlaments Retrieved Successfully",
+                totalPages,
+                currentPage: page,
+                memberPerlamants
+            });
+        } catch (error) {
+            console.log(error);
+            res.status(500).send({
+                success: false,
+                message: 'Error in fetching member of perlaments',
+                error: error.message
+            });
+        }
+    },
+
+    // Method to list all categories
+    details: async (req, res) => {
+        const info = new URL(req.url, `http://${req.headers.host}`);
+        const searchParams = info.searchParams;
+        let id = searchParams.get('id');
+        let page = Number(searchParams.get('page')) || 1;
+        let limit = Number(searchParams.get('limit')) || 12;
+        let skip = (page - 1) * limit;
+
+        try {
+            const count = await memberPerlamentModel.countDocuments();
+       
+            const totalPages = Math.ceil(count / limit);
+
+            const memberPerlamants = await memberPerlamentModel.findOne({_id:id}).sort({ createdAt: -1 })
             .skip(skip)
             .limit(limit);
 

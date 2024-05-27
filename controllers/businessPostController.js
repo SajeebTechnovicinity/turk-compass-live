@@ -201,6 +201,61 @@ const businessPostController = {
             });
         }
     },
+
+    adminList: async (req, res) => {
+        try {
+
+            const info = new URL(req.url, `http://${req.headers.host}`);
+            const searchParams = info.searchParams;
+            let sub_category = searchParams.get('sub_category');
+            let page = Number(searchParams.get('page')) || 1;
+            let limit = Number(searchParams.get('limit')) || 12;
+            let skip = (page - 1) * limit;
+
+            let query = {};
+
+            if(sub_category!=null)
+            {
+                query={sub_category:sub_category};
+            }
+
+
+    
+            const count = await businessPostModel.countDocuments(query);
+            
+            const totalPages = Math.ceil(count / limit);
+    
+            const businessPosts = await businessPostModel.find(query)
+                .populate([
+                    { path: "category", model: "Category" },
+                    { path: "sub_category", model: "SubCategory" },
+                    { path: "user", model: "User" },
+                    { path: "country", model: "Country" },
+                    { path: "state", model: "State" },
+                    { path: "city", model: "City" }
+                ])
+                .sort({ createdAt: -1 })
+                .skip(skip)
+                .limit(limit);
+
+        
+    
+            res.status(200).send({
+                success: true,
+                message: "Business Posts Retrieved Successfully",
+                totalPages,
+                currentPage: page,
+                businessPosts
+            });
+        } catch (error) {
+            console.log(error);
+            res.status(500).send({
+                success: false,
+                message: 'Error in fetching categories',
+                error: error.message
+            });
+        }
+    },
     
 
     search: async (req, res) => {
