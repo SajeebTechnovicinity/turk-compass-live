@@ -317,6 +317,14 @@ const jobController = {
                 },
                 {
                     $lookup: {
+                        from: "businessposts",
+                        localField: "business_info",
+                        foreignField: "_id",
+                        as: "company_info",
+                    },
+                },
+                {
+                    $lookup: {
                         from: "jobapplies", // the collection name to join with
                         let: { jobId: "$_id" }, // variables to use in the pipeline
                         pipeline: [
