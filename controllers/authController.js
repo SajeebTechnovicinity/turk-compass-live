@@ -134,10 +134,22 @@ const socialLoginController=async(req,res)=>{
     // check 
     const user=await userModel.findOne(record);
     if(!user){
-        return res.status(404).send({
-            success:false,
-            message:'User not authentic'
-        })
+        const user=await userModel.create({email:email,slot_duration:0,is_multiple_reservation_available:0,is_reservation_available:0});
+        const id=user.id;
+        const userName=user.userName && "";
+        const user_type=user.usertype;
+        const package_type=user.package_type;
+        const is_multiple_reservation_available=user.is_multiple_reservation_available;
+        const is_reservation_available=user.is_reservation_available;
+        const slot_duration=user.slot_duration;
+        const srcky=process.env.BCRYP_KEY
+        let token = jwt.sign({userName,email,user_type,package_type,id,is_multiple_reservation_available,slot_duration,is_reservation_available},srcky,{ expiresIn: '1h' });
+
+        const info={
+            token:token,
+            user_info:user,
+        }
+
     }
     const userName=user.userName;
     let is_user = user

@@ -6,6 +6,9 @@ const eventSchema = new mongoose.Schema({
     company: {
         type: String,
     },
+    city_name:{
+        type: String,
+    },
     about_event:{
         type: String,
     },
