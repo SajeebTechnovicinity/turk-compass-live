@@ -4,4 +4,6 @@ const router=express.Router();
 
 router.post('/edit-create-event',eventController.eventEditCreate);
 router.get('/get-event',eventController.getEvent);
+router.get('/get-event/date-wise',eventController.getEventDateMonth);
+
 module.exports=router
