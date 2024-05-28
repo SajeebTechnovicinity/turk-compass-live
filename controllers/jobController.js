@@ -10,6 +10,7 @@ const jobIndustryModel = require("../models/jobIndustryModel");
 const http = require("http");
 const { URL } = require("url");
 const jobWishListModel = require("../models/jobWishListModel");
+const businessPostModel = require("../models/businessPostModel");
 
 // Set storage engine
 
@@ -92,59 +93,82 @@ const jobController = {
         });
     },
     create: async (req, res) => {
-        const {
-            job_title,
-            job_country,
-            job_city,
-            job_state,
-            salary_type,
-            description,
-            skill,
-            requirement,
-            benifit,
-            question,
-            job_industry,
-            job_type,
-            candidate_require,
-            location,
-            salary,
-        } = req.body;
-
         const user_info = await AuthUser(req);
         const user_id = user_info.id;
-
-        const jobInfo = await jobModel.create({
-            user_id,
-            salary_type,
-            job_title,
-            job_country,
-            job_city,
-            job_state,
-            description,
-            skill,
-            requirement,
-            benifit,
-            question,
-            job_industry,
-            job_type,
-            candidate_require,
-            location,
-            salary,
-        });
-        try {
-            res.status(201).send({
+        const businessInfo=businessPostModel.findOne({user:user_id});
+        if(!businessInfo){
+            res.status(403).send({
                 success: true,
-                message: "Login Successfully",
+                message: "first store your business Account",
                 jobInfo,
             });
-        } catch (error) {
+        }
+
+        try{
+            const {
+                job_title,
+                job_country,
+                job_city,
+                job_state,
+                salary_type,
+                description,
+                skill,
+                requirement,
+                benefit,
+                question,
+                job_industry,
+                job_type,
+                candidate_require,
+                location,
+                salary,
+            } = req.body;
+    
+            const user_info = await AuthUser(req);
+            const user_id = user_info.id;
+    
+            const jobInfo = await jobModel.create({
+                business_info:businessInfo._id,
+                user_id,
+                salary_type,
+                job_title,
+                job_country,
+                job_city,
+                job_state,
+                description,
+                skill,
+                requirement,
+                benefit,
+                question,
+                job_industry,
+                job_type,
+                candidate_require,
+                location,
+                salary,
+            });
+            try {
+                res.status(201).send({
+                    success: true,
+                    message: "Login Successfully",
+                    jobInfo,
+                });
+            } catch (error) {
+                console.log(error);
+                res.status(500).send({
+                    success: false,
+                    message: "error in jobController api",
+                    error: error,
+                });
+            }
+
+        }catch (error) {
             console.log(error);
             res.status(500).send({
                 success: false,
-                message: "error in jobController api",
-                error: error,
+                message: 'Error in creating memberPerlament',
+                error: error.message
             });
         }
+
     },
     myJobListyGet: async (req, res) => {
         const user_info = await AuthUser(req);
@@ -172,10 +196,8 @@ const jobController = {
             }])
             .skip(skip)
             .limit(limit);
-
         const count = await jobModel.find({ user_id: user_id }).countDocuments();
         const totalPages = Math.ceil(count / limit);
-
         res.status(201).send({
             success: true,
             message: "Successfully",
@@ -241,7 +263,7 @@ const jobController = {
             console.log(error);
             res.status(500).send({
                 success: false,
-                message: "Error apply api",
+                message: "Error  api",
                 error: error,
             });
         }

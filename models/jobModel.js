@@ -5,6 +5,10 @@ const jobSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         required: true,
     },
+    business_info: {
+        type: mongoose.Schema.Types.ObjectId,
+        required: true,
+    },
     description: {
         type: String,
     },
