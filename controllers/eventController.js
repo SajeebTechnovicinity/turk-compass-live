@@ -4,48 +4,14 @@ const { isBase64Image, uploadImageToCloudinary, AuthUser } = require("../utils/h
 // Define durationSlotController methods
 const eventController = {
     eventEditCreate: async (req, res) => {
-        var {
-            id,
-            title,
-            company,
-            about_event,
-            description,
-            city_name,
-            address,
-            phone,
-            website,
-            banner,
-            gallery,
-            start_date,
-            end_date
-        } = req.body;
-        var isbanerBase64 = await isBase64Image(banner);
-        var updateInfo;
-        if (isbanerBase64) {
-            banner = await uploadImageToCloudinary(banner);
-        }
-        if (gallery) {
-
-            gallery = await Promise.all(gallery.map(async (item) => {
-                if (isBase64Image(item)) {
-                    return await uploadImageToCloudinary(item);
-                }
-                return item;
-            }));
-        }
-
-        var findEvent = false;
-        if (id) {
-            findEvent = await eventModel.findOne({ _id: id });
-        }
-
-        if (findEvent && id) {
-            updateInfo = await eventModel.findOneAndUpdate({ _id: id }, {
+        try{
+            var {
+                id,
                 title,
                 company,
+                about_event,
+                description,
                 city_name,
-                about_event,
-                description,
                 address,
                 phone,
                 website,
@@ -53,27 +19,73 @@ const eventController = {
                 gallery,
                 start_date,
                 end_date
-            })
-        } else {
-            updateInfo = await eventModel.create({
-                title,
-                company,
-                about_event,
-                description,
-                address,
-                phone,
-                website,
-                banner,
-                gallery,
-                start_date,
-                end_date
-            })
+            } = req.body;
+            var isbanerBase64 = await isBase64Image(banner);
+            var updateInfo;
+            if (isbanerBase64) {
+                banner = await uploadImageToCloudinary(banner);
+            }
+            if (gallery) {
+    
+                gallery = await Promise.all(gallery.map(async (item) => {
+                    if (isBase64Image(item)) {
+                        return await uploadImageToCloudinary(item);
+                    }
+                    return item;
+                }));
+            }
+    
+            var findEvent = false;
+            if (id) {
+                findEvent = await eventModel.findOne({ _id: id });
+            }
+    
+            if (findEvent && id) {
+                updateInfo = await eventModel.findOneAndUpdate({ _id: id }, {
+                    title,
+                    company,
+                    city_name,
+                    about_event,
+                    description,
+                    address,
+                    phone,
+                    website,
+                    banner,
+                    gallery,
+                    start_date,
+                    end_date
+                })
+            } else {
+                updateInfo = await eventModel.create({
+                    title,
+                    company,
+                    city_name,
+                    about_event,
+                    description,
+                    address,
+                    phone,
+                    website,
+                    banner,
+                    gallery,
+                    start_date,
+                    end_date
+                })
+            }
+            res.status(200).send({
+                success: true,
+                message: " Successfully updated",
+                updateInfo
+            });
+
+        }catch (error) {
+            console.log(error);
+            res.status(500).send({
+                success: false,
+                message: "Error  api",
+                error: error,
+            });
         }
-        res.status(200).send({
-            success: true,
-            message: " Successfully updated",
-            updateInfo
-        });
+
 
     },
     getEvent: async (req, res) => {
