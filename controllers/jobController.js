@@ -123,8 +123,7 @@ const jobController = {
                 location,
                 salary,
             } = req.body;
-    
-
+            
             const jobInfo = await jobModel.create({
                 business_info:businessInfo._id,
                 user_id,
