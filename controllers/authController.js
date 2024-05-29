@@ -291,11 +291,23 @@ const passwordResetController=async(req,res)=>{
 }
 
 const userInfoGetController=async(req,res)=>{
-    let userList=await userModel.find();
+    const info = new URL(req.url, `http://${req.headers.host}`);
+    const searchParams = info.searchParams;
+    let page = Number(searchParams.get('page')) || 1;
+    let limit = Number(searchParams.get('limit')) || 12;
+    let skip = (page - 1) * limit;
+
+    const count = await userModel.countDocuments();
+            
+    const totalPages = Math.ceil(count / limit);
+
+    let userList=await userModel.find().limit(limit).skip(skip);
     res.status(200).send({
         success:true,
         message:'successfully password updated',
         userList,
+        totalPages,
+        currentPage: page
      })
 }
 

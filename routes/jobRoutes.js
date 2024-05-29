@@ -22,4 +22,6 @@ router.get('/all-list',jobController.allJobListGet)
 // job wishlist
 router.get('/wish-list/add-delete',jobController.jobwishListAddDelete),
 router.get('/wish-list',jobController.myJobwishList)
+
+router.get('/industry-wise-amount',jobController.industryWiseJob)
 module.exports=router
