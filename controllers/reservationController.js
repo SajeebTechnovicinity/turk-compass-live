@@ -107,6 +107,46 @@ const reservationController = {
             });
         }
     },
+    allList: async (req, res) => {
+        const info = new URL(req.url, `http://${req.headers.host}`);
+        const searchParams = info.searchParams;
+        let page = Number(searchParams.get('page')) || 1;
+        let limit = Number(searchParams.get('limit')) || 12;
+        let skip = (page - 1) * limit;
+        try {
+            const reservationsByDate = [];
+    
+            const reservations = await reservationModel.find().populate([
+                {
+                    path: 'business_post',
+                    model: 'BusinessPost'
+                },
+                {
+                    path: 'slot',
+                    model: 'Slot'
+                },
+                {
+                    path: 'user',
+                    model: 'User'
+                },
+            ]) .skip(skip)
+            .limit(limit);
+    
+            res.status(200).send({
+                success: true,
+                message: "Reservations Retrieved Successfully",
+                reservations
+            });
+        } catch (error) {
+            console.log(error);
+            res.status(500).send({
+                success: false,
+                message: 'Error in fetching reservations',
+                error: error.message
+            });
+        }
+
+    },
 
     businessOwnerList: async (req, res) => {
         const info = new URL(req.url, `http://${req.headers.host}`);
@@ -127,7 +167,6 @@ const reservationController = {
 
             let businessPostCount=await businessPostModel.countDocuments({user:user_id});
             console.log(businessPostCount);
-
             if(businessPostCount==0)
             {
                 return res.status(200).send({

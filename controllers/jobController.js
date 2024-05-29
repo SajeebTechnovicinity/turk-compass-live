@@ -156,7 +156,6 @@ const jobController = {
                 location,
                 salary,
             } = req.body;
-    
 
             const jobInfo = await jobModel.create({
                 business_info:businessInfo._id,
@@ -266,7 +265,7 @@ const jobController = {
         try {
             const user_info = await AuthUser(req);
             const apply_by = user_info.id;
-            const { job_id, cv, cover_letter } = req.body;
+            const { job_id, cv, cover_letter,question_ans} = req.body;
             const base64DataGet = cv; // Get the base64 data from the request body
             const cv_path = await uploadImageToCloudinary(base64DataGet);
             let isapply = await jobApplyModel.findOne({
@@ -284,12 +283,46 @@ const jobController = {
                 job_id,
                 apply_by,
                 cv_path,
+                question_ans,
                 cover_letter,
             });
             res.status(200).send({
                 success: true,
                 message: " Successfully",
                 store_data,
+            });
+        } catch (error) {
+            console.log(error);
+            res.status(500).send({
+                success: false,
+                message: "Error  api",
+                error: error,
+            });
+        }
+        // jobApplyModel.create({job_id,cv,cover_letter})
+    },
+    getApplyInfo: async (req, res) => {
+        const info = new URL(req.url, `http://${req.headers.host}`);
+        const searchParams = info.searchParams;
+        let apply_id = searchParams.get("apply_id");
+        try {
+            let apply_info = await jobApplyModel.findOne({
+                _id: apply_id,
+            }).populate([                    
+                {
+                path: 'apply_by',
+                model: 'User'
+            },
+            {
+                path: 'job_id',
+                model: 'Job'
+            }
+        ]);
+
+            res.status(200).send({
+                success: true,
+                message: " Successfully",
+                apply_info,
             });
         } catch (error) {
             console.log(error);
@@ -479,7 +512,7 @@ const jobController = {
     },
     allJobListGet: async (req, res) => {
         const user_info = await AuthUser(req);
-        const user_id = user_info.id;
+        const user_id = user_info?user_info.id:null;
         const info = new URL(req.url, `http://${req.headers.host}`);
         const searchParams = info.searchParams;
         let page = Number(searchParams.get("page")) || 1;
