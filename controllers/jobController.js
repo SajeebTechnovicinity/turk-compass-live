@@ -69,7 +69,6 @@ const jobController = {
             jobDetails,
         });
     },
-
     jobGet: async (req, res) => {
         // const industry= await jobController.find();
         const info = new URL(req.url, `http://${req.headers.host}`);
@@ -99,18 +98,23 @@ const jobController = {
         });
     },
     create: async (req, res) => {
-        const user_info = await AuthUser(req);
-        const user_id = user_info.id;
-        const businessInfo=businessPostModel.findOne({user:user_id});
-        if(!businessInfo){
-            res.status(403).send({
-                success: true,
-                message: "first store your business Account",
-                jobInfo,
-            });
-        }
 
         try{
+
+            const user_info = await AuthUser(req);
+            const user_id = user_info.id;
+            const businessInfo= await businessPostModel.findOne({user:user_id});
+
+            if(!businessInfo){
+                res.status(403).send({
+                    success: true,
+                    message: "first store your business Account",
+                    jobInfo,
+                });
+            }
+
+
+
             const {
                 job_title,
                 job_country,
@@ -129,9 +133,7 @@ const jobController = {
                 salary,
             } = req.body;
     
-            const user_info = await AuthUser(req);
-            const user_id = user_info.id;
-    
+
             const jobInfo = await jobModel.create({
                 business_info:businessInfo._id,
                 user_id,
@@ -154,7 +156,7 @@ const jobController = {
             try {
                 res.status(201).send({
                     success: true,
-                    message: "Login Successfully",
+                    message: "Successfully Job Created",
                     jobInfo,
                 });
             } catch (error) {
@@ -317,6 +319,14 @@ const jobController = {
                         localField: "job_industry", // the field from the Job collection
                         foreignField: "_id", // the field from the JobIndustries collection
                         as: "job_industry_info", // the name of the field to store the joined data
+                    },
+                },
+                {
+                    $lookup: {
+                        from: "businessposts",
+                        localField: "business_info",
+                        foreignField: "_id",
+                        as: "company_info",
                     },
                 },
                 {
@@ -492,6 +502,14 @@ const jobController = {
                         localField: "job_industry",
                         foreignField: "_id",
                         as: "job_industry_info",
+                    },
+                },
+                {
+                    $lookup: {
+                        from: "businessposts",
+                        localField: "business_info",
+                        foreignField: "_id",
+                        as: "company_info",
                     },
                 },
                 {

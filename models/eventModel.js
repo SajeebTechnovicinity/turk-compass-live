@@ -32,11 +32,11 @@ const eventSchema = new mongoose.Schema({
         default: []
     },
     start_date: {
-        type: String,
+        type: Date,
         required: true
     },
     end_date: {
-        type: String,
+        type: Date,
         required: true
     },
     status: {
