@@ -146,11 +146,11 @@ const businessPostController = {
             let limit = Number(searchParams.get('limit')) || 12;
             let skip = (page - 1) * limit;
 
-            let query = {};
+            let query = {is_delete: false};
 
             if(sub_category!=null)
             {
-                query={sub_category:sub_category};
+                query={sub_category:sub_category,is_delete: false};
             }
 
 
