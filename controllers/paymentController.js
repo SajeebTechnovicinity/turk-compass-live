@@ -36,76 +36,65 @@ const stripePaymentController=async(req,res)=>{
     }
 }
 
-const stripePaymentSuccess=async(req,res)=>{
+const stripePaymentSuccess = async (req, res) => {
     const { sessionId } = req.body;
-    var user_data
+    var user_data;
+    var userInfo = await AuthUser(req);
 
     try {
-      const session = await stripe.checkout.sessions.retrieve(sessionId);
-  
-      if (session.payment_status === 'paid') {
-          const subscriptionId = session.subscription;
-          const subscription = await stripe.subscriptions.retrieve(subscriptionId);
-          const userInfo=await AuthUser(req);
-          if(!userInfo){
+        const session = await stripe.checkout.sessions.retrieve(sessionId);
 
-            res.status(401).send(
-                {
-                    success:false,
-                    message:"Unauthorize user",
-                }
-            )
-          }
-    
-          try {
+        if (session.payment_status === 'paid') {
+            const subscriptionId = session.subscription;
             const subscription = await stripe.subscriptions.retrieve(subscriptionId);
-            // const user = await admin.auth().getUser(firebaseId);
+
+            if (!userInfo) {
+                return res.status(401).send({
+                    success: false,
+                    message: "Unauthorized user",
+                });
+            }
+
             const planId = subscription.plan.id;
-            const planType = "free"
-            const amount=subscription.plan.amount;
+            let planType = "free";
+            const amount = subscription.plan.amount;
 
             // Package
-            if(amount==499) planType="premium";
-            if(amount==999) planType="premium_employer";
-            if(amount==199) planType="job_seeker";
-            // Package
+            if (amount == 499) planType = "premium";
+            if (amount == 999) planType = "premium_employer";
+            if (amount == 199) planType = "job_seeker";
+            // Package 
 
             const startDate = moment.unix(subscription.current_period_start).format('YYYY-MM-DD');
             const endDate = moment.unix(subscription.current_period_end).format('YYYY-MM-DD');
             const durationInSeconds = subscription.current_period_end - subscription.current_period_start;
             const durationInDays = moment.duration(durationInSeconds, 'seconds').asDays();
 
-            user_data=await userModel.updateOne({ _id: userInfo.id }, { $set: {package_type:planType,package_start_date:startDate,package_end_date:endDate,package_duration:durationInDays} })
-            
-            res.status(200).send(
+            user_data = await userModel.findOneAndUpdate(
+                { _id: userInfo.id },
                 {
-                    success:true,
-                    message:"stripe payment",
-                    // data:subscription,
-                    user:user_data,    
+                    $set: {
+                        package_type: planType,
+                        package_start_date: startDate,
+                        package_end_date: endDate,
+                        package_duration: durationInDays
+                    }
                 }
-            )
-            } catch (error) {
-              console.error('Error retrieving subscription:', error);
-            }
-        
-            res.status(200).send(
-                {
-                    success:true,
-                    message:"stripe payment",
-                    data:subscription,
-                    user:user_data,  
-             
-                }
-            )
-        } else {
-          return res.json({ message: "Payment failed" });
-        }
-      } catch (error) {
-        res.send(error);
-      }
+            );
 
-}
+            return res.status(200).send({
+                success: true,
+                message: "Stripe payment successful",
+                user_data
+            });
+
+        } else {
+            return res.status(400).send({ message: "Payment failed" });
+        }
+    } catch (error) {
+        return res.status(500).send(error);
+    }
+};
 const freeSubscription=async(req,res)=>{
     const info = new URL(req.url, `http://${req.headers.host}`);
     const searchParams = info.searchParams;
