@@ -225,6 +225,14 @@ const jobController = {
                 path: "job_country",
                 model: "Country",
             }])
+            .populate([{
+                path: "business_info",
+                model: "BusinessPost",
+            }])
+            .populate([{
+                path: "job_industry",
+                model: "JobIndustry",
+            }])
             .skip(skip)
             .limit(limit);
         const count = await jobModel.find({ user_id: user_id }).countDocuments();
