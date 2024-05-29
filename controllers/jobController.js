@@ -126,21 +126,18 @@ const jobController = {
     },
     create: async (req, res) => {
 
+        const user_info = await AuthUser(req);
+        const user_id = user_info.id;
+        const businessInfo = await businessPostModel.findOne({ user: user_id });
+
+        // Uncommented res.status to send the response
+        if (businessInfo === null) {
+            return res.status(403).send({
+                success: false,
+                message: "First store your business Account",
+            });
+        }
         try{
-
-            const user_info = await AuthUser(req);
-            const user_id = user_info.id;
-            const businessInfo= await businessPostModel.findOne({user:user_id});
-
-            if(!businessInfo){
-                res.status(403).send({
-                    success: true,
-                    message: "first store your business Account",
-                    jobInfo,
-                });
-            }
-
-
 
             const {
                 job_title,
