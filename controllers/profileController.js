@@ -379,7 +379,29 @@ const profileController = {
                 error: error.message
             });
         }
+    },
+    businessProfileActiveInactive:async (req, res) =>{
+        try{
+          const info = new URL(req.url, `http://${req.headers.host}`);
+          const searchParams = info.searchParams;
+          let id = searchParams.get('id');
+          let businessProfile=await businessPostModel.findOne({_id:id});
+          let userInfo=await businessPostModel.findOneAndUpdate({_id:id},{is_delete:!businessProfile.is_delete});
+            res.status(200).send({
+                success: true,
+                message: 'Successfully Status Updated',
+                userInfo
+            });
+        }catch (error) {
+            console.log(error);
+            res.status(200).send({
+                success: false,
+                message: error.message,
+                error: error.message
+            });
+        }
     }
+
 
 };
 

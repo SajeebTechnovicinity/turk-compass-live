@@ -9,6 +9,8 @@ router.post('/general/info-update', profileController.generalInfoUpdate);
 router.get('/general/info-get', profileController.generalInfoGet);
 router.get('/general/delete', profileController.delteProfile);
 router.get('/general/active-inactive', profileController.profileActiveInactive);
+
+router.get('/business/active-inactive', profileController.businessProfileActiveInactive);
 //business profile
 router.get('/business/list', profileController.businessProfilelist);
 //Route to user profile update
