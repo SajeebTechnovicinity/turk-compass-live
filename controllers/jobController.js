@@ -25,18 +25,30 @@ const jobController = {
             industry,
         });
     },
+
+    industryWiseJob: async (req, res) => {
+        const info = new URL(req.url, `http://${req.headers.host}`);
+        const searchParams = info.searchParams;
+        let industry  = searchParams.get('industry');
+
+        const amount_of_job = await jobModel.countDocuments({ job_industry: industry });
+        res.status(201).send({
+            success: true,
+            message: "Successfully",
+            amount_of_job,
+        });
+    },
     industryUpdate: async (req, res) => {
         let industry;
         var { title, icone, id } = req.body;
         console.log(req.body);
-        if (icone!=null || !icone.isempty() || icone!='') {
+        if (icone != null && icone != '') {
             icone = await uploadImageToCloudinary(icone);
-        }
-        else
-        {
+        } else {
             let industry = await jobIndustryModel.findOne({_id: id});
             icone = industry.icone;
         }
+        
         industry = await jobIndustryModel.findOneAndUpdate(
             { _id: id },
             { title: title},
@@ -44,7 +56,7 @@ const jobController = {
         );
         res.status(200).send({
             success: true,
-            message: "Successfully Updated sdfsd",
+            message: "Successfully Updated",
             industry,
         });
     },
