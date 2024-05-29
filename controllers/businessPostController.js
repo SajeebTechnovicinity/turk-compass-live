@@ -385,7 +385,7 @@ const businessPostController = {
             const searchParams = info.searchParams;
             let id = searchParams.get('id');
 
-            const profile = await userModel.findById(user_id);
+           // const profile = await userModel.findById(user_id);
             const businessProfile=await businessPostModel.findOne({_id:id});
     
             res.status(200).send({

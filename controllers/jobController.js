@@ -28,13 +28,19 @@ const jobController = {
     industryUpdate: async (req, res) => {
         let industry;
         var { title, icone, id } = req.body;
-        if (icone) {
-            image = await uploadImageToCloudinary(icone);
-            await jobIndustryModel.findOneAndUpdate({ _id: id }, { image });
+        console.log(req.body);
+        if (icone!=null || !icone.isempty() || icone!='') {
+            icone = await uploadImageToCloudinary(icone);
+        }
+        else
+        {
+            let industry = await jobIndustryModel.findOne({_id: id});
+            icone = industry.icone;
         }
         industry = await jobIndustryModel.findOneAndUpdate(
             { _id: id },
-            { title: title }
+            { title: title},
+            {icone:icone }
         );
         res.status(200).send({
             success: true,

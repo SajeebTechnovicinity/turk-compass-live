@@ -26,7 +26,7 @@ const cityController = {
     edit: async (req, res) => {
         const { name,country,state,id} = req.body;
         try {
-            const cityInfo = await cityModel.findOneAndUpdate({ name,country,state,id});
+            const cityInfo = await cityModel.findOneAndUpdate({_id:id},{ name,country,state});
             res.status(201).send({
                 success: true,
                 message: "City updated Successfully",
@@ -43,8 +43,15 @@ const cityController = {
 
     // Method to list all citys
     list: async (req, res) => {
+        const info = new URL(req.url, `http://${req.headers.host}`);
+        const searchParams = info.searchParams;
+        let state  = searchParams.get('state');
         try {
-            const citys = await cityModel.find().populate([   
+            let query={};
+            if(state!=null){
+                query={state:state};
+            }
+            const citys = await cityModel.find(query).populate([   
                 {
                     'path':"country",
                     'model':'Country'
