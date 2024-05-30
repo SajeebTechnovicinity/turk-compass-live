@@ -272,6 +272,18 @@ const profileController = {
         const user_info = await AuthUser(req);
         user_id = user_info.id;
         var profile_info = await jobProfileModel.findOne({ user_id: user_id })
+        .populate([{
+            path: "job_city",
+            model: "City",
+        }])
+        .populate([{
+            path: "job_state",
+            model: "State",
+        }])
+        .populate([{
+            path: "job_country",
+            model: "Country",
+        }])
 
         res.status(200).send({
             success: true,

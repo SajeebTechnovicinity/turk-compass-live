@@ -11,6 +11,7 @@ const http = require("http");
 const { URL } = require("url");
 const jobWishListModel = require("../models/jobWishListModel");
 const businessPostModel = require("../models/businessPostModel");
+const jobProfileModel = require("../models/jobProfileModel");
 
 // Set storage engine
 
@@ -240,7 +241,11 @@ const jobController = {
 
         const candidate_list = await jobApplyModel
             .find({ job_id: job_id })
-            .populate([{ path: "apply_by", model: "User" }])
+            .populate([{ path: "apply_by", model: "JobProfile",        
+            populate: {
+                path: 'jobProfile',
+                model: 'JobProfile'
+            }}])
             .skip(skip)
             .limit(limit);
 
@@ -257,10 +262,21 @@ const jobController = {
     apply: async (req, res) => {
         try {
             const user_info = await AuthUser(req);
-            const apply_by = user_info.id;
+            const user_id = user_info.id;
             const { job_id, cv, cover_letter,question_ans} = req.body;
             const base64DataGet = cv; // Get the base64 data from the request body
             const cv_path = await uploadImageToCloudinary(base64DataGet);
+
+            let profile=await jobProfileModel.findOne({user_id:user_id});
+            var apply_by
+            if(!profile){
+                res.status(401).send({
+                    success: false,
+                    message: " first create candidate profile",
+                });
+            }
+            apply_by=profile._id;
+
             let isapply = await jobApplyModel.findOne({
                 job_id: job_id,
                 apply_by: apply_by,
