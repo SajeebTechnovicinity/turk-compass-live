@@ -212,6 +212,7 @@ const jobController = {
         let skip = (page - 1) * limit;
 
         const job = await jobModel
+        
             .find({ user_id: user_id })
             .populate([{ path: "job_industry", model: "JobIndustry" }])
             .populate([{
@@ -247,32 +248,43 @@ const jobController = {
         });
     },
     jobCandidateListyGet: async (req, res) => {
-        const info = new URL(req.url, `http://${req.headers.host}`);
-        const searchParams = info.searchParams;
-        let job_id = searchParams.get("job_id");
-        let page = Number(searchParams.get("page")) || 1;
-        let limit = Number(searchParams.get("limit")) || 12;
-        let skip = (page - 1) * limit;
-
-        const candidate_list = await jobApplyModel
-            .find({ job_id: job_id })
-            .populate([{ path: "apply_by", model: "JobProfile",        
-            populate: {
-                path: 'jobProfile',
-                model: 'JobProfile'
-            }}])
-            .skip(skip)
-            .limit(limit);
-
-        const count = await jobApplyModel.find({ job_id: job_id }).countDocuments();
-        const totalPages = Math.ceil(count / limit);
-        res.status(200).send({
-            success: true,
-            message: "Successfully",
-            totalPages,
-            currentPage: page,
-            candidate_list,
-        });
+        try{
+            const info = new URL(req.url, `http://${req.headers.host}`);
+            const searchParams = info.searchParams;
+            let job_id = searchParams.get("job_id");
+            let page = Number(searchParams.get("page")) || 1;
+            let limit = Number(searchParams.get("limit")) || 12;
+            let skip = (page - 1) * limit;
+    
+            const candidate_list = await jobApplyModel
+                .find({ job_id: job_id })
+                .populate([{ path: "apply_by", model: "JobProfile",        
+                populate: {
+                    path: 'user_id',
+                    model: 'User'
+                }}])
+                .skip(skip)
+                .limit(limit);
+                
+    
+            const count = await jobApplyModel.find({ job_id: job_id }).countDocuments();
+            const totalPages = Math.ceil(count / limit);
+            res.status(200).send({
+                success: true,
+                message: "Successfully",
+                totalPages,
+                currentPage: page,
+                candidate_list,
+            });
+        }catch (error){
+            console.log(error);
+            res.status(500).send({
+                success: false,
+                message: "Error  api",
+                error: error,
+            });
+        }
+  
     },
     apply: async (req, res) => {
         try {
