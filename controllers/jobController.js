@@ -265,6 +265,7 @@ const jobController = {
                 }}])
                 .skip(skip)
                 .limit(limit);
+                
     
             const count = await jobApplyModel.find({ job_id: job_id }).countDocuments();
             const totalPages = Math.ceil(count / limit);
