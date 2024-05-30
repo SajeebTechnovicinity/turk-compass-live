@@ -129,7 +129,7 @@ const reservationController = {
                     path: 'user',
                     model: 'User'
                 },
-            ]) .skip(skip)
+            ]).sort({createdAt:-1}) .skip(skip)
             .limit(limit);
     
             res.status(200).send({
