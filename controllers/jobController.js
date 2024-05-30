@@ -251,6 +251,8 @@ const jobController = {
         try{
             const info = new URL(req.url, `http://${req.headers.host}`);
             const searchParams = info.searchParams;
+            let city = searchParams.get("city");
+            let gender= searchParams.get("gender");
             let job_id = searchParams.get("job_id");
             let page = Number(searchParams.get("page")) || 1;
             let limit = Number(searchParams.get("limit")) || 12;
@@ -258,16 +260,13 @@ const jobController = {
     
             const candidate_list = await jobApplyModel
                 .find({ job_id: job_id})
-                .populate([{ path: "apply_by", model: "User",        
-                populate: {
-                    path: 'user_id',
-                    model: 'User'
-                }}])
-                .populate([{ path: "job_profile", model: "JobProfile",        
-                populate: {
-                    path: 'user_id',
-                    model: 'User'
-                }}])
+                .populate([{ path: "apply_by", model: "User"}])
+                .populate({
+                    path: 'job_profile',
+                    model: 'JobProfile',
+                    match: { city: city }, 
+                    match: { gender: gender }
+                  })
                 .skip(skip)
                 .limit(limit);
     
@@ -288,7 +287,6 @@ const jobController = {
                 error: error,
             });
         }
-  
     },
     apply: async (req, res) => {
         try {
@@ -320,7 +318,6 @@ const jobController = {
                     message: "Already applied",
                 });
             }
-
             const store_data = await jobApplyModel.create({
                 job_id,
                 apply_by,
