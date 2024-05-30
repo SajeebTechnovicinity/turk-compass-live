@@ -197,6 +197,7 @@ const jobController = {
         let skip = (page - 1) * limit;
 
         const job = await jobModel
+        
             .find({ user_id: user_id })
             .populate([{ path: "job_industry", model: "JobIndustry" }])
             .populate([{

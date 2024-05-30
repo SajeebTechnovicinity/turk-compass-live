@@ -184,10 +184,6 @@ const profileController = {
         const user_info = await AuthUser(req);
         var user_id = user_info.id;
 
-
-
-
-
         if (defalut_cv) {
             defalut_cv = await uploadImageToCloudinary(defalut_cv);
         }
@@ -196,7 +192,6 @@ const profileController = {
         }
         var profile_info;
         let is_created = await jobProfileModel.findOne({ user_id: user_id });
-
         var query = {};
         if (summary) {
             query = { summary: summary }
@@ -273,15 +268,15 @@ const profileController = {
         user_id = user_info.id;
         var profile_info = await jobProfileModel.findOne({ user_id: user_id })
         .populate([{
-            path: "job_city",
+            path: "city",
             model: "City",
         }])
         .populate([{
-            path: "job_state",
+            path: "state",
             model: "State",
         }])
         .populate([{
-            path: "job_country",
+            path: "country",
             model: "Country",
         }])
 
