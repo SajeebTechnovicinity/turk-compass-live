@@ -251,7 +251,7 @@ const jobController = {
         try{
             const info = new URL(req.url, `http://${req.headers.host}`);
             const searchParams = info.searchParams;
-            let city = searchParams.get("city");
+            let city = searchParams.get("city") ;
             let gender= searchParams.get("gender");
             let job_id = searchParams.get("job_id");
             let page = Number(searchParams.get("page")) || 1;
@@ -287,6 +287,7 @@ const jobController = {
                 error: error,
             });
         }
+  
     },
     apply: async (req, res) => {
         try {
@@ -318,6 +319,7 @@ const jobController = {
                     message: "Already applied",
                 });
             }
+
             const store_data = await jobApplyModel.create({
                 job_id,
                 apply_by,
