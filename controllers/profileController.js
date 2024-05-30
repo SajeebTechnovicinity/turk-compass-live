@@ -56,7 +56,20 @@ const profileController = {
                     model: 'City'
                 }     
             ]);
-            const jobProfile = await jobProfileModel.findOne({ user_id: user_id })
+            const jobProfile = await jobProfileModel.findOne({ user_id: user_id }).populate([
+            {
+                path:'country',
+                model: 'Country'
+            },
+            {
+                path:'state',
+                model: 'State'
+            },
+            {
+                path:'city',
+                model: 'City'
+            }     
+        ]);
             const generalProfile = await userModel.findOne({ _id: user_id});
 
             res.status(200).send({
