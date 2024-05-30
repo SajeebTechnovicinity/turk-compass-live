@@ -25,6 +25,19 @@ const reservationController = {
                 { $inc: { amount_of_reservation: 1 } }, // Increment amount_of_reservation by 1
                 { new: true } // Return the updated document
             );
+            const businessPostInfo = await businessPostModel.findOne({ _id: business_post}).populate({
+                path: 'user',
+                model: 'User'
+            });
+            let title = "Reservation Created";
+            let description = "Reservation Created against your business";
+            await notificationModel.create({user:businessPostInfo.user._id,title:title,description:description});
+
+            if(businessPostInfo.user.is_notification_on==1)
+            {
+                console.log(businessPostInfo.user.device_token);
+                sendPushNotification(title,description,businessPostInfo.user.device_token);
+            }
 
             res.status(201).send({
                 success: true,
@@ -35,7 +48,7 @@ const reservationController = {
             console.log(error);
             res.status(500).send({
                 success: false,
-                message: 'Error in creating reservation',
+                message: error.message,
                 error: error.message
             });
         }
