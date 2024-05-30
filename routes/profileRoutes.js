@@ -21,4 +21,5 @@ router.post('/device-token/update', profileController.deviceTokenupdate);
 router.post('/job-profile/create-update', profileController.jobProfileCreateUpdate);
 router.get('/job-profile/get', profileController.jobProfileGet);
 
+router.get('/all', profileController.allProfile);
 module.exports = router;

@@ -8,28 +8,31 @@ const appInfoModel = require('../models/appInfoModel');
 
 const appInfoController={
     abountTermsPrivacy:async(req, res) => {
-        const {about_us,terms_condition,privacy_policy}=req.body;
-        let appinfo=appInfoModel.findOne();
-        if(appinfo){
-            appInfoModel.updateOne({
-                "about_us":about_us,
-                "terms_condition":terms_condition,
-                "privacy_policy":privacy_policy,
-            })
-        }
-        else{
+        const { about_us, terms_condition, privacy_policy } = req.body;
+        console.log(req.body);
+        
+        let appinfo = await appInfoModel.findOne();
+        
+        if (appinfo) {
+            await appInfoModel.updateOne({}, {
+                about_us: about_us,
+                terms_condition: terms_condition,
+                privacy_policy: privacy_policy
+            });
+            appinfo = await appInfoModel.findOne(); // Refresh appinfo after update
+        } else {
             appinfo = await appInfoModel.create({
-                "about_us":about_us,
-                "terms_condition":terms_condition,
-                "privacy_policy":privacy_policy,
-            })
-
+                about_us: about_us,
+                terms_condition: terms_condition,
+                privacy_policy: privacy_policy
+            });
         }
+        
         res.status(200).send({
-            success:true,
-            message:'successfully password updated',
-            appinfo,
-         })
+            success: true,
+            message: 'Successfully updated app information',
+            appinfo
+        });
     },
 
     abountTermsPrivacyGet:async(req, res) => {

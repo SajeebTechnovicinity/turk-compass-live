@@ -82,6 +82,7 @@ app.use("/api/v1/user",require("./routes/authRoutes"))
 // user 
 app.use("/api/v1/whistlist",require("./routes/whishlistRoutes"))
 app.use("/api/v1/notification",require("./routes/notificationRoutes"))
+app.use("/api/v1/admin/dashboard",require("./routes/dashboardRoutes"))
 // port 
 const PORT=process.env.PORT || 8080;
 
