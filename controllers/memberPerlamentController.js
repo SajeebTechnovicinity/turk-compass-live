@@ -1,4 +1,5 @@
 // Import necessary modules
+const memberPerlamantModel = require("../models/memberPerlamantModel");
 const memberPerlamentModel = require("../models/memberPerlamantModel");
 const { AuthUser,uploadImageToCloudinary } = require("../utils/helper");
 
@@ -242,6 +243,25 @@ const memberPerlamentController = {
             res.status(500).send({
                 success: false,
                 message: "Error in fetching member of perlaments",
+                error: error.message
+            });
+        }
+    },
+    delete:async (req, res) =>{
+        try{
+          const info = new URL(req.url, `http://${req.headers.host}`);
+          const searchParams = info.searchParams;
+          let id = searchParams.get('id');
+          let member=await memberPerlamantModel.deleteOne({_id:id});
+            res.status(200).send({
+                success: true,
+                message: 'Successfully Deleted',
+            });
+        }catch (error) {
+            console.log(error);
+            res.status(200).send({
+                success: false,
+                message: error.message,
                 error: error.message
             });
         }

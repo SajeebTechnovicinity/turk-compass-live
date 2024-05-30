@@ -45,6 +45,7 @@ const jobController = {
         console.log(req.body);
         if (icone != null && icone != '') {
             icone = await uploadImageToCloudinary(icone);
+            console.log(icone);
         } else {
             let industry = await jobIndustryModel.findOne({_id: id});
             icone = industry.icone;
@@ -52,8 +53,7 @@ const jobController = {
         
         industry = await jobIndustryModel.findOneAndUpdate(
             { _id: id },
-            { title: title},
-            {icone:icone }
+            { title: title,image:icone},
         );
         res.status(200).send({
             success: true,
@@ -62,12 +62,27 @@ const jobController = {
         });
     },
     industryGet: async (req, res) => {
-        const industry = await jobIndustryModel.find();
-        res.status(201).send({
-            success: true,
-            message: "Successfully",
-            industry,
-        });
+
+        try{
+            const industry = await jobIndustryModel.find();
+
+            const industryInfo = await Promise.all(industry.map(async (iterate) => {
+                const amount_of_job = await jobModel.countDocuments({ job_industry:iterate._id  });
+
+                return {
+                    ...iterate.toObject(),
+                    amount_of_job:amount_of_job
+                };
+            }));
+            res.status(200).send({
+                success: true,
+                message: "Successfully",
+                industry:industryInfo,
+            });
+        }
+        catch(error){
+            console.log(error);
+        }
     },
     jobDetails: async (req, res) => {
         const info = new URL(req.url, `http://${req.headers.host}`);

@@ -29,6 +29,52 @@ const profileController = {
             });
         }
     },
+    allProfile: async (req, res) => {
+        try {
+            const info = new URL(req.url, `http://${req.headers.host}`);
+            const searchParams = info.searchParams;
+            let user_id = searchParams.get('id');
+
+            const businessProfile = await businessPostModel.findOne({ user: user_id }).populate([{
+                    path:'category',
+                    model: 'Category'
+                },
+                {
+                    path:'sub_category',
+                    model: 'SubCategory'
+                },
+                {
+                    path:'country',
+                    model: 'Country'
+                },
+                {
+                    path:'state',
+                    model: 'State'
+                },
+                {
+                    path:'city',
+                    model: 'City'
+                }     
+            ]);
+            const jobProfile = await jobProfileModel.findOne({ user_id: user_id })
+            const generalProfile = await userModel.findOne({ _id: user_id});
+
+            res.status(200).send({
+                success: true,
+                message: "All Profile Retrieved Successfully",
+                businessProfile,
+                jobProfile,
+                generalProfile
+            });
+        } catch (error) {
+            console.log(error);
+            res.status(200).send({
+                success: false,
+                message: error.message,
+                error: error.message
+            });
+        }
+    },
     businessProfilelist: async (req, res) => {
         try {
             const user_info = await AuthUser(req);
@@ -386,7 +432,29 @@ const profileController = {
                 error: error.message
             });
         }
+    },
+    businessProfileActiveInactive:async (req, res) =>{
+        try{
+          const info = new URL(req.url, `http://${req.headers.host}`);
+          const searchParams = info.searchParams;
+          let id = searchParams.get('id');
+          let businessProfile=await businessPostModel.findOne({_id:id});
+          let userInfo=await businessPostModel.findOneAndUpdate({_id:id},{is_delete:!businessProfile.is_delete});
+            res.status(200).send({
+                success: true,
+                message: 'Successfully Status Updated',
+                userInfo
+            });
+        }catch (error) {
+            console.log(error);
+            res.status(200).send({
+                success: false,
+                message: error.message,
+                error: error.message
+            });
+        }
     }
+
 
 };
 
