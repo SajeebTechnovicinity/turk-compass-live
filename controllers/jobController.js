@@ -257,15 +257,19 @@ const jobController = {
             let skip = (page - 1) * limit;
     
             const candidate_list = await jobApplyModel
-                .find({ job_id: job_id })
-                .populate([{ path: "apply_by", model: "JobProfile",        
+                .find({ job_id: job_id})
+                .populate([{ path: "apply_by", model: "User",        
+                populate: {
+                    path: 'user_id',
+                    model: 'User'
+                }}])
+                .populate([{ path: "job_profile", model: "JobProfile",        
                 populate: {
                     path: 'user_id',
                     model: 'User'
                 }}])
                 .skip(skip)
                 .limit(limit);
-                
     
             const count = await jobApplyModel.find({ job_id: job_id }).countDocuments();
             const totalPages = Math.ceil(count / limit);
@@ -295,14 +299,16 @@ const jobController = {
             const cv_path = await uploadImageToCloudinary(base64DataGet);
 
             let profile=await jobProfileModel.findOne({user_id:user_id});
-            var apply_by
+            var apply_by;
+            var job_profile;
             if(!profile){
                 res.status(401).send({
                     success: false,
                     message: " first create candidate profile",
                 });
             }
-            apply_by=profile._id;
+            apply_by=user_id;
+            job_profile=profile._id;
 
             let isapply = await jobApplyModel.findOne({
                 job_id: job_id,
@@ -321,6 +327,7 @@ const jobController = {
                 cv_path,
                 question_ans,
                 cover_letter,
+                job_profile
             });
             res.status(200).send({
                 success: true,
