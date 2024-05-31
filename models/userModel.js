@@ -3,7 +3,8 @@ const mongoose=require('mongoose')
 const userSchema=new mongoose.Schema({
     userName:{
         type:String,
-        required:[true,'user name is require']
+        default:null,
+        // required:[true,'user name is require']
     },
     photo:{
         type:String,
@@ -18,8 +19,8 @@ const userSchema=new mongoose.Schema({
     },
     password:{
         type:String,
-        required:[true,'password  is require'],
-        unique:true
+        // required:[true,'password  is require'],
+        // unique:true
     },
     usertype:{
         type:String,

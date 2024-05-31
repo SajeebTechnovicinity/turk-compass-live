@@ -5,7 +5,6 @@ const packageController=(req,res)=>{
                 {
                     'title':"free",
                     'description':{job_seeker_access:0,ads:0,compass:0,monthly_price:0,verify_employers:0,review_job_applications:0,custom_questions:0},
-
                 },
                 {
                     'title':"premium",
@@ -18,7 +17,11 @@ const packageController=(req,res)=>{
                 {
                     'title':"premium_employer",
                     'description':{job_seeker_access:0,ads:0,compass:0,monthly_price:9.99,verify_employers:0,review_job_applications:0,custom_questions:10,stripe_product:'price_1PDKhlJ4eJxlN0V7k9uhBLL5'}
-                }
+                },
+                {
+                    'title':"general_employer",
+                    'description':{job_seeker_access:0,ads:0,compass:0,monthly_price:0,verify_employers:0,review_job_applications:0,custom_questions:0},
+                },
           ]
         )
     }catch(error){

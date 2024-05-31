@@ -50,4 +50,20 @@ const settingController={
     }
 }
 
+
+// var query = {};
+// if (about_us && terms && privacy_policy) {
+//     query = {
+//         "about_us": about_us,
+//         "terms": terms,
+//         "privacy_policy": privacy_policy,
+//     };
+// }
+// if(home_banner){
+//     query = {
+//         "about_us": about_us,
+//         "terms": terms,
+//         "privacy_policy": privacy_policy,
+//     };
+// }
 module.exports={settingController}

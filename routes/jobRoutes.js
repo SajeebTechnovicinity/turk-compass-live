@@ -15,6 +15,7 @@ router.get('/my-list',jobController.myJobListyGet)
 
 router.get('/add/short-list',jobController.addShortList)
 router.get('/short-list',jobController.myJobShortList)
+router.get('/apply-info',jobController.getApplyInfo)
 
 // job  candidate list
 router.get('/candidate-list',jobController.jobCandidateListyGet)
@@ -22,4 +23,6 @@ router.get('/all-list',jobController.allJobListGet)
 // job wishlist
 router.get('/wish-list/add-delete',jobController.jobwishListAddDelete),
 router.get('/wish-list',jobController.myJobwishList)
+
+router.get('/industry-wise-amount',jobController.industryWiseJob)
 module.exports=router

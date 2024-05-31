@@ -8,6 +8,9 @@ router.post('/create', businessPostController.create);
 // Route to list all business post 
 router.get('/list', businessPostController.list);
 
+// Route to list all business post 
+router.get('/admin-list', businessPostController.adminList);
+
 // Route to update business post 
 router.post('/edit', businessPostController.edit);
 

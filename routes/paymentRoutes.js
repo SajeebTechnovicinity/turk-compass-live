@@ -7,6 +7,5 @@ route.get('/payment',stripePaymentController)
 route.get('/payment-success',stripePaymentSuccess)
 route.post('/payment-success',stripePaymentSuccess)
 route.get('/payment-free',freeSubscription)
-
 // export
 module.exports=route

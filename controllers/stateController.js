@@ -26,17 +26,28 @@ const stateController = {
 
     // Method to list all states
     list: async (req, res) => {
+        const info = new URL(req.url, `http://${req.headers.host}`);
+        const searchParams = info.searchParams;
+        let page = Number(searchParams.get('page')) || 1;
+        let limit = Number(searchParams.get('limit')) || 12;
+        let skip = (page - 1) * limit;
+
         try {
+            const count = await stateModel.countDocuments();            
+            const totalPages = Math.ceil(count / limit);
+
             const states = await stateModel.find().populate([   
                 {
                     'path':"country",
                     'model':'Country'
                 },
-            ]).sort({createdAt:-1});
+            ]).sort({createdAt:-1}).skip(skip).limit(limit);
             res.status(200).send({
                 success: true,
                 message: "States Retrieved Successfully",
-                states
+                states,
+                totalPages,
+                currentPage: page
             });
         } catch (error) {
             console.log(error);
@@ -46,7 +57,27 @@ const stateController = {
                 error: error.message
             });
         }
-    }
+    },
+
+     // Method to create a new state
+     edit: async (req, res) => {
+        const { id,name,country } = req.body;
+        try {
+            const stateInfo = await stateModel.updateOne({_id:id},{ name,country });
+            res.status(200).send({
+                success: true,
+                message: "State Updated Successfully",
+                stateInfo
+            });
+        } catch (error) {
+            console.log(error);
+            res.status(500).send({
+                success: false,
+                message: 'Error in creating state',
+                error: error.message
+            });
+        }
+    },
 };
 
 // Export stateController

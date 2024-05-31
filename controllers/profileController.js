@@ -29,6 +29,65 @@ const profileController = {
             });
         }
     },
+    allProfile: async (req, res) => {
+        try {
+            const info = new URL(req.url, `http://${req.headers.host}`);
+            const searchParams = info.searchParams;
+            let user_id = searchParams.get('id');
+
+            const businessProfile = await businessPostModel.findOne({ user: user_id }).populate([{
+                    path:'category',
+                    model: 'Category'
+                },
+                {
+                    path:'sub_category',
+                    model: 'SubCategory'
+                },
+                {
+                    path:'country',
+                    model: 'Country'
+                },
+                {
+                    path:'state',
+                    model: 'State'
+                },
+                {
+                    path:'city',
+                    model: 'City'
+                }     
+            ]);
+            const jobProfile = await jobProfileModel.findOne({ user_id: user_id }).populate([
+            {
+                path:'country',
+                model: 'Country'
+            },
+            {
+                path:'state',
+                model: 'State'
+            },
+            {
+                path:'city',
+                model: 'City'
+            }     
+        ]);
+            const generalProfile = await userModel.findOne({ _id: user_id});
+
+            res.status(200).send({
+                success: true,
+                message: "All Profile Retrieved Successfully",
+                businessProfile,
+                jobProfile,
+                generalProfile
+            });
+        } catch (error) {
+            console.log(error);
+            res.status(200).send({
+                success: false,
+                message: error.message,
+                error: error.message
+            });
+        }
+    },
     businessProfilelist: async (req, res) => {
         try {
             const user_info = await AuthUser(req);
@@ -123,9 +182,9 @@ const profileController = {
             });
         } catch (error) {
             console.log(error);
-            res.status(500).send({
+            res.status(200).send({
                 success: false,
-                message: 'Error in fetching categories',
+                message: error.message,
                 error: error.message
             });
         }
@@ -184,10 +243,6 @@ const profileController = {
         const user_info = await AuthUser(req);
         var user_id = user_info.id;
 
-
-
-
-
         if (defalut_cv) {
             defalut_cv = await uploadImageToCloudinary(defalut_cv);
         }
@@ -196,7 +251,6 @@ const profileController = {
         }
         var profile_info;
         let is_created = await jobProfileModel.findOne({ user_id: user_id });
-
         var query = {};
         if (summary) {
             query = { summary: summary }
@@ -272,6 +326,18 @@ const profileController = {
         const user_info = await AuthUser(req);
         user_id = user_info.id;
         var profile_info = await jobProfileModel.findOne({ user_id: user_id })
+        .populate([{
+            path: "city",
+            model: "City",
+        }])
+        .populate([{
+            path: "state",
+            model: "State",
+        }])
+        .populate([{
+            path: "country",
+            model: "Country",
+        }])
 
         res.status(200).send({
             success: true,
@@ -379,7 +445,29 @@ const profileController = {
                 error: error.message
             });
         }
+    },
+    businessProfileActiveInactive:async (req, res) =>{
+        try{
+          const info = new URL(req.url, `http://${req.headers.host}`);
+          const searchParams = info.searchParams;
+          let id = searchParams.get('id');
+          let businessProfile=await businessPostModel.findOne({_id:id});
+          let userInfo=await businessPostModel.findOneAndUpdate({_id:id},{is_delete:!businessProfile.is_delete});
+            res.status(200).send({
+                success: true,
+                message: 'Successfully Status Updated',
+                userInfo
+            });
+        }catch (error) {
+            console.log(error);
+            res.status(200).send({
+                success: false,
+                message: error.message,
+                error: error.message
+            });
+        }
     }
+
 
 };
 

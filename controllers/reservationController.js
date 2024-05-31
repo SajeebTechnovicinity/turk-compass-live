@@ -25,6 +25,19 @@ const reservationController = {
                 { $inc: { amount_of_reservation: 1 } }, // Increment amount_of_reservation by 1
                 { new: true } // Return the updated document
             );
+            const businessPostInfo = await businessPostModel.findOne({ _id: business_post}).populate({
+                path: 'user',
+                model: 'User'
+            });
+            let title = "Reservation Created";
+            let description = "Reservation Created against your business";
+            await notificationModel.create({user:businessPostInfo.user._id,title:title,description:description});
+
+            if(businessPostInfo.user.is_notification_on==1)
+            {
+                console.log(businessPostInfo.user.device_token);
+                sendPushNotification(title,description,businessPostInfo.user.device_token);
+            }
 
             res.status(201).send({
                 success: true,
@@ -35,7 +48,7 @@ const reservationController = {
             console.log(error);
             res.status(500).send({
                 success: false,
-                message: 'Error in creating reservation',
+                message: error.message,
                 error: error.message
             });
         }
@@ -107,6 +120,46 @@ const reservationController = {
             });
         }
     },
+    allList: async (req, res) => {
+        const info = new URL(req.url, `http://${req.headers.host}`);
+        const searchParams = info.searchParams;
+        let page = Number(searchParams.get('page')) || 1;
+        let limit = Number(searchParams.get('limit')) || 12;
+        let skip = (page - 1) * limit;
+        try {
+            const reservationsByDate = [];
+    
+            const reservations = await reservationModel.find().populate([
+                {
+                    path: 'business_post',
+                    model: 'BusinessPost'
+                },
+                {
+                    path: 'slot',
+                    model: 'Slot'
+                },
+                {
+                    path: 'user',
+                    model: 'User'
+                },
+            ]).sort({createdAt:-1}) .skip(skip)
+            .limit(limit);
+    
+            res.status(200).send({
+                success: true,
+                message: "Reservations Retrieved Successfully",
+                reservations
+            });
+        } catch (error) {
+            console.log(error);
+            res.status(500).send({
+                success: false,
+                message: 'Error in fetching reservations',
+                error: error.message
+            });
+        }
+
+    },
 
     businessOwnerList: async (req, res) => {
         const info = new URL(req.url, `http://${req.headers.host}`);
@@ -127,7 +180,6 @@ const reservationController = {
 
             let businessPostCount=await businessPostModel.countDocuments({user:user_id});
             console.log(businessPostCount);
-
             if(businessPostCount==0)
             {
                 return res.status(200).send({

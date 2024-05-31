@@ -97,9 +97,9 @@ const subCategoryController = {
             });
         } catch (error) {
             console.log(error);
-            res.status(500).send({
+            res.status(200).send({
                 success: false,
-                message: 'Error in fetching categories',
+                message: error.message,
                 error: error.message
             });
         }

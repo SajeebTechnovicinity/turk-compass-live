@@ -6,6 +6,9 @@ const eventSchema = new mongoose.Schema({
     company: {
         type: String,
     },
+    city_name:{
+        type: String,
+    },
     about_event:{
         type: String,
     },
@@ -29,11 +32,11 @@ const eventSchema = new mongoose.Schema({
         default: []
     },
     start_date: {
-        type: String,
+        type: Date,
         required: true
     },
     end_date: {
-        type: String,
+        type: Date,
         required: true
     },
     status: {
