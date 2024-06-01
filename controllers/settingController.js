@@ -52,7 +52,7 @@ const settingController = {
     },
     consultateCreate:async (req, res) => {
         try {
-            const {branch_info,consulate_info,consulate_img} = req.body;
+            var {branch_info,consulate_info,consulate_img} = req.body;
             var info
             if(consulate_info || consulate_img){
                 let que={}
@@ -88,11 +88,27 @@ const settingController = {
                 error: error.message
             });
         }
+    },
+   consultateGet:async (req, res) => {
+        try {
+            var consultatInfo = await appInfoModel.findOne();
+            var branchList = await consultateBranchModel.find();
+            res.status(200).send({
+                success: true,
+                message: 'Successfully Retrieved Consultate Info and Branches',
+                consultatInfo,
+                branchList,
+            });
+        } catch (error) {
+            console.log(error);
+            res.status(500).send({
+                success: false,
+                message: 'Error Api',
+                error: error.message,
+            });
+        }
     }
 }
-
-
-
 
         // var query = {};
         // if (about_us && terms && privacy_policy) {

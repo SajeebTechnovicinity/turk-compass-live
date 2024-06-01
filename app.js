@@ -54,6 +54,7 @@ app.use("/api/v1/state",require("./routes/stateRoutes"))
 //city
 app.use("/api/v1/city",require("./routes/cityRoutes"))
 app.use("/api/v1/faq",require("./routes/settingRoutes"))
+app.use("/api/v1/consultate",require("./routes/settingRoutes"))
 
 //slot
 app.use("/api/v1/slot",require("./routes/slotRoutes"))
