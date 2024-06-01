@@ -1,9 +1,8 @@
 const mongoose = require('mongoose');
 
 const consulttateSchema = new mongoose.Schema({
-    tite: {
+    title: {
         type: String,
-        required: [true, 'Name is required']
     },
     address: {
         type: String,
@@ -19,7 +18,7 @@ const consulttateSchema = new mongoose.Schema({
     },
     opening_info: {
         type: [{
-            openint_ingo: String,
+            opening_info: String,
         }],
         default: []
     },

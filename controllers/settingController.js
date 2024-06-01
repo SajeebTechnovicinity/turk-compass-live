@@ -71,7 +71,7 @@ const settingController = {
                 }
             }
             if(branch_info){
-              info = await consultateBranchModel.create(branch_info);
+              info = await consultateBranchModel.insertMany(branch_info);
             }
 
             res.status(200).send({
