@@ -62,6 +62,17 @@ const appInfoController = {
             appinfo,
         })
     },
+    petitionDelete:async (req, res) => {
+        const info = new URL(req.url, `http://${req.headers.host}`);
+        const searchParams = info.searchParams;
+        let id =searchParams.get('id');
+        let appinfo = await petitionModel.findOneAndDelete({_id:id})
+        res.status(200).send({
+            success: true,
+            message: 'successfully Deleted',
+            appinfo,
+        })
+    },
     petitionCreateUpdate: async (req, res) => {
         try {
           const { petition } = req.body;
