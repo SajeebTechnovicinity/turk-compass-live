@@ -12,6 +12,7 @@ const { URL } = require("url");
 const jobWishListModel = require("../models/jobWishListModel");
 const businessPostModel = require("../models/businessPostModel");
 const jobProfileModel = require("../models/jobProfileModel");
+const { log } = require("console");
 
 // Set storage engine
 
@@ -291,6 +292,7 @@ const jobController = {
     },
     apply: async (req, res) => {
         try {
+            console.log(req.body);
             const user_info = await AuthUser(req);
             const user_id = user_info.id;
             const { job_id, cv, cover_letter,question_ans} = req.body;
@@ -298,10 +300,11 @@ const jobController = {
             const cv_path = await uploadImageToCloudinary(base64DataGet);
 
             let profile=await jobProfileModel.findOne({user_id:user_id});
+            console.log(profile);
             var apply_by;
             var job_profile;
             if(!profile){
-                res.status(401).send({
+                res.status(403).send({
                     success: false,
                     message: " first create candidate profile",
                 });
