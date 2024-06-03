@@ -71,6 +71,7 @@ const settingController = {
                 }
             }
             if(branch_info){
+                await consultateBranchModel.deleteMany({})
               info = await consultateBranchModel.insertMany(branch_info);
             }
 
