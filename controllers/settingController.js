@@ -52,7 +52,7 @@ const settingController = {
     },
     consultateCreate:async (req, res) => {
         try {
-            var {branch_info,consulate_info,consulate_img} = req.body;
+            var {branch_info,consulate_info,consulate_img,consulate_cover_img} = req.body;
             var info
             if(consulate_info || consulate_img){
                 let que={}
@@ -63,8 +63,12 @@ const settingController = {
                     consulate_img = await uploadImageToCloudinary(consulate_img);
                     que={...que,consulate_img}
                 }
+                if(consulate_cover_img){
+                    consulate_cover_img = await uploadImageToCloudinary(consulate_cover_img);
+                    que={...que,consulate_cover_img}
+                }
                 let appinfo=appInfoModel.findOne();
-                if(appinfo){
+                if(!appinfo){
                     info = await appInfoModel.create(que);
                 }else{
                     info = await appInfoModel.findOneAndUpdate({},que);
