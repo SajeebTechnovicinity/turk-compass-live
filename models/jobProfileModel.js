@@ -48,6 +48,7 @@ const jobProfileSchema = new mongoose.Schema({
         type: [{
             designation: String,
             company: String,
+            address: String,
             responsibility: String,
             start_date:String,
             end_date:String,
@@ -60,6 +61,7 @@ const jobProfileSchema = new mongoose.Schema({
         type: [{
             degree: String,
             institute_name: String,
+            address: String,
             start_date:String,
             end_date:String,
         }],
