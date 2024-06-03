@@ -17,10 +17,10 @@ const businessPostSchema = new mongoose.Schema({
         type: String,
         required: [true, 'Name is required']
     },
-    tag: {
-        type: String,
-        required: true
-    },
+    tag: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Tag' // Reference to the Tag model
+    }],
     description: {
         type: String,
         required: false

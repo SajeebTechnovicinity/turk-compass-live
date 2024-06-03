@@ -313,7 +313,7 @@ const reservationController = {
                     reservation.is_canceled = 1;
                     await reservation.save();
                     let title = "Reservation Canceled";
-                    let description = "Your reservation is canceled from authority";
+                    let description = `Your reservation is canceled from authority. Please select a new slot without between ${from_date} to ${to_date}.`;
                     await notificationModel.create({user:reservation.user,title:title,description:description});
 
                     if(reservation.user.is_notification_on==1)
@@ -373,7 +373,73 @@ const reservationController = {
                 error: error.message
             });
         }
-    }
+    },
+
+    cancelReservationIdWise: async (req, res) => {
+        const info = new URL(req.url, `http://${req.headers.host}`);
+        const searchParams = info.searchParams;
+        let id = searchParams.get('id');
+    
+        const user_info = await AuthUser(req);
+        const user_id = user_info.id;
+    
+        try {
+            
+            let reservation = await reservationModel.findById(id).populate([
+                {
+                    path: 'business_post',
+                    model: 'BusinessPost',
+                    populate: {
+                        path: 'user',
+                        model: 'User'
+                    }
+                },
+                {
+                    path: 'user',
+                    model: 'User'
+                },
+                {
+                    path: 'slot',
+                    model: 'Slot'
+                }
+            ]);
+            
+            let reservationUpdate = await reservationModel.findOneAndUpdate({_id: id},{is_canceled: 1});
+            
+            if(reservation.user._id!=user_id)
+            {
+                if(reservation.user.is_notification_on==1)
+                {
+                    let title = "Reservation Canceled";
+                    let description = "Your reservation is canceled from authority";
+                    console.log(reservation.user.device_token);
+                    sendPushNotification(title,description,reservation.user.device_token);
+                }
+            }
+            else
+            {
+                if(reservation.business_post.user.is_notification_on==1)
+                {
+                    let title = "Reservation Canceled";
+                    let description = "Your reservation is canceled from user";
+                    console.log(reservation.business_post.user.device_token);
+                    sendPushNotification(title,description,reservation.business_post.user.device_token);
+                }          
+            }
+    
+            res.status(200).send({
+                success: true,
+                message: "Reservations Canceled Successfully"
+            });
+        } catch (error) {
+            console.log(error);
+            res.status(500).send({
+                success: false,
+                message: 'Error in fetching or canceling reservations',
+                error: error.message
+            });
+        }
+    },
     
     
 

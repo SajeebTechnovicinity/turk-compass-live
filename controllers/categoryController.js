@@ -58,7 +58,17 @@ const categoryController = {
     // Method to list all categories
     list: async (req, res) => {
         try {
-            const categories = await categoryModel.find();
+            const info = new URL(req.url, `http://${req.headers.host}`);
+            const searchParams = info.searchParams;
+            let type = searchParams.get('type');
+
+            let query = {};
+
+            if(type=="business") {
+                console.log("hello");
+                query.name = { $ne: "Member of Perlamant" };
+            }
+            const categories = await categoryModel.find(query);
             res.status(200).send({
                 success: true,
                 message: "Categories Retrieved Successfully",
