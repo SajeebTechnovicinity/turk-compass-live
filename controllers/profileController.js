@@ -93,7 +93,10 @@ const profileController = {
             const user_info = await AuthUser(req);
             user_id = user_info.id;
 
-            const businessProfile = await businessPostModel.findOne({ user: user_id });
+            const businessProfile = await businessPostModel.findOne({ user: user_id }).populate({
+                path:'tag',
+                model: 'Tag'
+            });
 
             res.status(200).send({
                 success: true,
