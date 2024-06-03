@@ -56,6 +56,7 @@ const jobSchema = new mongoose.Schema({
     question: {
         type: [{
             name: String,
+            question_type: String,
             options: []
         }],
         default: []

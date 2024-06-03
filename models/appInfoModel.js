@@ -29,6 +29,10 @@ const appInfoSchema = new mongoose.Schema({
         type: String,
         require:false
     },
+    consulate_cover_img:{
+        type: String,
+        require:false
+    },
     status: {
         type: Number,
         default: 1,
