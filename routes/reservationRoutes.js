@@ -8,5 +8,6 @@ router.get('/all-list', reservationController.allList);
 router.get('/business-owner-list', reservationController.businessOwnerList);
 router.get('/cancel', reservationController.cancelReservation);
 router.get('/details', reservationController.details);
+router.get('/cancel-id-wise', reservationController.cancelReservationIdWise);
 
 module.exports = router;

@@ -1,0 +1,23 @@
+const mongoose = require('mongoose');
+
+const tagSchema = new mongoose.Schema({
+    name: {
+        type: String,
+        required: [true, 'Name is required']
+    },
+    image: {
+        type: String,
+        required: false
+    },
+    status: {
+        type: Number,
+        default: 1,
+        enum: [0, 1]
+    },
+    is_delete: {
+        type: Boolean,
+        default: false
+    }
+}, { timestamps: true });
+
+module.exports = mongoose.model("Tag", tagSchema);

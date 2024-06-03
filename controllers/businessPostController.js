@@ -5,6 +5,7 @@ const bcrypt= require('bcrypt');
 const { uploadImageToCloudinary } = require("../utils/helper");
 const { AuthUser } = require("../utils/helper");
 const whistlistModel = require("../models/whistlistModel");
+const tagModel = require("../models/tagModel");
 
 // Define businessPostController methods
 const businessPostController = {
@@ -142,11 +143,13 @@ const businessPostController = {
             const info = new URL(req.url, `http://${req.headers.host}`);
             const searchParams = info.searchParams;
             let sub_category = searchParams.get('sub_category');
+           
             let page = Number(searchParams.get('page')) || 1;
             let limit = Number(searchParams.get('limit')) || 12;
             let skip = (page - 1) * limit;
 
             let query = {is_delete: false};
+
 
             if(sub_category!=null)
             {
@@ -166,7 +169,8 @@ const businessPostController = {
                     { path: "user", model: "User" },
                     { path: "country", model: "Country" },
                     { path: "state", model: "State" },
-                    { path: "city", model: "City" }
+                    { path: "city", model: "City" },
+                    { path: "tag", model: "Tag" }
                 ])
                 .sort({ createdAt: -1 })
                 .skip(skip)
@@ -266,48 +270,27 @@ const businessPostController = {
             let page = Number(searchParams.get('page')) || 1;
             let limit = Number(searchParams.get('limit')) || 12;
             let skip = (page - 1) * limit;
-
-            const { city, name} = req.body;
     
-            let query = {};
-
-            console.log(name);
-
+            const { city, name } = req.body;
     
-            // Check if both city and name are provided
-            if (city!=null && name!=null) {
+            // Fetch tag document using tag name
+            const tag = await tagModel.findOne({ name: name });
+    
+            let query = { sub_category: sub_category };
+    
+            // Check if both city and tag are provided
+            if (city && tag) {
                 query = {
+                    sub_category: sub_category,
                     city: city,
-                    $or: [
-                        { business_name: { $regex: `.*${name}.*`, $options: 'i' } }, // Case-insensitive regex match for name
-                        { description: { $regex: `.*${name}.*`, $options: 'i' } } ,// Case-insensitive regex match for description
-                        { tag: { $regex: `.*${name}.*`, $options: 'i' } }
-                    ]
+                    tag: tag._id // Use the ObjectId of the fetched tag
                 };
+            } else {
+                // default all business posts
+                query = { sub_category: sub_category };
             }
-            else if(name!=null)
-            {
-                query = {
-                    $or: [
-                        { business_name: { $regex: `.*${name}.*`, $options: 'i' } }, // Case-insensitive regex match for name
-                        { description: { $regex: `.*${name}.*`, $options: 'i' } }, // Case-insensitive regex match for description
-                        { tag: { $regex: `.*${name}.*`, $options: 'i' } }
-                    ]
-                };
-            }
-            else if(city!=null)
-            {
-                query = {
-                    city: city
-                };
-            }
-            else {
-                // default all business post
-                query = {};
-            }
-
+    
             const count = await businessPostModel.countDocuments(query);
-            
             const totalPages = Math.ceil(count / limit);
     
             const businessPosts = await businessPostModel.find(query).populate([
@@ -335,8 +318,7 @@ const businessPostController = {
                     path: "city",
                     model: "City"
                 }
-            ]).sort({createdAt:-1}) .skip(skip)
-                .limit(limit);;
+            ]).sort({ createdAt: -1 }).skip(skip).limit(limit);
     
             res.status(200).send({
                 success: true,
@@ -349,11 +331,13 @@ const businessPostController = {
             console.log(error);
             res.status(500).send({
                 success: false,
-                message: "Error in fetching categories",
+                message: "Error in fetching business posts",
                 error: error.message
             });
         }
     },
+    
+    
 
     details: async (req, res) => {
         try {
