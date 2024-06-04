@@ -31,7 +31,7 @@ const reservationController = {
             });
             let title = "Reservation Created";
             let description = "Reservation Created against your business";
-            await notificationModel.create({user:businessPostInfo.user._id,title:title,description:description});
+            await notificationModel.create({user:businessPostInfo.user._id,title:title,description:description,image:businessPostInfo.image});
 
             if(businessPostInfo.user.is_notification_on==1)
             {
@@ -314,7 +314,7 @@ const reservationController = {
                     await reservation.save();
                     let title = "Reservation Canceled";
                     let description = `Your reservation is canceled from authority. Please select a new slot without between ${from_date} to ${to_date}.`;
-                    await notificationModel.create({user:reservation.user,title:title,description:description});
+                    await notificationModel.create({user:reservation.user,title:title,description:description,image:businessPostDetails.image});
 
                     if(reservation.user.is_notification_on==1)
                     {
@@ -412,8 +412,9 @@ const reservationController = {
                 {
                     let title = "Reservation Canceled";
                     let description = "Your reservation is canceled from authority";
-                    console.log(reservation.user.device_token);
+                    console.log(reservation.user.device_token,);
                     sendPushNotification(title,description,reservation.user.device_token);
+                    await notificationModel.create({user:reservation.user._id,title,description,image:reservation.business_post.image});
                 }
             }
             else
@@ -424,6 +425,7 @@ const reservationController = {
                     let description = "Your reservation is canceled from user";
                     console.log(reservation.business_post.user.device_token);
                     sendPushNotification(title,description,reservation.business_post.user.device_token);
+                    await notificationModel.create({user:reservation.business_post.user._id,title,description,image:reservation.business_post.image});
                 }          
             }
     
