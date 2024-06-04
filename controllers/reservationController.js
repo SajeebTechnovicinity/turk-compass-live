@@ -32,7 +32,7 @@ const reservationController = {
             let title = "Reservation Created";
             let description = "Reservation Created against your business";
             let userInfo=await userModel.findOne({ _id: user_id});
-            await notificationModel.create({user:businessPostInfo.user._id,title:title,description:description,image:userInfo.image});
+            await notificationModel.create({user:businessPostInfo.user._id,title:title,description:description,image:userInfo.photo});
 
             if(businessPostInfo.user.is_notification_on==1)
             {
@@ -426,7 +426,7 @@ const reservationController = {
                     let description = "Your reservation is canceled from user";
                     console.log(reservation.business_post.user.device_token);
                     sendPushNotification(title,description,reservation.business_post.user.device_token);
-                    await notificationModel.create({user:reservation.business_post.user._id,title,description,image:reservation.business_post.image});
+                    await notificationModel.create({user:reservation.business_post.user._id,title,description,image:reservation.user.photo});
                 }          
             }
     
