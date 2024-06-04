@@ -406,6 +406,8 @@ const reservationController = {
             ]);
             
             let reservationUpdate = await reservationModel.findOneAndUpdate({_id: id},{is_canceled: 1});
+
+            let slotUpdate = await slotModel.findOneAndUpdate({_id:reservation.slot.id},{amount_of_reservation:amount_of_reservation-1});
             
             if(reservation.user._id!=user_id)
             {
