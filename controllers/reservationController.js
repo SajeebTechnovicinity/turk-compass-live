@@ -31,7 +31,7 @@ const reservationController = {
             });
             let title = "Reservation Created";
             let description = "Reservation Created against your business";
-            let userInfo=await userModel.findOneAndUpdate({ _id: user_id});
+            let userInfo=await userModel.findOne({ _id: user_id});
             await notificationModel.create({user:businessPostInfo.user._id,title:title,description:description,image:userInfo.image});
 
             if(businessPostInfo.user.is_notification_on==1)
