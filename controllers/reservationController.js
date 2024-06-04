@@ -31,7 +31,7 @@ const reservationController = {
             });
             let title = "Reservation Created";
             let description = "Reservation Created against your business";
-            await notificationModel.create({user:businessPostInfo.user._id,title:title,description:description,image:user.image});
+            await notificationModel.create({user:businessPostInfo.user._id,title:title,description:description,image:businessPostInfo.user.image});
 
             if(businessPostInfo.user.is_notification_on==1)
             {
