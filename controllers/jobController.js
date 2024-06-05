@@ -4,9 +4,12 @@ const { AuthUser, uploadImageToCloudinary } = require("../utils/helper");
 
 const mongoose = require("mongoose");
 const multer = require("multer");
-const fs = require("fs");
-const path = require("path");
+const jwt=require('jsonwebtoken')
+const path = require('path');
+const ejs=require('ejs')
+const fs=require('fs')
 const jobIndustryModel = require("../models/jobIndustryModel");
+const nodemailer = require('nodemailer');
 const http = require("http");
 const { URL } = require("url");
 const jobWishListModel = require("../models/jobWishListModel");
@@ -330,34 +333,35 @@ const jobController = {
                 cv_path,
                 question_ans,
                 cover_letter,
-                job_profile
+                job_profile,
+                job_status:0,
             });
 
             // mail
 
-        //     const emailTemplatePath = path.resolve(__dirname, "views", "mails", "forget_password.ejs");
-        //     const emailTemplate = fs.readFileSync(emailTemplatePath, "utf-8");
-        //     const resetLink="link";
-        //     const mailContent = ejs.render(emailTemplate, {resetLink,name:userInfo.userName,date:new Date(),code:userInfo.reset_code});
-        //     const transporter = nodemailer.createTransport({
-        //         host: 'smtp.gmail.com',
-        //         port: 465,
-        //         secure: true, // Set to false for explicit TLS
-        //         auth: {
-        //             user: 'technovicinity.dev@gmail.com',
-        //             pass: 'wsvrvojuwyraazog',
-        //         },
-        //         tls: {
-        //             // Do not fail on invalid certificates
-        //             //rejectUnauthorized: false,
-        //         },
-        //     });
-        //     const mailOptions = {
-        //        from: process.env.EMAIL_USER,
-        //        to: "kazimurtuza11@gmail.com",
-        //        subject: "Turk's  Account Password Reset",
-        //        html: mailContent,
-        //    };
+            const emailTemplatePath = path.resolve(__dirname, "views", "mails", "job_apply_mail.ejs");
+            const emailTemplate = fs.readFileSync(emailTemplatePath, "utf-8");
+            const resetLink="link";
+            const mailContent = ejs.render(emailTemplate, {date:new Date()});
+            const transporter = nodemailer.createTransport({
+                host: 'smtp.gmail.com',
+                port: 465,
+                secure: true, // Set to false for explicit TLS
+                auth: {
+                    user: 'technovicinity.dev@gmail.com',
+                    pass: 'wsvrvojuwyraazog',
+                },
+                tls: {
+                    // Do not fail on invalid certificates
+                    //rejectUnauthorized: false,
+                },
+            });
+            const mailOptions = {
+               from: process.env.EMAIL_USER,
+               to: "kazimurtuza11@gmail.com",
+               subject: "Turk's  Account Password Reset",
+               html: mailContent,
+           };
         
         //    // Send the email
         //    await transporter.sendMail(mailOptions);
@@ -598,6 +602,7 @@ const jobController = {
         var candidate_list = await jobApplyModel
             .find({
                 job_id: job_id,
+                job_status:1,
             })
             .populate([{ path: "apply_by", model: "User" }]);
         res.status(200).send({
