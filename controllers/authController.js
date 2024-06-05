@@ -47,7 +47,7 @@ const registerController =async(req,res)=>{
         const emailTemplatePath = path.resolve(__dirname, "views", "mails", "welcome_mail.ejs");
         const emailTemplate = fs.readFileSync(emailTemplatePath, "utf-8");
         const resetLink="link";
-        const mailContent = ejs.render(emailTemplate, {resetLink,name:userInfo.userName,date:new Date(),code:userInfo.reset_code});
+        const mailContent = ejs.render(emailTemplate, {resetLink,name:user.userName});
         const transporter = nodemailer.createTransport({
             host: 'smtp.gmail.com',
             port: 465,
@@ -64,7 +64,7 @@ const registerController =async(req,res)=>{
         const mailOptions = {
            from: process.env.EMAIL_USER,
            to: email,
-           subject: "Turk's  Account Password Reset",
+           subject: "Turk's  Welcome Email",
            html: mailContent,
        };
     
@@ -84,7 +84,7 @@ const registerController =async(req,res)=>{
              res.status(500).send({
                 success:false,
                 message:'error in register api',
-                error:error
+                error:error.message
              })
     }
 }
