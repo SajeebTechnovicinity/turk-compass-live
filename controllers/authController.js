@@ -71,11 +71,17 @@ const loginController=async(req,res)=>{
         })
     }
     // check 
-    const user=await userModel.findOne({email:email,is_delete:false});
+    const user=await userModel.findOne({email:email});
     if(!user){
-        return res.status(404).send({
+        return res.status(403).send({
             success:false,
             message:'User not found'
+        })
+    }
+    if(user && user.is_delete==true){
+        return res.status(403).send({
+            success:false,
+            message:'Your account is not activated'
         })
     }
     const userName=user.userName;
