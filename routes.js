@@ -2,11 +2,11 @@ const express = require('express');
 const router = express.Router();
 const dotenv = require('dotenv');
 dotenv.config();
-const requestLogger = require('./middleware/logger'); // Import the middleware
+//const requestLogger = require('./middleware/logger'); // Import the middleware
 
 // middleware checks for all routes
 router.use("/auth", require("./routes/authRoutes"));
-router.use(requestLogger);
+//router.use(requestLogger);
 // middleware checks for all routes
 
 // router.use("/test", requestLogger, require("./routes/testRoute"));
