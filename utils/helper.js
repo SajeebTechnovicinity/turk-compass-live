@@ -6,9 +6,9 @@ const axios = require('axios');
 
 // Configure Cloudinary
 cloudinaryV2.config({
-    cloud_name: process.env.CLOUD_NAME,
-    api_key: process.env.API_KEY,
-    api_secret: process.env.API_SECRET
+    cloud_name: 'daqxhckof',
+    api_key: '873851641436734',
+    api_secret: 'zgYF_RWYcaqnNNhLou76tAo9p78'
 });
 
 // Assuming this function is within an Express route handler
