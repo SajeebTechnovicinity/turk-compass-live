@@ -83,6 +83,10 @@ const businessPostSchema = new mongoose.Schema({
         default: 0,
         enum: [0, 1]
     },
+    is_exempt: {
+        type: Boolean,
+        default: false
+    },
     status: {
         type: Number,
         default: 1,

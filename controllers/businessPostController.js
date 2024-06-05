@@ -11,7 +11,7 @@ const tagModel = require("../models/tagModel");
 const businessPostController = {
     // Method to create a new businessPost
     create: async (req, res) => {
-        let { user_id,user_name,email,password,tag,contact_email,speciality,category,sub_category,business_name,description,image,cover_image,address,country,state,city,contact_address,contact_located_in,contact_phone,contact_website } = req.body;
+        let { user_id,user_name,email,password,tag,contact_email,speciality,category,sub_category,business_name,description,image,cover_image,address,country,state,city,contact_address,contact_located_in,contact_phone,contact_website,is_exempt } = req.body;
         console.log(req.body);
         try {
             let is_reservation_available;
@@ -61,7 +61,7 @@ const businessPostController = {
             cover_image = await uploadImageToCloudinary(cover_image);
 
    
-            const businessPostInfo = await businessPostModel.create({ user:user_id,contact_email,tag,category,sub_category,speciality,country,state,city,business_name,description,image,cover_image,address,country,state,city,contact_address,contact_located_in,contact_phone,contact_website,is_reservation_available,is_multiple_reservation_available });
+            const businessPostInfo = await businessPostModel.create({ user:user_id,contact_email,tag,category,sub_category,speciality,country,state,city,business_name,description,image,cover_image,address,country,state,city,contact_address,contact_located_in,contact_phone,contact_website,is_reservation_available,is_multiple_reservation_available,is_exempt });
             res.status(201).send({
                 success: true,
                 message: "Business Post Created Successfully",
@@ -79,7 +79,7 @@ const businessPostController = {
 
     // Method to edit businessPost
     edit: async (req, res) => {
-        let { tag,contact_email,speciality,category,sub_category,business_name,description,image,cover_image,address,country,state,city,contact_address,contact_located_in,contact_phone,contact_website } = req.body;
+        let { tag,contact_email,speciality,category,sub_category,business_name,description,image,cover_image,address,country,state,city,contact_address,contact_located_in,contact_phone,contact_website,is_exempt } = req.body;
         console.log(req.body);
         try {
             const info = new URL(req.url, `http://${req.headers.host}`);
@@ -118,7 +118,7 @@ const businessPostController = {
             }
 
    
-            const businessPostInfo = await businessPostModel.findOneAndUpdate({_id:businessPostDetails._id},{ contact_email,tag,category,sub_category,speciality,country,state,city,business_name,description,image,cover_image,address,country,state,city,contact_address,contact_located_in,contact_phone,contact_website,is_reservation_available,is_multiple_reservation_available });
+            const businessPostInfo = await businessPostModel.findOneAndUpdate({_id:businessPostDetails._id},{ contact_email,tag,category,sub_category,speciality,country,state,city,business_name,description,image,cover_image,address,country,state,city,contact_address,contact_located_in,contact_phone,contact_website,is_reservation_available,is_multiple_reservation_available,is_exempt });
             res.status(201).send({
                 success: true,
                 message: "Business Post Updated Successfully",
