@@ -44,7 +44,11 @@ const whistlistController = {
             const whishlists = await whistlistModel.find({user:user}).populate([
                 {
                     path:"business_post",
-                    model:"BusinessPost"
+                    model:"BusinessPost",
+                    populate:({
+                        path:"tag",
+                        model:"Tag"
+                    })
                 },
                 {
                     path:"user",
