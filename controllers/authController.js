@@ -209,7 +209,6 @@ const resetPasswordController=async(req,res)=>{
     //     userInfo:userInfo.userName,
     //  })
 
-
     const emailTemplatePath = path.resolve(__dirname, "views", "mails", "forget_password.ejs");
     const emailTemplate = fs.readFileSync(emailTemplatePath, "utf-8");
     const resetLink="link";
