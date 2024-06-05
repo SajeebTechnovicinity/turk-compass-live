@@ -131,7 +131,7 @@ const loginController=async(req,res)=>{
         const is_reservation_available=user.is_reservation_available;
         const slot_duration=user.slot_duration;
         const srcky=process.env.BCRYP_KEY
-        let token = jwt.sign({userName,email,user_type,package_type,id,is_multiple_reservation_available,slot_duration,is_reservation_available},srcky,{ expiresIn: '1h' });
+        let token = jwt.sign({userName,email,user_type,package_type,id,is_multiple_reservation_available,slot_duration,is_reservation_available},srcky);
         const info={
             token:token,
             user_info:user,
