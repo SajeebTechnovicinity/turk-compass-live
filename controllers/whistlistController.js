@@ -41,10 +41,17 @@ const whistlistController = {
         try {
             const user_info= await AuthUser(req);
             const user=user_info.id;
-            const whishlists = await whistlistModel.find({user:user}).populate({
-                path:"business_post",
-                model:"BusinessPost"
-            }).sort({createdAt:-1});
+            const whishlists = await whistlistModel.find({user:user}).populate([
+                {
+                    path:"business_post",
+                    model:"BusinessPost"
+                },
+                {
+                    path:"user",
+                    model:"User"
+                },
+            
+            ]).sort({createdAt:-1});
             res.status(200).send({
                 success: true,
                 message: "Whistlist Retrieved Successfully",
