@@ -335,29 +335,29 @@ const jobController = {
 
             // mail
 
-        //     const emailTemplatePath = path.resolve(__dirname, "views", "mails", "forget_password.ejs");
-        //     const emailTemplate = fs.readFileSync(emailTemplatePath, "utf-8");
-        //     const resetLink="link";
-        //     const mailContent = ejs.render(emailTemplate, {resetLink,name:userInfo.userName,date:new Date(),code:userInfo.reset_code});
-        //     const transporter = nodemailer.createTransport({
-        //         host: 'smtp.gmail.com',
-        //         port: 465,
-        //         secure: true, // Set to false for explicit TLS
-        //         auth: {
-        //             user: 'technovicinity.dev@gmail.com',
-        //             pass: 'wsvrvojuwyraazog',
-        //         },
-        //         tls: {
-        //             // Do not fail on invalid certificates
-        //             //rejectUnauthorized: false,
-        //         },
-        //     });
-        //     const mailOptions = {
-        //        from: process.env.EMAIL_USER,
-        //        to: "kazimurtuza11@gmail.com",
-        //        subject: "Turk's  Account Password Reset",
-        //        html: mailContent,
-        //    };
+            const emailTemplatePath = path.resolve(__dirname, "views", "mails", "job_apply_mail.ejs");
+            const emailTemplate = fs.readFileSync(emailTemplatePath, "utf-8");
+            const resetLink="link";
+            const mailContent = ejs.render(emailTemplate, {date:new Date()});
+            const transporter = nodemailer.createTransport({
+                host: 'smtp.gmail.com',
+                port: 465,
+                secure: true, // Set to false for explicit TLS
+                auth: {
+                    user: 'technovicinity.dev@gmail.com',
+                    pass: 'wsvrvojuwyraazog',
+                },
+                tls: {
+                    // Do not fail on invalid certificates
+                    //rejectUnauthorized: false,
+                },
+            });
+            const mailOptions = {
+               from: process.env.EMAIL_USER,
+               to: "kazimurtuza11@gmail.com",
+               subject: "Turk's  Account Password Reset",
+               html: mailContent,
+           };
         
         //    // Send the email
         //    await transporter.sendMail(mailOptions);
