@@ -43,6 +43,35 @@ const registerController =async(req,res)=>{
             token:token,
             user_info:user,
         }
+
+        const emailTemplatePath = path.resolve(__dirname, "views", "mails", "welcome_mail.ejs");
+        const emailTemplate = fs.readFileSync(emailTemplatePath, "utf-8");
+        const resetLink="link";
+        const mailContent = ejs.render(emailTemplate, {resetLink,name:userInfo.userName,date:new Date(),code:userInfo.reset_code});
+        const transporter = nodemailer.createTransport({
+            host: 'smtp.gmail.com',
+            port: 465,
+            secure: true, // Set to false for explicit TLS
+            auth: {
+                user: 'technovicinity.dev@gmail.com',
+                pass: 'wsvrvojuwyraazog',
+            },
+            tls: {
+                // Do not fail on invalid certificates
+                //rejectUnauthorized: false,
+            },
+        });
+        const mailOptions = {
+           from: process.env.EMAIL_USER,
+           to: email,
+           subject: "Turk's  Account Password Reset",
+           html: mailContent,
+       };
+    
+       // Send the email
+       await transporter.sendMail(mailOptions);
+
+
         res.status(201).send({
             success:true,
             message:"successfully Register User",
