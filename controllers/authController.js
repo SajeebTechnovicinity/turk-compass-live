@@ -197,6 +197,12 @@ const resetPasswordController=async(req,res)=>{
         { new: true } // Option to return the updated document
     );
 
+    // res.status(200).send({
+    //     success:true,
+    //     message:'successfully reset code send to your mail',
+    //     userInfo:userInfo.userName,
+    //  })
+
 
     const emailTemplatePath = path.resolve(__dirname, "views", "mails", "forget_password.ejs");
     const emailTemplate = fs.readFileSync(emailTemplatePath, "utf-8");
