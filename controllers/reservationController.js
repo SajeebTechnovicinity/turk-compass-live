@@ -354,11 +354,19 @@ const reservationController = {
             const reservationDetails= await reservationModel.findById(id).populate([
                 {
                     path: 'business_post',
-                    model: 'BusinessPost'
+                    model: 'BusinessPost',
+                    populate:{
+                        path: 'user',
+                        model: 'User'
+                    }
                 },
                 {
                     path: 'slot',
                     model: 'Slot'
+                },
+                {
+                    path: 'user',
+                    model: 'User'
                 }
             ]);;
             res.status(200).send({
