@@ -88,7 +88,6 @@ async function sendPushNotification(title,body,deviceToken) {
         'Content-Type': 'application/json',
         'Authorization': `key=${serverKey}`
     };
-
     const data = {
         to: deviceToken,
         notification: {

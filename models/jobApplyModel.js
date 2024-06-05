@@ -4,6 +4,8 @@ const jobApplySchema = new mongoose.Schema({
     // job_id,cv,cover_letter
     cv_path:{
     type: String,
+    required:false,
+    
     },
     cover_letter: {
         type: String,
