@@ -107,12 +107,12 @@ const loginController=async(req,res)=>{
             message:'User not found'
         })
     }
-    // if(user && user.is_delete==true){
-    //     return res.status(403).send({
-    //         success:false,
-    //         message:'Your account is not activated'
-    //     })
-    // }
+    if(user.is_delete==true){
+        return res.status(403).send({
+            success:false,
+            message:'Your account is not activated'
+        })
+    }
     const userName=user.userName;
 
     let is_user = await bcrypt.compare(password, user.password);
