@@ -213,8 +213,8 @@ const resetPasswordController=async(req,res)=>{
         port: 465,
         secure: true, // Set to false for explicit TLS
         auth: {
-            user: 'sajeebchakraborty.cse2000@gmail.com',
-            pass: 'rkhazltdzkinayvv',
+            user: 'technovicinity.dev@gmail.com',
+            pass: 'wsvrvojuwyraazog',
         },
         tls: {
             // Do not fail on invalid certificates

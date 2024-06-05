@@ -13,6 +13,10 @@ const notificationSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
+    image: {
+        type: String,
+        default: null
+    },
     is_seen: {
         type: Number,
         default: 0, // 0 --> not canceled, 1 --> calceled
