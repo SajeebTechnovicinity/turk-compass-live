@@ -4,9 +4,12 @@ const { AuthUser, uploadImageToCloudinary } = require("../utils/helper");
 
 const mongoose = require("mongoose");
 const multer = require("multer");
-const fs = require("fs");
-const path = require("path");
+const jwt=require('jsonwebtoken')
+const path = require('path');
+const ejs=require('ejs')
+const fs=require('fs')
 const jobIndustryModel = require("../models/jobIndustryModel");
+const nodemailer = require('nodemailer');
 const http = require("http");
 const { URL } = require("url");
 const jobWishListModel = require("../models/jobWishListModel");
@@ -330,7 +333,8 @@ const jobController = {
                 cv_path,
                 question_ans,
                 cover_letter,
-                job_profile
+                job_profile,
+                job_status:0,
             });
 
             // mail
@@ -598,6 +602,7 @@ const jobController = {
         var candidate_list = await jobApplyModel
             .find({
                 job_id: job_id,
+                job_status:1,
             })
             .populate([{ path: "apply_by", model: "User" }]);
         res.status(200).send({
