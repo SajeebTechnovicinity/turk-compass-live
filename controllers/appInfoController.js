@@ -10,7 +10,8 @@ const petitionModel = require('../models/petitionModel');
 const appInfoController = {
     abountTermsPrivacy: async (req, res) => {
         try{
-            const { about_us, terms_condition, privacy_policy,home_banner} = req.body;
+            var { about_us, terms_condition, privacy_policy,home_banner} = req.body;
+
             let appinfo = await appInfoModel.findOne();
             var query = {};
             if (about_us && terms_condition && privacy_policy) {
@@ -23,7 +24,7 @@ const appInfoController = {
             if (home_banner) {
                 let isBase64=isBase64Image(home_banner.image);
                 if(isBase64){
-                    const imgurl = await uploadImageToCloudinary(isBase64);
+                    var imgurl = await uploadImageToCloudinary(home_banner.image);
                     home_banner={...home_banner,image:imgurl}
                 }
                 query = {
