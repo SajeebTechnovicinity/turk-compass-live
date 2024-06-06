@@ -22,4 +22,7 @@ router.post('/job-profile/create-update', profileController.jobProfileCreateUpda
 router.get('/job-profile/get', profileController.jobProfileGet);
 
 router.get('/all', profileController.allProfile);
+
+// Route to update language
+router.post('/language/update', profileController.languageUpdate);
 module.exports = router;
