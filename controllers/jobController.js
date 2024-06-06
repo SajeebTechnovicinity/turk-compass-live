@@ -404,15 +404,15 @@ const jobController = {
                 html: mailContent,
                 attachments: [
                     {
-                        // filename: 'image.png', // Specify the filename for the attachment
                         content: cv, // Use the decoded buffer as the attachment content
                         encoding: 'base64', // Specify the encoding of the attachment
-                        contentType: 'image/png', // Specify the content type of the attachment
                     }
                 ],
             };
         //    // Send the email
-       await transporter.sendMail(mailOptions);
+        if(package_type=="general_employer"){
+            await transporter.sendMail(mailOptions);
+        }
             // mail
             res.status(200).send({
                 success: true,
