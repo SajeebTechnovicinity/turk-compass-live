@@ -7,6 +7,7 @@ const ejs=require('ejs')
 const fs=require('fs')
 const nodemailer = require('nodemailer');
 const userController = require("./userController");
+const { sendPushNotification } = require("../utils/helper");
 
 const registerController =async(req,res)=>{
     try{
@@ -142,6 +143,8 @@ const loginController=async(req,res)=>{
             info
         })
     }
+
+    //sendPushNotification("hello","hello world","c2mY_vqbRXuQPCI_nLmm30:APA91bFknRHRaHL05kG9_YEKq-TZUiXK_XdQQYTeCsh0VrCJHMw8pK5fAqk1ROEmNcdd42hiODnQdROhB5ideF38abcbqByBMe5nCNfleHop9MeiH-BD2bXJzKAjNatJW5Ox6hL-R17N");
 
     
 
