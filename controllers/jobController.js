@@ -337,6 +337,8 @@ const jobController = {
             const base64DataGet = cv; // Get the base64 data from the request body
             const cv_path = await uploadImageToCloudinary(base64DataGet);
             let profile=await jobProfileModel.findOne({user_id:user_id});
+
+           
             var apply_by;
             var job_profile;
             if(!profile){
@@ -358,7 +360,6 @@ const jobController = {
                     message: "Already applied",
                 });
             }
-
             const store_data = await jobApplyModel.create({
                 job_id,
                 apply_by,
@@ -371,8 +372,7 @@ const jobController = {
 
           var job_info= await jobModel.findOne({_id:job_id});
           var company_id= job_info.user_id
-
-         var company_info=await userModel.findOne({_id:company_id});
+          var company_info=await userModel.findOne({_id:company_id});
 
          jobProfileModel.findOne({user_id:user_id})
 
@@ -382,11 +382,9 @@ const jobController = {
         
         if(company_info && job_info){
             let title = "New Job Applied";
-            let description = cover_letter;
+            let description = job_info.job_title;
             sendPushNotification(title,description,company_info.device_token);
-
             let job_info_data=jobProfileModel.findOne({user_id:user_id});
-
             await notificationModel.create({user:company_id,title:title,description:description,image:job_info_data.photo});
         }
             // mail
