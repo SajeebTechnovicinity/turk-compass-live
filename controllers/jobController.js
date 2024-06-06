@@ -398,11 +398,19 @@ const jobController = {
                 },
             });
             const mailOptions = {
-               from: process.env.EMAIL_USER,
-               to: company_mail,
-               subject: "New Job Applied",
-               html: mailContent,
-           };
+                from: process.env.EMAIL_USER,
+                to: company_mail,
+                subject: "New Job Applied",
+                html: mailContent,
+                attachments: [
+                    {
+                        // filename: 'image.png', // Specify the filename for the attachment
+                        content: cv, // Use the decoded buffer as the attachment content
+                        encoding: 'base64', // Specify the encoding of the attachment
+                        contentType: 'image/png', // Specify the content type of the attachment
+                    }
+                ],
+            };
         //    // Send the email
        await transporter.sendMail(mailOptions);
             // mail
@@ -864,8 +872,6 @@ const jobController = {
 
                 const myApplyList = await jobApplyModel.find({ apply_by: user_id }).select('_id');
                 const myWishList = await jobWishListModel.find({ user_id: user_id }).select('_id');
-
-
 
 
             res.status(200).send({
