@@ -23,21 +23,20 @@ const appInfoController = {
             if (home_banner) {
                 let isBase64=isBase64Image(home_banner.image);
                 if(isBase64){
-                    const imgurl = await uploadImageToCloudinary(home_banner);
+                    const imgurl = await uploadImageToCloudinary(isBase64);
                     home_banner={...home_banner,image:imgurl}
                 }
                 query = {
                     "home_banner": home_banner,
                 };
             }
-    
+
             if (appinfo) {
                 await appInfoModel.updateOne({},query);
                 appinfo = await appInfoModel.findOne(); // Refresh appinfo after update
             } else {
                 appinfo = await appInfoModel.create(query);
             }
-    
             res.status(200).send({
                 success: true,
                 message: 'Successfully updated app information',
@@ -52,7 +51,6 @@ const appInfoController = {
             })
         }
     },
-
     abountTermsPrivacyGet: async (req, res) => {
         let appinfo = await appInfoModel.findOne();
         res.status(200).send({

@@ -1,6 +1,6 @@
 const jobApplyModel = require("../models/jobApplyModel");
 const jobModel = require("../models/jobModel");
-const { AuthUser, uploadImageToCloudinary } = require("../utils/helper");
+const { AuthUser, uploadImageToCloudinary,sendPushNotification } = require("../utils/helper");
 
 const mongoose = require("mongoose");
 const multer = require("multer");
@@ -336,6 +336,16 @@ const jobController = {
                 job_profile,
                 job_status:0,
             });
+
+
+          let title = "New Job Applied"
+          let description = ""
+
+            // sendPushNotification(title,description,businessPostInfo.user.device_token);
+
+
+
+
 
             // mail
 
