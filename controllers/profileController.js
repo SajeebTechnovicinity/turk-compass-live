@@ -277,10 +277,9 @@ const profileController = {
             if (defalut_cv=="delete") {
                 query = { defalut_cv:"" }
             }else{
-                query = { defalut_cv: defalut_cv };
+                query = { defalut_cv: defalut_cv,cv_upload_date: new Date() };
             }
         }
-
 
         if (photo) {
             query = { photo }
