@@ -877,8 +877,8 @@ const jobController = {
                 ]);
 
 
-                const myApplyList = await jobApplyModel.find({ apply_by: user_id }).select('_id');
-                const myWishList = await jobWishListModel.find({ user_id: user_id }).select('_id');
+                const myApplyList = await jobApplyModel.find({ apply_by: user_id }).select('job_id');
+                const myWishList = await jobWishListModel.find({ user_id: user_id }).select('job_id');
 
 
             res.status(200).send({
