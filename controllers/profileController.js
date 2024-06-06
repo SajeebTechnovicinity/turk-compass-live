@@ -473,7 +473,29 @@ const profileController = {
                 error: error.message
             });
         }
-    }
+    },
+    languageUpdate: async (req, res) => {
+        try {
+            const user_info= await AuthUser(req);
+            user_id=user_info.id;
+            const { language } = req.body;
+            const profile = await userModel.findOneAndUpdate({_id:user_id},{language:language});
+
+            res.status(200).send({
+                success: true,
+                message: "Language Update Successfully",
+                profile
+            });
+        } catch (error) {
+            console.log(error);
+            res.status(500).send({
+                success: false,
+                message: 'Error in fetching categories',
+                error: error.message
+            });
+        }
+    },
+    
 
 
 };

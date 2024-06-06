@@ -22,6 +22,11 @@ const userSchema=new mongoose.Schema({
         // required:[true,'password  is require'],
         // unique:true
     },
+    language:{
+        type:String,
+        default:"en", // default language 2 language en--> English and tr --> Turkish
+        enum:['en','tr'],
+    },
     usertype:{
         type:String,
         required:[true,'user type is required'],
