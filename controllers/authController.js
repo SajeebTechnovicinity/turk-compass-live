@@ -108,7 +108,7 @@ const loginController=async(req,res)=>{
             message:'User not found'
         })
     }
-    if(user && user.is_delete==true){
+    if(user.is_delete==true){
         return res.status(403).send({
             success:false,
             message:'Your account is not activated'
@@ -240,7 +240,6 @@ const resetPasswordController=async(req,res)=>{
     //     message:'successfully reset code send to your mail',
     //     userInfo:userInfo.userName,
     //  })
-
 
     const emailTemplatePath = path.resolve(__dirname, "views", "mails", "forget_password.ejs");
     const emailTemplate = fs.readFileSync(emailTemplatePath, "utf-8");

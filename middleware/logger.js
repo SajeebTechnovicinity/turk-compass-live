@@ -7,7 +7,7 @@ async function requestLogger(req, res, next) {
         if(user_info){
             const user_id = user_info.id;
             var user_data=await userModel.findOne({_id:user_id});
-            if(user_data.is_delete){
+            if(user_data&&user_data.is_delete){
                 res.status(401).send(
                     {
                         success:false,

@@ -1,13 +1,12 @@
 const express = require('express');
 const cors = require('cors');
 const morgan = require('morgan');
-const dotenv = require('dotenv');
+// const dotenv = require('dotenv');
 const connectDb = require('./config/db');
 const routes = require('./routes'); // Import the routes
 
 // dotenv configuration
-dotenv.config();
-
+// dotenv.config();
 // DB connection
 connectDb();
 // Create an instance of express

@@ -21,12 +21,11 @@ const appInfoController = {
                 };
             }
             if (home_banner) {
-                // let isBase64=isBase64Image(home_banner.image);
-                // if(isBase64){
-                //     const imgurl = await uploadImageToCloudinary(home_banner.image);
-                //     home_banner={...home_banner,image:imgurl}
-                // }
-                // console.log(home_banner)
+                let isBase64=isBase64Image(home_banner.image);
+                if(isBase64){
+                    const imgurl = await uploadImageToCloudinary(home_banner);
+                    home_banner={...home_banner,image:imgurl}
+                }
                 query = {
                     "home_banner": home_banner,
                 };
