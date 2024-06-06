@@ -276,6 +276,10 @@ const profileController = {
         if (defalut_cv) {
             query = { defalut_cv: defalut_cv }
         }
+
+        if (defalut_cv==null) {
+            query = { defalut_cv:"" }
+        }
         if (photo) {
             query = { photo }
         }

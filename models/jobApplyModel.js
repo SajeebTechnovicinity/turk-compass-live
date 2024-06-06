@@ -5,7 +5,6 @@ const jobApplySchema = new mongoose.Schema({
     cv_path:{
     type: String,
     required:false,
-    
     },
     cover_letter: {
         type: String,

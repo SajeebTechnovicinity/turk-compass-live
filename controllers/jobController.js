@@ -1,6 +1,6 @@
 const jobApplyModel = require("../models/jobApplyModel");
 const jobModel = require("../models/jobModel");
-const { AuthUser, uploadImageToCloudinary } = require("../utils/helper");
+const { AuthUser, uploadImageToCloudinary,sendPushNotification } = require("../utils/helper");
 
 const mongoose = require("mongoose");
 const multer = require("multer");
@@ -16,6 +16,7 @@ const jobWishListModel = require("../models/jobWishListModel");
 const businessPostModel = require("../models/businessPostModel");
 const jobProfileModel = require("../models/jobProfileModel");
 const { log } = require("console");
+const userModel = require("../models/userModel");
 
 // Set storage engine
 
@@ -255,24 +256,38 @@ const jobController = {
         try{
             const info = new URL(req.url, `http://${req.headers.host}`);
             const searchParams = info.searchParams;
-            let city = searchParams.get("city") ;
-            let gender= searchParams.get("gender");
+            let city = searchParams.get("city");
+            let state = searchParams.get("state");
+            let eligibility= searchParams.get("eligibility");
             let job_id = searchParams.get("job_id");
             let page = Number(searchParams.get("page")) || 1;
             let limit = Number(searchParams.get("limit")) || 12;
             let skip = (page - 1) * limit;
+
+            var src_query={};
+            if(city){
+                src_query={...src_query,city:new mongoose.Types.ObjectId(city)}
+            }
+            if(state){
+                src_query={...src_query,state:new mongoose.Types.ObjectId(state)}
+            }
+            if(eligibility){
+                src_query={...src_query,eligibility:eligibility}
+            }
     
-            const candidate_list = await jobApplyModel
-                .find({ job_id: job_id})
-                .populate([{ path: "apply_by", model: "User"}])
-                .populate({
-                    path: 'job_profile',
-                    model: 'JobProfile',
-                    match: { city: city }, 
-                    match: { gender: gender }
-                  })
-                .skip(skip)
-                .limit(limit);
+            var candidate_list = await jobApplyModel
+            .find({ job_id: job_id })
+            .populate({
+                path: 'job_profile',
+                model: 'JobProfile',
+                match: src_query
+            })
+            .populate([{ path: "apply_by", model: "User" }])
+            .skip(skip)
+            .limit(limit);;
+
+             candidate_list = await candidate_list.filter(candidate => candidate.job_profile !== null);
+
     
             const count = await jobApplyModel.find({ job_id: job_id }).countDocuments();
             const totalPages = Math.ceil(count / limit);
@@ -295,17 +310,12 @@ const jobController = {
     },
     apply: async (req, res) => {
         try {
-            console.log(req.body);
             const user_info = await AuthUser(req);
             const user_id = user_info.id;
             const { job_id, cv, cover_letter,question_ans} = req.body;
             const base64DataGet = cv; // Get the base64 data from the request body
             const cv_path = await uploadImageToCloudinary(base64DataGet);
-
             let profile=await jobProfileModel.findOne({user_id:user_id});
-
-
-        
             var apply_by;
             var job_profile;
             if(!profile){
@@ -327,6 +337,7 @@ const jobController = {
                     message: "Already applied",
                 });
             }
+
             const store_data = await jobApplyModel.create({
                 job_id,
                 apply_by,
@@ -337,12 +348,22 @@ const jobController = {
                 job_status:0,
             });
 
-            // mail
+          var job_info= await jobModel.findOne({_id:job_id});
+          var company_id= job_info.user_id
 
+         var company_info=await userModel.findOne({_id:company_id});
+         var package_type=company_info.package_type;
+         var company_mail=company_info.email;
+        
+        if(company_info && job_info){
+            let title = "New Job Applied";
+            let description = cover_letter;
+            sendPushNotification(title,description,company_info.device_token);
+        }
+            // mail
             const emailTemplatePath = path.resolve(__dirname, "views", "mails", "job_apply_mail.ejs");
             const emailTemplate = fs.readFileSync(emailTemplatePath, "utf-8");
-            const resetLink="link";
-            const mailContent = ejs.render(emailTemplate, {date:new Date()});
+            const mailContent = ejs.render(emailTemplate, {date:new Date(),cover_letter:cover_letter});
             const transporter = nodemailer.createTransport({
                 host: 'smtp.gmail.com',
                 port: 465,
@@ -358,34 +379,13 @@ const jobController = {
             });
             const mailOptions = {
                from: process.env.EMAIL_USER,
-               to: "kazimurtuza11@gmail.com",
-               subject: "Turk's  Account Password Reset",
+               to: company_mail,
+               subject: "New Job Applied",
                html: mailContent,
            };
-        
         //    // Send the email
-        //    await transporter.sendMail(mailOptions);
-
-
-
-
-
-
-
-
-
+       await transporter.sendMail(mailOptions);
             // mail
-
-
-
-
-
-
-
-
-
-
-
             res.status(200).send({
                 success: true,
                 message: " Successfully",
@@ -418,7 +418,6 @@ const jobController = {
                 model: 'Job'
             }
         ]);
-
             res.status(200).send({
                 success: true,
                 message: " Successfully",
@@ -466,7 +465,6 @@ const jobController = {
         // res.status(200).send({
         //     searchArray
         // });
-
         const job = await jobModel
             .aggregate([
                 ...searchArray, // Spread searchArray into the pipeline stages
@@ -580,15 +578,21 @@ const jobController = {
         const searchParams = info.searchParams;
         const job_id = searchParams.get("job_id");
         const apply_by = searchParams.get("apply_by");
-        var updateInfo = await jobApplyModel.findOneAndUpdate(
-            {
-                job_id: job_id,
-                apply_by: apply_by,
-            },
-            {
-                job_status: 1,
-            }
-        );
+
+        var jobinfo = await jobApplyModel.findOne({job_id: job_id,apply_by: apply_by})
+
+        var updateInfo=[]
+        if(jobinfo){
+             updateInfo = await jobApplyModel.findOneAndUpdate(
+                {
+                    job_id: job_id,
+                    apply_by: apply_by,
+                },
+                {
+                    job_status: !jobinfo.job_status,
+                }
+            );
+        }
         res.status(200).send({
             success: true,
             message: " Successfully",
