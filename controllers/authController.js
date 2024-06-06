@@ -11,7 +11,7 @@ const { sendPushNotification } = require("../utils/helper");
 
 const registerController =async(req,res)=>{
     try{
-        const {userName,email,password}=req.body;
+        const {userName,email,password,language}=req.body;
         // validation
         if(!userName || !email || !password){
             return res.status(500).send({
@@ -44,8 +44,18 @@ const registerController =async(req,res)=>{
             token:token,
             user_info:user,
         }
-
-        const emailTemplatePath = path.resolve(__dirname, "views", "mails", "welcome_mail.ejs");
+        let emailTemplatePath,subject;
+        if(language=='tr')
+        {
+            emailTemplatePath = path.resolve(__dirname, "views", "mails", "welcome_mail_turkish.ejs");
+            subject="Turk'ün Hoş Geldiniz E-postası";
+        }
+        else
+        {
+            emailTemplatePath = path.resolve(__dirname, "views", "mails", "welcome_mail.ejs");
+            subject="Turk's  Welcome Email";
+        }
+        
         const emailTemplate = fs.readFileSync(emailTemplatePath, "utf-8");
         const resetLink="link";
         const mailContent = ejs.render(emailTemplate, {resetLink,name:user.userName});
@@ -65,7 +75,7 @@ const registerController =async(req,res)=>{
         const mailOptions = {
            from: process.env.EMAIL_USER,
            to: email,
-           subject: "Turk's  Welcome Email",
+           subject: subject,
            html: mailContent,
        };
     
