@@ -91,15 +91,35 @@ const jobController = {
     },
     jobDetails: async (req, res) => {
         const info = new URL(req.url, `http://${req.headers.host}`);
+
+        const user_info = await AuthUser(req);
+        const user_id = user_info.id;
+
+    
+
+
+
+
+    
+
         const searchParams = info.searchParams;
         const job_id = searchParams.get("job_id");
+
+        var is_appliy=await jobWishListModel.countDocuments({user_id:user_info.id,job_id:job_id});
+
+        var is_wishlist= await jobApplyModel.countDocuments({apply_by:user_info.id,job_id:job_id})
+
+
         let jobDetails = await jobModel
             .findOne({ _id: job_id })
             .populate([{ path: "job_industry", model: "JobIndustry" }]);
+
         res.status(201).send({
             success: true,
             message: "Successfully",
             jobDetails,
+            is_appliy,
+            is_wishlist,
         });
     },
     jobGet: async (req, res) => {
