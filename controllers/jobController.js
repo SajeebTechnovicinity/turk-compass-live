@@ -606,10 +606,13 @@ const jobController = {
         var candidate_list = await jobApplyModel
             .find({
                 job_id: job_id,
-                job_status:1,
+                job_status: 1,
             })
-            .populate([{ path: "apply_by", model: "User" }]);
-        res.status(200).send({
+            .populate([{ path: "apply_by", model: "User" }])
+            .populate({
+                path: 'job_profile',
+                model: 'JobProfile',});
+            res.status(200).send({
             success: true,
             message: " Successfully",
             candidate_list,
