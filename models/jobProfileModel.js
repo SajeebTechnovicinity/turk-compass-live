@@ -83,6 +83,10 @@ const jobProfileSchema = new mongoose.Schema({
     defalut_cv:{
         type: String,
     },
+    cv_upload_date:{
+        type: Date,
+        required: false
+    },
     status: {
         type: Number,
         default: 1,

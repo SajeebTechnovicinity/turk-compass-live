@@ -6,6 +6,7 @@ const requestLogger = require('./middleware/logger'); // Import the middleware
 
 // middleware checks for all routes
 router.use("/auth", require("./routes/authRoutes"));
+router.use("/app-info", require("./routes/appInfoRoute"));
 router.use(requestLogger);
 // middleware checks for all routes
 
@@ -30,7 +31,6 @@ router.use("/slot", require("./routes/slotRoutes"));
 router.use("/reservation", require("./routes/reservationRoutes"));
 router.use("/member-of-perlamant", require("./routes/memberPerlamantRoutes"));
 router.use("/user-profile", require("./routes/profileRoutes"));
-router.use("/app-info", require("./routes/appInfoRoute"));
 router.use("/event", require("./routes/eventRoute"));
 router.use("/user", require("./routes/authRoutes"));
 router.use("/whistlist", require("./routes/whishlistRoutes"));
