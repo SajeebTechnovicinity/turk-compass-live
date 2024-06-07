@@ -10,9 +10,7 @@ const petitionModel = require('../models/petitionModel');
 const appInfoController = {
     abountTermsPrivacy: async (req, res) => {
         try{
-
             var { about_us, terms_condition, privacy_policy,home_banner,is_google_email} = req.body;
-
             let appinfo = await appInfoModel.findOne();
             var query = {is_google_email:is_google_email};
             if (about_us && terms_condition && privacy_policy) {
