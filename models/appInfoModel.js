@@ -33,6 +33,11 @@ const appInfoSchema = new mongoose.Schema({
         type: String,
         require:false
     },
+    is_google_email: {
+        type: Number,
+        default: 1,
+        enum: [0, 1]
+    },
     status: {
         type: Number,
         default: 1,
