@@ -274,8 +274,13 @@ const profileController = {
             query = { eligibility: eligibility }
         }
         if (defalut_cv) {
-            query = { defalut_cv: defalut_cv }
+            if (defalut_cv=="delete") {
+                query = { defalut_cv:"" }
+            }else{
+                query = { defalut_cv: defalut_cv,cv_upload_date: new Date() };
+            }
         }
+
         if (photo) {
             query = { photo }
         }
@@ -312,7 +317,7 @@ const profileController = {
         res.status(200).send({
             success: true,
             message: "Successfully updated",
-            profile_info,
+            query,
         });
 
     } catch (error) {
