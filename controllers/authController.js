@@ -352,11 +352,13 @@ const userInfoGetController=async(req,res)=>{
     let limit = Number(searchParams.get('limit')) || 12;
     let skip = (page - 1) * limit;
 
-    const count = await userModel.countDocuments({usertype:'user'});
+    const count = await userModel.countDocuments({usertype: { $ne: 'admin' }});
             
     const totalPages = Math.ceil(count / limit);
 
-    let userList=await userModel.find({usertype:'client'}).limit(limit).skip(skip);
+    let userList = await userModel.find({
+        usertype: { $ne: 'admin' }  // Exclude 'admin'
+    }).limit(limit).skip(skip);
     res.status(200).send({
         success:true,
         message:'successfully password updated',
