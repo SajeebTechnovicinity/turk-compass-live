@@ -335,9 +335,10 @@ const jobController = {
             const user_id = user_info.id;
             const { job_id, cv, cover_letter,question_ans} = req.body;
             const base64DataGet = cv; // Get the base64 data from the request body
+            let cv_path;
             if(cv!=null)
             {
-                const cv_path = await uploadImageToCloudinary(base64DataGet);
+                cv_path = await uploadImageToCloudinary(base64DataGet);
             }
           
             let profile=await jobProfileModel.findOne({user_id:user_id});
