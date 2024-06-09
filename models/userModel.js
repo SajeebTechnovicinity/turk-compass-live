@@ -33,6 +33,19 @@ const userSchema=new mongoose.Schema({
         default:'client',
         enum:['client','admin','business-owner'],
     },
+    email_verification_code:{
+        type:String,
+        default:null,
+    },
+    forget_password_code_time:{
+        type:String,
+        default:null,
+    },
+    is_email_verified:{
+        type: Number,
+        default: 0, // Default value if not provided
+        enum: [0, 1], // Example: Only allow values  1=active, or 0=inactive
+    },
     reset_code:{
         type:String,
         default:null,
