@@ -388,7 +388,7 @@ const verifyCodeController = async (req, res) => {
     }
     if(code == userInfo.email_verification_code)
     {
-        var userUpdate=userModel.findOneAndUpdate({ email: email,is_email_verified:1 });
+        var userUpdate=await userModel.findOneAndUpdate({ email: email},{is_email_verified:1 });
         return  res.status(200).send({
             success: true,
             message: "Your Email is verified now",
