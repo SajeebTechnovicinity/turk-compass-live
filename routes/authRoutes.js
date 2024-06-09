@@ -1,5 +1,5 @@
 const express= require('express')
-const { registerController, loginController,socialLoginController, resetPasswordController, updateResetPasswordController, userInfoGetController, passwordResetController} = require('../controllers/authController')
+const { registerController, loginController,socialLoginController, resetPasswordController, updateResetPasswordController, userInfoGetController, passwordResetController, forgetPasswordController, verifyCodeController} = require('../controllers/authController')
 const router=express.Router()
 
 router.post('/register',registerController)
@@ -7,6 +7,8 @@ router.post('/register',registerController)
 router.post('/login',loginController)
 // social login 
 router.post('/social/login',socialLoginController)
+router.post('/resend-email',forgetPasswordController)
+router.post('/verify-code',verifyCodeController)
 // reset password
 router.post('/reset',resetPasswordController)
 router.post('/update/password',updateResetPasswordController)
