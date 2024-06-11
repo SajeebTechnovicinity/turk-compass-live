@@ -333,235 +333,235 @@ const jobController = {
         }
   
     },
-    // apply: async (req, res) => {
-    //     try {
-    //         const user_info = await AuthUser(req);
-    //         const user_id = user_info.id;
-    //         const { job_id, cv, cover_letter,question_ans} = req.body;
-    //         const base64DataGet = cv; // Get the base64 data from the request body
-    //         let cv_path;
-    //         if(cv!=null)
-    //         {
-    //             cv_path = await uploadImageToCloudinary(base64DataGet);
-    //         }
-          
-    //         let profile=await jobProfileModel.findOne({user_id:user_id});
-
-           
-    //         var apply_by;
-    //         var job_profile;
-    //         if(!profile){
-    //             res.status(403).send({
-    //                 success: false,
-    //                 message: " first create candidate profile",
-    //             });
-    //         }
-    //         apply_by=user_id;
-    //         job_profile=profile._id;
-
-    //         let isapply = await jobApplyModel.findOne({
-    //             job_id: job_id,
-    //             apply_by: apply_by,
-    //         });
-    //         if (isapply) {
-    //             res.status(403).send({
-    //                 success: false,
-    //                 message: "Already applied",
-    //             });
-    //         }
-    //         const store_data = await jobApplyModel.create({
-    //             job_id,
-    //             apply_by,
-    //             cv_path,
-    //             question_ans,
-    //             cover_letter,
-    //             job_profile,
-    //             job_status:0,
-    //         });
-
-    //       var job_info= await jobModel.findOne({_id:job_id});
-    //       var company_id= job_info.user_id
-    //       var company_info=await userModel.findOne({_id:company_id});
-
-    //      jobProfileModel.findOne({user_id:user_id})
-
-
-    //      var package_type=company_info.package_type;
-    //      var company_mail=company_info.email;
-        
-    //     if(company_info && job_info){
-    //         let title = "New Job Applied";
-    //         let description = job_info.job_title;
-    //         sendPushNotification(title,description,company_info.device_token);
-    //         let job_info_data=jobProfileModel.findOne({user_id:user_id});
-    //         let candidate_info_data=await userModel.findOne({_id:user_id});
-    //         // await notificationModel.create({user:company_id,title:title,description:description,image:job_info_data.photo});
-    //         await notificationModel.create({user:company_id,title:title,description:description,image:candidate_info_data.photo});
-    //     }
-    //         // mail
-    //         const emailTemplatePath = path.resolve(__dirname, "views", "mails", "job_apply_mail.ejs");
-    //         const emailTemplate = fs.readFileSync(emailTemplatePath, "utf-8");
-    //         const mailContent = ejs.render(emailTemplate, {date:new Date(),cover_letter:cover_letter});
-    //         const transporter = nodemailer.createTransport({
-    //             host: 'smtp.gmail.com',
-    //             port: 465,
-    //             secure: true, // Set to false for explicit TLS
-    //             auth: {
-    //                 user: 'technovicinity.dev@gmail.com',
-    //                 pass: 'wsvrvojuwyraazog',
-    //             },
-    //             tls: {
-    //                 // Do not fail on invalid certificates
-    //                 //rejectUnauthorized: false,
-    //             },
-    //         });
-    //         const mailOptions = {
-    //             from: process.env.EMAIL_USER,
-    //             to: company_mail,
-    //             //to: 'sajeebchakraborty.cse2000@gmail.com',
-    //             subject: "New Job Applied",
-    //             html: mailContent,
-    //             attachments: [
-    //                 {
-    //                     filename: 'cv.pdf', // Specify the filename
-    //                     path: cv_path, // Use the Cloudinary URL directly
-    //                 }
-    //             ],
-    //         };
-    //     //    // Send the email
-    //     //if(package_type=="general_employer"){
-    //         await transporter.sendMail(mailOptions);
-    //     //}
-    //         // mail
-    //         res.status(200).send({
-    //             success: true,
-    //             message: " Successfully",
-    //             store_data,
-    //         });
-    //     } catch (error) {
-    //         console.log(error);
-    //         res.status(500).send({
-    //             success: false,
-    //             message: "Error  api",
-    //             error: error,
-    //         });
-    //     }
-    //     // jobApplyModel.create({job_id,cv,cover_letter})
-    // },
-
-
-apply: async (req, res) => {
-    try {
-        const user_info = await AuthUser(req);
-        const user_id = user_info.id;
-        const { job_id, cv, cover_letter, question_ans } = req.body;
-        const base64DataGet = cv; // Get the base64 data from the request body
-        let cv_path;
-        if (cv != null) {
-            cv_path = await uploadImageToCloudinary(base64DataGet);
-        }
-
-        let profile = await jobProfileModel.findOne({ user_id: user_id });
-
-        var apply_by;
-        var job_profile;
-        if (!profile) {
-            return res.status(403).send({
-                success: false,
-                message: "First create candidate profile",
+    apply: async (req, res) => {
+        try {
+            const user_info = await AuthUser(req);
+            const user_id = user_info.id;
+            const { job_id, cv, cover_letter, question_ans } = req.body;
+            const base64DataGet = cv; // Get the base64 data from the request body
+            let cv_path;
+    
+            if (cv !== null) {
+                // Upload CV to Cloudinary and get the URL
+                const cloudinaryResponse = await uploadImageToCloudinary(cv)
+                cv_path = cloudinaryResponse.secure_url; // Get the secure URL of the uploaded file
+            }
+    
+            let profile = await jobProfileModel.findOne({ user_id: user_id });
+    
+            var apply_by;
+            var job_profile;
+            if (!profile) {
+                res.status(403).send({
+                    success: false,
+                    message: "First create candidate profile",
+                });
+            }
+            apply_by = user_id;
+            job_profile = profile._id;
+    
+            let isapply = await jobApplyModel.findOne({
+                job_id: job_id,
+                apply_by: apply_by,
             });
-        }
-        apply_by = user_id;
-        job_profile = profile._id;
-
-        let isapply = await jobApplyModel.findOne({
-            job_id: job_id,
-            apply_by: apply_by,
-        });
-        if (isapply) {
-            return res.status(403).send({
-                success: false,
-                message: "Already applied",
+            if (isapply) {
+                res.status(403).send({
+                    success: false,
+                    message: "Already applied",
+                });
+            }
+            const store_data = await jobApplyModel.create({
+                job_id,
+                apply_by,
+                cv_path,
+                question_ans,
+                cover_letter,
+                job_profile,
+                job_status: 0,
             });
-        }
-        const store_data = await jobApplyModel.create({
-            job_id,
-            apply_by,
-            cv_path,
-            question_ans,
-            cover_letter,
-            job_profile,
-            job_status: 0,
-        });
-
-        var job_info = await jobModel.findOne({ _id: job_id });
-        var company_id = job_info.user_id;
-        var company_info = await userModel.findOne({ _id: company_id });
-
-        var package_type = company_info.package_type;
-        var company_mail = company_info.email;
-
-        if (company_info && job_info) {
-            let title = "New Job Applied";
-            let description = job_info.job_title;
-            sendPushNotification(title, description, company_info.device_token);
-            let candidate_info_data = await userModel.findOne({ _id: user_id });
-            await notificationModel.create({ user: company_id, title: title, description: description, image: candidate_info_data.photo });
-        }
-
-        // Download the CV from Cloudinary
-        const response = await axios.get(cv_path, { responseType: 'arraybuffer' });
-        const localCvPath = path.resolve(__dirname, 'cv.pdf');
-        await writeFile(localCvPath, response.data);
-
-        // Send email
-        const emailTemplatePath = path.resolve(__dirname, "views", "mails", "job_apply_mail.ejs");
-        const emailTemplate = fs.readFileSync(emailTemplatePath, "utf-8");
-        const mailContent = ejs.render(emailTemplate, { date: new Date(), cover_letter: cover_letter });
-
-        const transporter = nodemailer.createTransport({
-            host: 'smtp.gmail.com',
-            port: 465,
-            secure: true,
-            auth: {
-                user: 'technovicinity.dev@gmail.com',
-                pass: 'wsvrvojuwyraazog',
-            },
-            tls: {
-                rejectUnauthorized: false,
-            },
-        });
-
-        const mailOptions = {
-            from: process.env.EMAIL_USER,
-            to: company_mail,
-            //to:'sajeebchakraborty.cse2000@gmail.com',
-            subject: "New Job Applied",
-            html: mailContent,
-            attachments: [
-                {
-                    filename: 'cv.pdf',
-                    path: localCvPath,
-                }
-            ],
-        };
-        if(package_type=="general_employer"){
+    
+            var job_info = await jobModel.findOne({ _id: job_id });
+            var company_id = job_info.user_id
+            var company_info = await userModel.findOne({ _id: company_id });
+    
+            jobProfileModel.findOne({ user_id: user_id })
+    
+            var package_type = company_info.package_type;
+            var company_mail = company_info.email;
+    
+            if (company_info && job_info) {
+                let title = "New Job Applied";
+                let description = job_info.job_title;
+                sendPushNotification(title, description, company_info.device_token);
+                let job_info_data = jobProfileModel.findOne({ user_id: user_id });
+                let candidate_info_data = await userModel.findOne({ _id: user_id });
+                // await notificationModel.create({user:company_id,title:title,description:description,image:job_info_data.photo});
+                await notificationModel.create({ user: company_id, title: title, description: description, image: candidate_info_data.photo });
+            }
+    
+            // mail
+            const emailTemplatePath = path.resolve(__dirname, "views", "mails", "job_apply_mail.ejs");
+            const emailTemplate = fs.readFileSync(emailTemplatePath, "utf-8");
+            const mailContent = ejs.render(emailTemplate, { date: new Date(), cover_letter: cover_letter });
+            const transporter = nodemailer.createTransport({
+                host: 'smtp.gmail.com',
+                port: 465,
+                secure: true, // Set to false for explicit TLS
+                auth: {
+                    user: 'technovicinity.dev@gmail.com',
+                    pass: 'wsvrvojuwyraazog',
+                },
+                tls: {
+                    // Do not fail on invalid certificates
+                    //rejectUnauthorized: false,
+                },
+            });
+            const mailOptions = {
+                from: process.env.EMAIL_USER,
+                to: company_mail,
+                //to: 'sajeebchakraborty.cse2000@gmail.com',
+                subject: "New Job Applied",
+                html: mailContent,
+                attachments: [
+                    {
+                        filename: 'cv.pdf', // Specify the filename
+                        path: cv_path, // Use the Cloudinary URL directly
+                    }
+                ],
+            };
+            // Send the email
             await transporter.sendMail(mailOptions);
+    
+            // mail
+            res.status(200).send({
+                success: true,
+                message: "Successfully",
+                store_data,
+            });
+        } catch (error) {
+            console.log(error);
+            res.status(500).send({
+                success: false,
+                message: error.message,
+                error: error,
+            });
         }
-        res.status(200).send({
-            success: true,
-            message: "Successfully",
-            store_data,
-        });
-    } catch (error) {
-        console.log(error);
-        res.status(403).send({
-            success: false,
-            message: error.message,
-            error: error,
-        });
-    }
-},
+        // jobApplyModel.create({job_id,cv,cover_letter})
+    },
+
+
+// apply: async (req, res) => {
+//     try {
+//         const user_info = await AuthUser(req);
+//         const user_id = user_info.id;
+//         const { job_id, cv, cover_letter, question_ans } = req.body;
+//         const base64DataGet = cv; // Get the base64 data from the request body
+//         let cv_path;
+//         if (cv != null) {
+//             cv_path = await uploadImageToCloudinary(base64DataGet);
+//         }
+
+//         let profile = await jobProfileModel.findOne({ user_id: user_id });
+
+//         var apply_by;
+//         var job_profile;
+//         if (!profile) {
+//             return res.status(403).send({
+//                 success: false,
+//                 message: "First create candidate profile",
+//             });
+//         }
+//         apply_by = user_id;
+//         job_profile = profile._id;
+
+//         let isapply = await jobApplyModel.findOne({
+//             job_id: job_id,
+//             apply_by: apply_by,
+//         });
+//         if (isapply) {
+//             return res.status(403).send({
+//                 success: false,
+//                 message: "Already applied",
+//             });
+//         }
+//         const store_data = await jobApplyModel.create({
+//             job_id,
+//             apply_by,
+//             cv_path,
+//             question_ans,
+//             cover_letter,
+//             job_profile,
+//             job_status: 0,
+//         });
+
+//         var job_info = await jobModel.findOne({ _id: job_id });
+//         var company_id = job_info.user_id;
+//         var company_info = await userModel.findOne({ _id: company_id });
+
+//         var package_type = company_info.package_type;
+//         var company_mail = company_info.email;
+
+//         if (company_info && job_info) {
+//             let title = "New Job Applied";
+//             let description = job_info.job_title;
+//             sendPushNotification(title, description, company_info.device_token);
+//             let candidate_info_data = await userModel.findOne({ _id: user_id });
+//             await notificationModel.create({ user: company_id, title: title, description: description, image: candidate_info_data.photo });
+//         }
+
+//         // Download the CV from Cloudinary
+//         const response = await axios.get(cv_path, { responseType: 'arraybuffer' });
+//         const localCvPath = path.resolve(__dirname, 'cv.pdf');
+//         await writeFile(localCvPath, response.data);
+
+//         // Send email
+//         const emailTemplatePath = path.resolve(__dirname, "views", "mails", "job_apply_mail.ejs");
+//         const emailTemplate = fs.readFileSync(emailTemplatePath, "utf-8");
+//         const mailContent = ejs.render(emailTemplate, { date: new Date(), cover_letter: cover_letter });
+
+//         const transporter = nodemailer.createTransport({
+//             host: 'smtp.gmail.com',
+//             port: 465,
+//             secure: true,
+//             auth: {
+//                 user: 'technovicinity.dev@gmail.com',
+//                 pass: 'wsvrvojuwyraazog',
+//             },
+//             tls: {
+//                 rejectUnauthorized: false,
+//             },
+//         });
+
+//         const mailOptions = {
+//             from: process.env.EMAIL_USER,
+//             //to: company_mail,
+//             to:'sajeebchakraborty.cse2000@gmail.com',
+//             subject: "New Job Applied",
+//             html: mailContent,
+//             attachments: [
+//                 {
+//                     filename: 'cv.pdf',
+//                     path: localCvPath,
+//                 }
+//             ],
+//         };
+//         if(package_type=="general_employer"){
+//             await transporter.sendMail(mailOptions);
+//         }
+//         res.status(200).send({
+//             success: true,
+//             message: "Successfully",
+//             store_data,
+//         });
+//     } catch (error) {
+//         console.log(error);
+//         res.status(403).send({
+//             success: false,
+//             message: error.message,
+//             error: error,
+//         });
+//     }
+// },
 
     getApplyInfo: async (req, res) => {
         const info = new URL(req.url, `http://${req.headers.host}`);
