@@ -390,7 +390,9 @@ const jobController = {
             let description = job_info.job_title;
             sendPushNotification(title,description,company_info.device_token);
             let job_info_data=jobProfileModel.findOne({user_id:user_id});
-            await notificationModel.create({user:company_id,title:title,description:description,image:job_info_data.photo});
+            let candidate_info_data=await userModel.findOne({_id:user_id});
+            // await notificationModel.create({user:company_id,title:title,description:description,image:job_info_data.photo});
+            await notificationModel.create({user:company_id,title:title,description:description,image:candidate_info_data.photo});
         }
             // mail
             const emailTemplatePath = path.resolve(__dirname, "views", "mails", "job_apply_mail.ejs");
