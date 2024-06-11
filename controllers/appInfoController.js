@@ -1,5 +1,5 @@
 const moment = require('moment');
-const { AuthUser, isBase64Image, uploadImageToCloudinary } = require('../utils/helper');
+const { AuthUser, isBase64Image, uploadImageToCloudinary, sendPushNotification } = require('../utils/helper');
 const jwt = require('jsonwebtoken');
 const userModel = require('../models/userModel');
 const faqModel = require('../models/faqModel');
@@ -10,15 +10,16 @@ const petitionModel = require('../models/petitionModel');
 const appInfoController = {
     abountTermsPrivacy: async (req, res) => {
         try{
-            var { about_us, terms_condition, privacy_policy,home_banner,is_google_email} = req.body;
+            var { about_us, terms_condition, privacy_policy,home_banner,is_google_email,amount} = req.body;
             let appinfo = await appInfoModel.findOne();
             var query = {is_google_email:is_google_email};
-            if (about_us && terms_condition && privacy_policy) {
+            if (about_us && terms_condition && privacy_policy && amount) {
                 query = {
                     about_us: about_us,
                     terms_condition: terms_condition,
                     privacy_policy: privacy_policy,
-                    is_google_email:is_google_email
+                    is_google_email:is_google_email,
+                    amount:amount,
                 };
             }
             if (home_banner) {
@@ -30,6 +31,26 @@ const appInfoController = {
                 query = {
                     "home_banner": home_banner,
                 };
+            }
+
+            let title,description;
+            if(terms_condition!=appinfo.terms_condition)
+            {
+              title="Terms Conditions Changed";
+              description="Admin Panel Change Terms Conditions";
+              sendPushNotification(title,description,'/topics/turks');
+            }
+            if(privacy_policy!=appinfo.privacy_policy)
+              {
+                title="Privacy Policy Changed";
+                description="Admin Panel Change Privacy Policy";
+                sendPushNotification(title,description,'/topics/turks');
+              }
+            if(about_us!=appinfo.about_us)
+            {
+              title="About Us Changed";
+              description="Admin Panel Change About Us";
+              sendPushNotification(title,description,'/topics/turks');
             }
 
             if (appinfo) {
@@ -47,7 +68,7 @@ const appInfoController = {
             console.log(error)
             res.status(500).send({
                success:false,
-               message:'error in login api dfgh',
+               message:error.message,
                error:error
             })
         }

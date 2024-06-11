@@ -39,10 +39,35 @@ const eventSchema = new mongoose.Schema({
         type: Date,
         required: true
     },
+    is_payment_complete: {
+        type: Boolean,
+        required: false,
+        default: 0
+    },
+    payment_date: {
+        type: String,
+        required: false,
+        default: null
+    },
+    payment_amount: {
+        type: Number,
+        required: false,
+        default: 0
+    },
+    payment_method: {
+        type: String,
+        required: false,
+        default: null
+    },
+    tnx_number: {
+        type: String,
+        required: false,
+        default: null
+    },
     status: {
         type: Number,
         default: 1,
-        enum: [0, 1]
+        enum: [0, 1],
     },
     is_delete: {
         type: Boolean,

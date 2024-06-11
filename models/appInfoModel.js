@@ -38,6 +38,10 @@ const appInfoSchema = new mongoose.Schema({
         default: 1,
         enum: [0, 1]
     },
+    amount: {
+        type: Number,
+        default: 100
+    },
     status: {
         type: Number,
         default: 1,
