@@ -25,4 +25,5 @@ router.get('/all', profileController.allProfile);
 
 // Route to update language
 router.post('/language/update', profileController.languageUpdate);
+router.post('/create',profileController.create)
 module.exports = router;

@@ -163,6 +163,7 @@ const memberPerlamentController = {
             const searchParams = info.searchParams;
             let zip = searchParams.get('zip');
             let state = searchParams.get('state');
+            let name = searchParams.get('name');
             let page = Number(searchParams.get('page')) || 1;
             let limit = Number(searchParams.get('limit')) || 12;
             let skip = (page - 1) * limit;
@@ -170,46 +171,63 @@ const memberPerlamentController = {
             let query = {};
 
  
-            // Check if both zip and state are provided
-            if (state!=null && zip!=null) {
-                if(state=="all")
-                {
-                    query = {zip:zip};
-                }
-                else
-                {
-                    query = {
-                        state: state,                  
-                        zip: zip, // Case-insensitive regex match for zip                 
-                    };
-                }
-                console.log("state & zip");
-            }
-            else if(zip!=null)
-            {
-                query = {
+            // // Check if both zip and state are provided
+            // if (state!=null && zip!=null) {
+            //     if(state=="all")
+            //     {
+            //         query = {zip:zip};
+            //     }
+            //     else
+            //     {
+            //         query = {
+            //             state: state,                  
+            //             zip: zip, // Case-insensitive regex match for zip                 
+            //         };
+            //     }
+            //     console.log("state & zip");
+            // }
+            // else if(zip!=null)
+            // {
+            //     query = {
                   
-                    zip: zip, // Case-insensitive regex match for zip
+            //         zip: zip, // Case-insensitive regex match for zip
                     
-                };
+            //     };
+            // }
+            // else if(state!=null)
+            // {
+            //     if(state=="all")
+            //     {
+            //         query = {};
+            //     }
+            //     else
+            //     {
+            //         query = {
+            //             state: state               
+            //         };
+            //     }
+            // }
+            // else {
+            //     // default all business post
+            //     query = {};
+            // }
+
+            if (state!=null) {
+                if(state!="all")
+                {
+                    query.state =state;
+                }
             }
-            else if(state!=null)
+            if(zip!=null)
             {
-                if(state=="all")
-                {
-                    query = {};
-                }
-                else
-                {
-                    query = {
-                        state: state               
-                    };
-                }
+                query.zip =  { $regex: zip, $options: "i" };
             }
-            else {
-                // default all business post
-                query = {};
+            if(name !=null)
+            {
+                query.name = { $regex: name, $options: "i" };
             }
+
+            console.log(query);
 
             const count = await memberPerlamentModel.countDocuments(query);
             

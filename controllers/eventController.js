@@ -75,7 +75,12 @@ const eventController = {
                 banner,
                 gallery,
                 start_date,
-                end_date
+                end_date,
+                is_payment_complete,
+                payment_date,
+                payment_amount,
+                payment_method,
+                tnx_number
             } = req.body;
             var isbanerBase64 = await isBase64Image(banner);
             var updateInfo;
@@ -110,7 +115,12 @@ const eventController = {
                     banner,
                     gallery,
                     start_date,
-                    end_date
+                    end_date,
+                    is_payment_complete,
+                    payment_date,
+                    payment_amount,
+                    payment_method,
+                    tnx_number
                 })
             } else {
                 updateInfo = await eventModel.create({
@@ -125,7 +135,12 @@ const eventController = {
                     banner,
                     gallery,
                     start_date,
-                    end_date
+                    end_date,
+                    is_payment_complete,
+                    payment_date,
+                    payment_amount,
+                    payment_method,
+                    tnx_number
                 })
             }
             res.status(200).send({

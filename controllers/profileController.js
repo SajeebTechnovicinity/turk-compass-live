@@ -8,6 +8,45 @@ const businessPostModel = require("../models/businessPostModel");
 const jobProfileModel = require("../models/jobProfileModel");
 // Define profile Controller methods
 const profileController = {
+    // Method to create a new businessPost
+  create: async (req, res) => {
+    let { user_name, email, password, package_type } = req.body;
+    try {
+      const exisiting = await userModel.findOne({ email });
+
+      if (exisiting) {
+        return res.status(200).send({
+          success: false,
+          message: "Email already Registerd",
+        });
+      }
+      //hashing the password
+      const hashPassword = await bcrypt.hash(password, 10);
+
+      const userInfo = await userModel.create({
+        userName: user_name,
+        email,
+        password: hashPassword,
+        usertype: "client",
+        package_type
+      });
+
+      res.status(201).send({
+        success: true,
+        message: "User Created Successfully",
+        userInfo,
+      });
+      
+    } catch (error) {
+      console.log(error);
+      res.status(200).send({
+        success: false,
+        message: error.message,
+        error: error.message,
+      });
+    }
+  },
+
     list: async (req, res) => {
         try {
             const user_info = await AuthUser(req);

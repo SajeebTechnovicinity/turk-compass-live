@@ -8,5 +8,6 @@ const route=express.Router();
 route.get('/test-user',testUserController)
 route.get('/get',userInfoGetController)
 
+
 // export
 module.exports=route
