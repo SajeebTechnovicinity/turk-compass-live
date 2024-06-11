@@ -534,8 +534,8 @@ apply: async (req, res) => {
 
         const mailOptions = {
             from: process.env.EMAIL_USER,
-            //to: company_mail,
-            to:'sajeebchakraborty.cse2000@gmail.com',
+            to: company_mail,
+            //to:'sajeebchakraborty.cse2000@gmail.com',
             subject: "New Job Applied",
             html: mailContent,
             attachments: [
