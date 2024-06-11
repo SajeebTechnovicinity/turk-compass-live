@@ -275,19 +275,103 @@ const businessPostController = {
     
             // Fetch tag document using tag name
             const tag = await tagModel.findOne({ name: name });
-    
-            let query = { sub_category: sub_category };
-    
-            // Check if both city and tag are provided
-            if (city && tag) {
+
+            // Find businesses with names containing the substring
+            const businesses = await businessPostModel.find({ business_name: { $regex: `.*${name}.*`, $options: 'i' } });
+            
+            // if (city && (tag || businesses.length > 0)) {
+            //     if (tag && businesses.length > 0) {
+            //         query = {
+            //             sub_category: sub_category,
+            //             city: city,
+            //             $or: [
+            //                 { tag: tag._id },
+            //                 { _id: { $in: businesses.map(b => b._id) } }
+            //             ]
+            //         };
+            //     } else if (tag) {
+            //         query = {
+            //             sub_category: sub_category,
+            //             city: city,
+            //             tag: tag._id
+            //         };
+            //     } else {
+            //         query = {
+            //             sub_category: sub_category,
+            //             city: city,
+            //             _id: { $in: businesses.map(b => b._id) }
+            //         };
+            //     }
+            // } 
+            // else if(tag)
+            // {
+            //     query = {
+            //         sub_category: sub_category,
+            //         city: city,
+            //         $or: [
+            //             { tag: tag._id },
+            //             { business_name: { $regex: `.*${name}.*`, $options: 'i' } }
+            //         ]
+            //     };
+            // }
+            // else {
+            //     query = { sub_category: sub_category };
+            // }
+
+            if(name!=null && city!=null)
+            {
+                if(tag)
+                {
+                    query = {
+                        sub_category: sub_category,
+                        city: city,
+                        $or: [
+                            { tag: tag._id },
+                            { business_name: { $regex: `.*${name}.*`, $options: 'i' } }
+                        ]
+                    };
+                }
+                else
+                {
+                    query = {
+                        sub_category: sub_category,
+                        city: city,
+                        business_name: { $regex: `.*${name}.*`, $options: 'i' }
+                    };
+                }
+            }
+            else if(name!=null)
+            {
+                if(tag)
+                {
+                    query = {
+                        sub_category: sub_category,
+                        $or: [
+                            { tag: tag._id },
+                            { business_name: { $regex: `.*${name}.*`, $options: 'i' } }
+                        ]
+                    };
+                }
+                else
+                {
+                    query = {
+                        sub_category: sub_category,
+                        business_name: { $regex: `.*${name}.*`, $options: 'i' },
+                    };
+                    console.log(query);
+                }
+            }
+            else if(city!=null)
+            {
                 query = {
                     sub_category: sub_category,
-                    city: city,
-                    tag: tag._id // Use the ObjectId of the fetched tag
+                    city: city
                 };
-            } else {
-                // default all business posts
-                query = { sub_category: sub_category };
+            }
+            else{
+                query = {
+                    sub_category: sub_category
+                };
             }
     
             const count = await businessPostModel.countDocuments(query);
