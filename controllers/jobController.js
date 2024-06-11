@@ -545,9 +545,9 @@ apply: async (req, res) => {
                 }
             ],
         };
-
-        await transporter.sendMail(mailOptions);
-
+        if(package_type=="general_employer"){
+            await transporter.sendMail(mailOptions);
+        }
         res.status(200).send({
             success: true,
             message: "Successfully",
