@@ -317,6 +317,10 @@ const businessPostController = {
                 {
                     path: "city",
                     model: "City"
+                },
+                {
+                    path: "tag",
+                    model: "Tag"
                 }
             ]).sort({ createdAt: -1 }).skip(skip).limit(limit);
     
