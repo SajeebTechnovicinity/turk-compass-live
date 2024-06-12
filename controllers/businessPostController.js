@@ -100,21 +100,22 @@ const businessPostController = {
 
 
             //upload image & cover image
-            if(image!=null || image!='')
+            if(image==null || image=='')
+            {
+                image = businessPostDetails.image;
+               
+            }
+            else
             {
                 image = await uploadImageToCloudinary(image);
             }
-            else
-            {
-                image = businessPostDetails.image;
-            }
             if(cover_image!=null || image!='')
             {
-                cover_image = await uploadImageToCloudinary(cover_image);
+                cover_image = businessPostDetails.cover_image;              
             }
             else
             {
-                cover_image = businessPostDetails.cover_image;
+                cover_image = await uploadImageToCloudinary(cover_image);
             }
 
    
