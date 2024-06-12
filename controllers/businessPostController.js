@@ -100,7 +100,7 @@ const businessPostController = {
 
 
             //upload image & cover image
-            if(image!=null)
+            if(image!=null || image!='')
             {
                 image = await uploadImageToCloudinary(image);
             }
@@ -108,7 +108,7 @@ const businessPostController = {
             {
                 image = businessPostDetails.image;
             }
-            if(cover_image!=null)
+            if(cover_image!=null || image!='')
             {
                 cover_image = await uploadImageToCloudinary(cover_image);
             }
@@ -193,6 +193,7 @@ const businessPostController = {
                 success: true,
                 message: "Business Posts Retrieved Successfully",
                 totalPages,
+                totalCount:count,
                 currentPage: page,
                 businessPosts:businessPostsWithWishlistInfo
             });
@@ -274,7 +275,8 @@ const businessPostController = {
             const { city, name } = req.body;
     
             // Fetch tag document using tag name
-            const tag = await tagModel.findOne({ name: name });
+            const tag = await tagModel.findOne({ name: { $regex: `.*${name}.*`, $options: 'i' } });
+            //console.log("Tag"+tag);
 
             // Find businesses with names containing the substring
             const businesses = await businessPostModel.find({ business_name: { $regex: `.*${name}.*`, $options: 'i' } });

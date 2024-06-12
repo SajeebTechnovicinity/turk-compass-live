@@ -30,6 +30,7 @@ const notificationController = {
                 message: "Notifications Retrieved Successfully",
                 notifications,
                 totalPages,
+                totalCount:count,
                 currentPage: page,
             });
         } catch (error) {
