@@ -399,7 +399,7 @@ const verifyCodeController = async (req, res) => {
     {
         return  res.status(403).send({
             success: false,
-            message: "Your Email is not verified",
+            message: "Incorrect OTP",
           });
     }
 };
