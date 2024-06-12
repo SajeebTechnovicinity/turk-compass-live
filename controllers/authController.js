@@ -231,6 +231,7 @@ const socialLoginController = async (req, res) => {
         slot_duration: 0,
         is_multiple_reservation_available: 0,
         is_reservation_available: 0,
+        is_email_verified:1
       });
       const id = user.id;
       const userName = user.userName && "";
@@ -406,9 +407,15 @@ const resetPasswordController = async (req, res) => {
   const { email } = req.body;
   var userInfo = await userModel.findOne({ email: email });
   if (!userInfo) {
-    res.status(500).send({
+    return res.status(403).send({
       success: false,
       message: "No user found",
+    });
+  }
+  if (userInfo.is_delete==1) {
+    return res.status(403).send({
+      success: false,
+      message: "User is deleted or not activated",
     });
   }
   var code = Math.floor(100000 + Math.random() * 900000);
