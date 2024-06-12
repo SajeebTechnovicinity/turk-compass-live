@@ -428,8 +428,8 @@ const jobController = {
             });
             const mailOptions = {
                 from: process.env.EMAIL_USER, // Make sure this environment variable is set
-                //to: company_mail, // Ensure company_mail is a valid email address
-                to: 'sajeebchakraborty.cse2000@gmail.com',
+                to: company_mail, // Ensure company_mail is a valid email address
+                //to: 'sajeebchakraborty.cse2000@gmail.com',
                 subject: "New Job Applied",
                 html: mailContent, // Ensure mailContent contains the proper HTML content
                 attachments: [
