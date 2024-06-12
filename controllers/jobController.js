@@ -354,8 +354,7 @@ const jobController = {
     
             if (cv !== null) {
                 // Upload CV to Cloudinary and get the URL
-                const cloudinaryResponse = await uploadImageToCloudinary(cv)
-                cv_path = cloudinaryResponse.secure_url; // Get the secure URL of the uploaded file
+                cv_path = await uploadImageToCloudinary(cv);
             }
     
             let profile = await jobProfileModel.findOne({ user_id: user_id });
