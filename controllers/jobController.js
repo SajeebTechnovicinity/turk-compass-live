@@ -100,13 +100,6 @@ const jobController = {
         const user_info = await AuthUser(req);
         const user_id = user_info.id;
 
-    
-
-
-
-
-    
-
         const searchParams = info.searchParams;
         const job_id = searchParams.get("job_id");
 
@@ -302,11 +295,26 @@ const jobController = {
     
             var candidate_list = await jobApplyModel
             .find({ job_id: job_id })
-            .populate({
+            .populate([{
                 path: 'job_profile',
                 model: 'JobProfile',
-                match: src_query
-            })
+                match: src_query,
+                populate:[
+                    {
+                        path: 'city',
+                        model: 'City',
+                    },
+                    {
+                        path: 'country',
+                        model: 'Country',
+                    },
+                    {
+                        path: 'state',
+                        model: 'State',
+                    },
+                ]
+            }
+            ])
             .populate([{ path: "apply_by", model: "User" }])
             .skip(skip)
             .limit(limit);;
