@@ -1043,6 +1043,7 @@ const jobController = {
             success: true,
             message: "Successfully",
             totalPages,
+            totalCount:count,
             currentPage: page,
             job,
             user_id,
