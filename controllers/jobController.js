@@ -259,13 +259,15 @@ const jobController = {
                 model: "JobIndustry",
             }])
             .skip(skip)
-            .limit(limit);
+            .limit(limit)
+            .sort({ createdAt: -1 });
         const count = await jobModel.find({ user_id: user_id }).countDocuments();
         const totalPages = Math.ceil(count / limit);
         res.status(201).send({
             success: true,
             message: "Successfully",
             totalPages,
+            totalCount:count,
             currentPage: page,
             job,
         });
@@ -317,7 +319,7 @@ const jobController = {
             ])
             .populate([{ path: "apply_by", model: "User" }])
             .skip(skip)
-            .limit(limit);;
+            .limit(limit) .sort({ createdAt: -1 });;
 
              candidate_list = await candidate_list.filter(candidate => candidate.job_profile !== null);
 
@@ -740,6 +742,7 @@ const jobController = {
             totalPages,
             currentPage: page,
             job,
+            totalCount:count,
             user_id,
         });
     },
@@ -781,7 +784,7 @@ const jobController = {
             .populate([{ path: "apply_by", model: "User" }])
             .populate({
                 path: 'job_profile',
-                model: 'JobProfile',});
+                model: 'JobProfile',}) .sort({ createdAt: -1 });
             res.status(200).send({
             success: true,
             message: " Successfully",
@@ -930,7 +933,7 @@ const jobController = {
                 },
             ])
             .skip(skip)
-            .limit(limit);
+            .limit(limit).sort({ createdAt: -1 });;
 
             const allJob = await jobModel
             .aggregate([

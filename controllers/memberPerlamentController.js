@@ -109,6 +109,7 @@ const memberPerlamentController = {
                 success: true,
                 message: "Member of Perlaments Retrieved Successfully",
                 totalPages,
+                totalCount:count,
                 currentPage: page,
                 memberPerlamants
             });
