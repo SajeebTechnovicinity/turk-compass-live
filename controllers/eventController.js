@@ -23,6 +23,7 @@ async function getAllDatesInMonth(year, month) {
             },
             {
                 $match: {
+                  is_payment_complete: true,
                     $and: [
                         { startDate: { $lte: dateSt } },
                         { endDate: { $gte: dateSt } }
@@ -234,6 +235,7 @@ const eventController = {
                 },
                 {
                   $match: {
+                    is_payment_complete: true,
                     $or: [
                       {
                         $and: [
