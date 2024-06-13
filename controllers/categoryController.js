@@ -64,10 +64,10 @@ const categoryController = {
 
             let query = {};
 
-            if(type=="business") {
-                console.log("hello");
-                query.name = { $ne: "Member of Perlamant" };
+            if (type === "business") {
+                query.name = { $nin: ["Member of Perlamant", "Promotion Calender"] };
             }
+            
             const categories = await categoryModel.find(query);
             res.status(200).send({
                 success: true,
