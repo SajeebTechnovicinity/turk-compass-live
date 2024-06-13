@@ -20,6 +20,15 @@ app.use(morgan("dev"));
 
 // Use routes
 app.use("/api/v1", routes);
+
+
+app.get('/success', (req, res) => {
+    res.send('Payment was successful.');
+});
+
+app.get('/cancel', (req, res) => {
+    res.send('Payment was cancelled.');
+});
 // Port
 const PORT = process.env.PORT || 8080;
 // Start server

@@ -96,13 +96,14 @@ const eventController = {
                     return item;
                 }));
             }
-    
+            let eventId;
             var findEvent = false;
             if (id) {
                 findEvent = await eventModel.findOne({ _id: id });
             }
     
             if (findEvent && id) {
+                eventId=id;
                 updateInfo = await eventModel.findOneAndUpdate({ _id: id }, {
                     title,
                     company,
@@ -142,10 +143,15 @@ const eventController = {
                     payment_method,
                     tnx_number
                 })
+                eventId = updateInfo._id;
             }
+
+            let stripePaymentUrl = process.env.APP_URL+`/api/v1/stripe/event-payment?id=${eventId}`;
+
             res.status(200).send({
                 success: true,
                 message: " Successfully updated",
+                stripePaymentUrl: stripePaymentUrl,
                 updateInfo
             });
 
