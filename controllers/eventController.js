@@ -3,7 +3,7 @@ const { isBase64Image, uploadImageToCloudinary, AuthUser } = require("../utils/h
 
 // Define durationSlotController methods
 
-async function getAllDatesInMonth(year, month) {
+async function getAllDatesInMonth(year, month,city_name) {
     let dates = [];
     let date = new Date(year, month - 1, 1);
 
@@ -24,6 +24,7 @@ async function getAllDatesInMonth(year, month) {
             {
                 $match: {
                   is_payment_complete: true,
+                  city_name:city_name,
                     $and: [
                         { startDate: { $lte: dateSt } },
                         { endDate: { $gte: dateSt } }
@@ -193,8 +194,9 @@ const eventController = {
             const info = new URL(req.url, `http://${req.headers.host}`);
             const searchParams = info.searchParams;
             let monthStrGet = searchParams.get('month');
+            let city_name = searchParams.get('city_name');
             let [month,year] = monthStrGet.split('/').map(Number);
-              let datesInMonth = await getAllDatesInMonth(year, month);
+              let datesInMonth = await getAllDatesInMonth(year, month,city_name);
               res.status(200).send({
                 success: true,
                 message: " Successfully updated",
@@ -215,6 +217,7 @@ const eventController = {
         // const user_id = searchParams.get('user_id');
         let dateString = searchParams.get('date');
         let monthStrGet = searchParams.get('month');
+        let city_name = searchParams.get('city_name');
         let page = Number(searchParams.get('page')) || 1;
         let limit = Number(searchParams.get('limit')) || 12;
         let skip = (page - 1) * limit;
@@ -235,7 +238,6 @@ const eventController = {
                 },
                 {
                   $match: {
-                    is_payment_complete: true,
                     $or: [
                       {
                         $and: [
@@ -300,6 +302,8 @@ const eventController = {
               },
               {
                 $match: {
+                  is_payment_complete: true,
+                  city_name:city_name,
                   $and: [
                     { startDate: { $lte: date } },
                     { endDate: { $gte: date } }
