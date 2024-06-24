@@ -437,7 +437,12 @@ const businessPostController = {
             let user_id = searchParams.get('user_id');
 
             const profile = await userModel.findById(user_id);
-            const businessProfile=await businessPostModel.findOne({user:user_id});
+            const businessProfile=await businessPostModel.findOne({user:user_id}).populate(
+                {
+                    path: "user",
+                    model: "User"
+                }
+            );
     
             res.status(200).send({
                 success: true,
