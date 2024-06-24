@@ -100,8 +100,8 @@ const registerController = async (req, res) => {
       port: 465,
       secure: true, // Set to false for explicit TLS
       auth: {
-        user: "technovicinity.dev@gmail.com",
-        pass: "wsvrvojuwyraazog",
+        user: "turkscompass@gmail.com",
+        pass: "avrucxhaxvgdcjef",
       },
       tls: {
         // Do not fail on invalid certificates
@@ -451,8 +451,8 @@ const resetPasswordController = async (req, res) => {
     port: 465,
     secure: true, // Set to false for explicit TLS
     auth: {
-      user: "technovicinity.dev@gmail.com",
-      pass: "wsvrvojuwyraazog",
+      user: "turkscompass@gmail.com",
+      pass: "avrucxhaxvgdcjef",
     },
     tls: {
       // Do not fail on invalid certificates
