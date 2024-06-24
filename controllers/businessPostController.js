@@ -442,6 +442,7 @@ const businessPostController = {
             res.status(200).send({
                 success: true,
                 message: "User Profile Retrieved Successfully",
+                profile,
                 businessProfile
             });
         } catch (error) {
