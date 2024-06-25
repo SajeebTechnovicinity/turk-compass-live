@@ -84,12 +84,12 @@ const businessPostController = {
       }
 
       //upload image & cover image
-      if (image) {
+      if (image == null || image == "") {
         image = await uploadImageToCloudinary(image);
       } else {
         image = null;
       }
-      if (cover_image) {
+      if (cover_image == null || cover_image == "") {
         cover_image = await uploadImageToCloudinary(cover_image);
       } else {
         cover_image = null;
