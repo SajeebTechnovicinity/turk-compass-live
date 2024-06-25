@@ -365,6 +365,7 @@ const profileController = {
       if (education) {
         query = { education: education };
       }
+      
       if (skill) {
         query = { skill: skill };
       }
@@ -372,6 +373,9 @@ const profileController = {
         query = { language: language };
       }
       if (eligibility) {
+        query = { eligibility: eligibility };
+      }
+      if (eligibility==0) {
         query = { eligibility: eligibility };
       }
       if (defalut_cv) {
