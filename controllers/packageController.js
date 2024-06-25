@@ -43,7 +43,7 @@ const packageController=(req,res)=>{
                 },
                 {
                     'title':"job_seeker",
-                    'description':{job_seeker_access:0,ads:0,compass:0,monthly_price:1.49,verify_employers:0,review_job_applications:0,custom_questions:0,stripe_product:'price_1PIkNPJ4eJxlN0V7xWTlJeDr'},
+                    'description':{job_seeker_access:0,ads:0,compass:0,monthly_price:1.99,verify_employers:0,review_job_applications:0,custom_questions:0,stripe_product:'price_1PIkNPJ4eJxlN0V7xWTlJeDr'},
                     "package_benefit": [
                         {
                             "details":"Access to job listings and job application features",

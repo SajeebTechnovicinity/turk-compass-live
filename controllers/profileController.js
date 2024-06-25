@@ -385,7 +385,6 @@ const profileController = {
           query = { defalut_cv: defalut_cv, cv_upload_date: new Date() };
         }
       }
-
       if (photo) {
         query = { photo };
       }
