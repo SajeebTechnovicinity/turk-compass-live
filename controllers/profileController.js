@@ -359,6 +359,9 @@ const profileController = {
       if (work_visa) {
         query = { work_visa: work_visa };
       }
+      if (work_visa==0) {
+        query = { work_visa: work_visa };
+      }
       if (education) {
         query = { education: education };
       }
