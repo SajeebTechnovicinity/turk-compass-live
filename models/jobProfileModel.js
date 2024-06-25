@@ -80,7 +80,7 @@ const jobProfileSchema = new mongoose.Schema({
         default: 0,
         enum: [0, 1]
     },
-    job_seeker:{
+    work_visa:{
         type: Number,
         default: 0,
         enum: [0, 1]
