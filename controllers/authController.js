@@ -121,6 +121,12 @@ const loginController=async(req,res)=>{
     if(user.is_delete==true){
         return res.status(403).send({
             success:false,
+            message:'Your account is deleted'
+        })
+    }
+    if(user.status==0){
+        return res.status(403).send({
+            success:false,
             message:'Your account is not activated'
         })
     }
@@ -181,8 +187,25 @@ const socialLoginController=async(req,res)=>{
             message:'please provide all fields correctly'
         })
     }
+
+
     // check 
     const user=await userModel.findOne(record);
+
+    if(user && user.is_delete==true){
+        return res.status(403).send({
+            success:false,
+            message:'Your account is deleted'
+        })
+    }
+    if(user && user.status==0){
+        return res.status(403).send({
+            success:false,
+            message:'Your account is not activated'
+        })
+    }
+
+
     if(!user){
         const user=await userModel.create({email:email,slot_duration:0,is_multiple_reservation_available:0,is_reservation_available:0});
         const id=user.id;

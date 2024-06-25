@@ -5,6 +5,10 @@ const tagSchema = new mongoose.Schema({
         type: String,
         required: [true, 'Name is required']
     },
+    category: {
+        type: mongoose.Schema.Types.ObjectId,
+        required: [true, 'Category is required']
+    },
     image: {
         type: String,
         required: false

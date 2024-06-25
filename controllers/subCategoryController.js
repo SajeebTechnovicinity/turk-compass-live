@@ -87,7 +87,6 @@ const subCategoryController = {
                 // Attach the businessPostCount to the current subcategory object
                 subCategory.business_post_count = businessPostCount;
             }
-
             res.status(200).send({
                 success: true,
                 message: "SubCategories Retrieved Successfully",

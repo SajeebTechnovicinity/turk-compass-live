@@ -454,6 +454,28 @@ const profileController = {
             });
         }
     },
+
+    profileStatusActiveInactive:async (req, res) =>{
+        try{
+          const info = new URL(req.url, `http://${req.headers.host}`);
+          const searchParams = info.searchParams;
+          let id = searchParams.get('id');
+          let user=await userModel.findOne({_id:id});
+          let userInfo=await userModel.findOneAndUpdate({_id:id},{status:user.status==1?0:1});
+            res.status(200).send({
+                success: true,
+                message: 'Successfully Status Updated',
+                userInfo
+            });
+        }catch (error) {
+            console.log(error);
+            res.status(500).send({
+                success: false,
+                message: 'Error in fetching',
+                error: error.message
+            });
+        }
+    },
     businessProfileActiveInactive:async (req, res) =>{
         try{
           const info = new URL(req.url, `http://${req.headers.host}`);
