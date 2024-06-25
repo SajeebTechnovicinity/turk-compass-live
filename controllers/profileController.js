@@ -330,6 +330,7 @@ const profileController = {
         gender,
         summary,
         work_history,
+        job_seeker,
         education,
         skill,
         language,
@@ -354,6 +355,9 @@ const profileController = {
       }
       if (work_history) {
         query = { work_history: work_history };
+      }
+      if (job_seeker) {
+        query = { job_seeker: job_seeker };
       }
       if (education) {
         query = { education: education };

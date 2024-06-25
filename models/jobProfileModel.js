@@ -80,6 +80,11 @@ const jobProfileSchema = new mongoose.Schema({
         default: 0,
         enum: [0, 1]
     },
+    job_seeker:{
+        type: Number,
+        default: 0,
+        enum: [0, 1]
+    },
     defalut_cv:{
         type: String,
     },
