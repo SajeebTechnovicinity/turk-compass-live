@@ -66,6 +66,7 @@ const stripeController = {
   success: async (req, res) => {
     try {
       // Retrieve eventId from query parameters
+      console.log("Stripe payment successfully");
       const eventId = req.query.eventId;
       const appInfo = await appInfoModel.findOne();
       // Validate amount
@@ -96,6 +97,8 @@ const stripeController = {
        { new: true } // To return updated document
      );
 
+     console.log("Stripe payment status updated successfully");
+
      let eventInfo=await eventModel.findById(eventId);
      var user_id = eventInfo.user;
      await paymentModel.create({type:"event", user_id:user_id, amount: amountInDollars,payment_id:transactionNumber});
@@ -119,6 +122,7 @@ const stripeController = {
   // Cancel endpoint if payment is canceled
   cancel: async (req, res) => {
     try {
+      console.log("Stripe payment canceled");
       res.status(200).send({
         success: true,
         message: "Payment was cancelled",
