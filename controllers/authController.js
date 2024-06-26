@@ -7,7 +7,7 @@ const ejs = require("ejs");
 const fs = require("fs");
 const nodemailer = require("nodemailer");
 const userController = require("./userController");
-const { sendPushNotification } = require("../utils/helper");
+const { sendPushNotification, AuthUser } = require("../utils/helper");
 
 const registerController = async (req, res) => {
   try {
@@ -493,6 +493,26 @@ const resetPasswordController = async (req, res) => {
   });
 };
 
+const changePassword = async (req, res) => {
+  const {password} = req.body;
+  const hashPassword = await bcrypt.hash(password, 10);
+  const userInfo = await AuthUser(req);
+
+  let UserId=userInfo.id;
+
+  const user = await userModel.findOneAndUpdate(
+    { _id: UserId }, // Filter criteria
+    { password: hashPassword }, // Update operation
+    { new: true } // Options: return the updated document
+  );
+  res.status(200).send({
+    success: true,
+    message: "successfully password updated",
+    user,
+  });
+
+}
+
 const updateResetPasswordController = async (req, res) => {
   const { email, password, code } = req.body;
 
@@ -590,4 +610,5 @@ module.exports = {
   userInfoGetController,
   passwordResetController,
   verifyCodeController,
+  changePassword,
 };
