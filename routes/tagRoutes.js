@@ -8,4 +8,5 @@ router.post('/edit', tagController.edit);
 
 // Route to list all tags
 router.get('/list', tagController.list);
+
 module.exports = router;
