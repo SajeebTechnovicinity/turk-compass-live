@@ -369,8 +369,14 @@ const businessPostController = {
       const { city, name } = req.body;
 
       // Fetch tag document using tag name
+      // const tag = await tagModel.findOne({
+      //   name: { $regex: `.*${name}.*`, $options: "i" },
+      // });
       const tag = await tagModel.findOne({
-        name: { $regex: `.*${name}.*`, $options: "i" },
+        $or: [
+          { name: { $regex: `.*${name}.*`, $options: "i" } },
+          { name_tr: { $regex: `.*${name}.*`, $options: "i" } }
+        ]
       });
       //console.log("Tag"+tag);
 
