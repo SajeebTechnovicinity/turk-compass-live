@@ -6,9 +6,9 @@ const { AuthUser,uploadImageToCloudinary } = require("../utils/helper");
 const tagController = {
     // Method to create a new tag
     create: async (req, res) => {
-        let {name,category} = req.body;
+        let {name,category,name_tr} = req.body;
         try {
-            const tagInfo = await tagModel.create({name,category});
+            const tagInfo = await tagModel.create({name,category,name_tr});
             res.status(201).send({
                 success: true,
                 message: "Tag Created Successfully",
@@ -24,9 +24,9 @@ const tagController = {
         }
     },
     edit: async (req, res) => {
-        let { name,id,category} = req.body;
+        let { name,id,category,name_tr} = req.body;
         //upload image & cover image
-        var updateObj={name:name,category:category};
+        var updateObj={name:name,category:category,name_tr};
   
         try {
             const tagInfo = await tagModel.findOneAndUpdate({_id:id},updateObj);

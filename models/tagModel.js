@@ -5,6 +5,10 @@ const tagSchema = new mongoose.Schema({
         type: String,
         required: [true, 'Name is required']
     },
+    name_tr: {
+        type: String,
+        required: [true, 'Name (Turkish) is required']
+    },
     category: {
         type: mongoose.Schema.Types.ObjectId,
         required: [true, 'category is required']
