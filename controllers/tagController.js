@@ -50,8 +50,17 @@ const tagController = {
         try {
             const info = new URL(req.url, `http://${req.headers.host}`);
             const searchParams = info.searchParams;
+            let category  = searchParams.get('category');
     
-            const tags = await tagModel.find().populate({
+            let query = {};
+    
+            if(category!=null)
+            {
+                query={category:category};
+                console.log(category);
+            }
+    
+            const tags = await tagModel.find(query).populate({
                 path: "category",
                 model: "Category"
             });
