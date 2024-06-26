@@ -7,6 +7,10 @@ const { AuthUser } = require("../utils/helper");
 const whistlistModel = require("../models/whistlistModel");
 const tagModel = require("../models/tagModel");
 const businessClaimModel = require("../models/businessClaimModel");
+const nodemailer = require("nodemailer");
+const path = require("path");
+const ejs = require("ejs");
+const fs = require("fs");
 
 // Define businessPostController methods
 const businessClaimController = {
@@ -34,7 +38,7 @@ const businessClaimController = {
       }
 
       let claimInfo = await businessClaimModel.create({
-        user:userId,
+        user: userId,
         business_post,
         contact_name,
         contact_email,
@@ -105,6 +109,124 @@ const businessClaimController = {
       res.status(500).send({
         success: false,
         message: "Error in fetching categories",
+        error: error.message,
+      });
+    }
+  },
+
+  approve: async (req, res) => {
+    
+    try {
+        const password = "12345678Aa";
+      const info = new URL(req.url, `http://${req.headers.host}`);
+      const searchParams = info.searchParams;
+      let id = searchParams.get("id");
+      
+      let businessClaim = await businessClaimModel
+    .findOne({ _id: id })
+    .populate([
+        { path: "user", model: "User" },
+        { path: "business_post", model: "BusinessPost" }
+    ]);
+        
+
+      let business_post_user_id;
+
+      if (businessClaim.user.email != businessClaim.contact_email) {
+        // check
+        let contact_email = businessClaim.contact_email;
+        const exisiting = await userModel.findOne({ email:contact_email });
+
+        if (exisiting) {
+          return res.status(200).send({
+            success: false,
+            message: "Email already Registerd",
+          });
+        }
+
+     
+        //hashing the password
+        const hashPassword = await bcrypt.hash(password, 10);
+
+        const userInfo = await userModel.create({
+          userName: businessClaim.contact_name,
+          email:contact_email,
+          password: hashPassword,
+          usertype: "business-owner",
+        });
+        business_post_user_id = userInfo._id;
+      } else {
+        business_post_user_id = businessClaim.user._id;
+      }
+      let business_post_update_user = await businessPostModel.findOneAndUpdate(
+        { _id: businessClaim.business_post },
+        { business_post_user_id,business_name:businessClaim.business_name }
+      );
+      let member = await businessClaimModel.findOneAndUpdate(
+        { _id: id },
+        { status: 1 }
+      );
+
+      let emailTemplatePath,email_subject;
+      let userDetails = await userModel.findById(business_post_user_id);
+      if (userDetails.language == "tr") {
+        emailTemplatePath = path.resolve(
+          __dirname,
+          "views",
+          "mails",
+          "claim_mail_turkish.ejs"
+        );
+        email_subject = "Türk'ün Talep Postası";
+      } else {
+        emailTemplatePath = path.resolve(
+          __dirname,
+          "views",
+          "mails",
+          "claim_mail.ejs"
+        );
+        email_subject = "Turk's Claim Mail";
+      }
+
+      const emailTemplate = fs.readFileSync(emailTemplatePath, "utf-8");
+      const resetLink = "link";
+      const mailContent = ejs.render(emailTemplate, {
+        resetLink,
+        name: userDetails.userName,
+        password,
+      });
+      const transporter = nodemailer.createTransport({
+        host: "smtp.gmail.com",
+        port: 465,
+        secure: true, // Set to false for explicit TLS
+        auth: {
+          user: "turkscompass@gmail.com",
+          pass: "avrucxhaxvgdcjef",
+        },
+        tls: {
+          // Do not fail on invalid certificates
+          //rejectUnauthorized: false,
+        },
+      });
+      let mailOptions = {
+        from: process.env.EMAIL_USER,
+        to: userDetails.email,
+        subject: email_subject,
+        html: mailContent,
+      };
+  
+      // Send the email
+      await transporter.sendMail(mailOptions);
+
+
+      res.status(200).send({
+        success: true,
+        message: "Successfully Approved",
+      });
+    } catch (error) {
+      console.log(error);
+      res.status(200).send({
+        success: false,
+        message: error.message,
         error: error.message,
       });
     }
