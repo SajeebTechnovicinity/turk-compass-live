@@ -96,8 +96,9 @@ const stripeController = {
        { new: true } // To return updated document
      );
 
-     var userInfo = await AuthUser(req);
-     paymentModel.create({type:"event", user_id: userInfo.id, amount: amountInDollars,payment_id:transactionNumber});
+     let eventInfo=await eventModel.findById(eventId);
+     var user_id = eventInfo.user;
+     await paymentModel.create({type:"event", user_id:user_id, amount: amountInDollars,payment_id:transactionNumber});
       // Respond with success message and transaction details
       res.status(200).send({
         success: true,
