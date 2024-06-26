@@ -3,6 +3,7 @@ const { AuthUser } = require('../utils/helper');
 const jwt=require('jsonwebtoken');
 const userModel = require('../models/userModel');
 const paymentModel = require('../models/paymentModel');
+const { startOfDay, endOfDay } = require('date-fns');
 
 const stripe = require('stripe')(process.env.STRIPE_KEY);
 
@@ -76,6 +77,7 @@ const stripePaymentSuccess = async (req, res) => {
                 }
             );
 
+            amount=amount/100;
             paymentModel.create({type:"subscription", user_id: userInfo.id, amount: amount,payment_id:subscriptionId});
 
             return res.status(200).send({
@@ -91,6 +93,43 @@ const stripePaymentSuccess = async (req, res) => {
         return res.status(500).send(error);
     }
 };
+
+const paymentReport=async(req,res)=>{
+    try{
+        const {startDate,endDate,type} = req.body;
+
+        // $gte: startOfDay(new Date(startDate)),
+        // $lte: endOfDay(new Date(endDate))
+    const payments = await paymentModel.find({
+        "date": {
+            $gte: new Date(startDate),
+            $lte: new Date(endDate)
+        },
+        "type":type
+    }).populate([{
+        path: "user_id",
+        model: "User",
+    }]);
+
+
+    res.status(200).send(
+        {
+            success:true,
+            message:"stripe payment",
+            payments
+        
+        }
+    )
+
+
+    }
+    catch (error) {
+        return res.status(500).send(error);
+    }
+
+}
+
+
 const freeSubscription=async(req,res)=>{
     try{
         const info = new URL(req.url, `http://${req.headers.host}`);
@@ -122,4 +161,4 @@ const freeSubscription=async(req,res)=>{
 
 
 
-module.exports={stripePaymentController,stripePaymentSuccess,freeSubscription}
+module.exports={stripePaymentController,stripePaymentSuccess,freeSubscription,paymentReport}

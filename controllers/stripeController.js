@@ -2,6 +2,8 @@
 const Stripe = require("stripe");
 const appInfoModel = require("../models/appInfoModel");
 const eventModel = require("../models/eventModel");
+const { AuthUser } = require("../utils/helper");
+const paymentModel = require("../models/paymentModel");
 
 // Initialize Stripe with your secret key
 const stripe = Stripe(process.env.STRIPE_KEY);
@@ -93,8 +95,9 @@ const stripeController = {
        },
        { new: true } // To return updated document
      );
- 
 
+     var userInfo = await AuthUser(req);
+     paymentModel.create({type:"event", user_id: userInfo.id, amount: amountInDollars,payment_id:transactionNumber});
       // Respond with success message and transaction details
       res.status(200).send({
         success: true,
