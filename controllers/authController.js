@@ -8,6 +8,7 @@ const fs = require("fs");
 const nodemailer = require("nodemailer");
 const userController = require("./userController");
 const { sendPushNotification, AuthUser } = require("../utils/helper");
+const { userInfo } = require("os");
 
 const registerController = async (req, res) => {
   try {
@@ -146,6 +147,13 @@ const loginController = async (req, res) => {
     }
     // check
     const user = await userModel.findOne({ email: email });
+    if (user==null) {
+      return res.status(404).send({
+        success: false,
+        message: "Email or password invalid",
+      });
+    }
+
 
     if(user && user.is_delete==true){
       return res.status(403).send({
@@ -153,6 +161,7 @@ const loginController = async (req, res) => {
           message:'Your account is deleted'
       })
   }
+
   if(user && user.status==0){
       return res.status(403).send({
           success:false,
@@ -167,7 +176,7 @@ const loginController = async (req, res) => {
     if (!user || !is_user) {
       return res.status(404).send({
         success: false,
-        message: "Email Or password invalid",
+        message: "Email or password invalid",
       });
     }
 
