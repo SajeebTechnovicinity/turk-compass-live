@@ -19,6 +19,7 @@ router.use(requestLogger);
 
 // Import route handlers
 router.use("/test", require("./routes/testRoute"));
+router.use("/business-claim", require("./routes/businessClaimRoute"));
 router.use("/package", require("./routes/packageRoutes"));
 router.use("/payment", require("./routes/paymentRoutes"));
 router.use("/job", require("./routes/jobRoutes"));
