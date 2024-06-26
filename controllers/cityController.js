@@ -60,7 +60,7 @@ const cityController = {
                     'path':"state",
                     'model':'State'
                 },
-            ]).sort({createdAt:-1});
+            ]).sort({ name: 1, createdAt: -1 });
             res.status(200).send({
                 success: true,
                 message: "cities Retrieved Successfully",

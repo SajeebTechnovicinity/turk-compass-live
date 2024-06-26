@@ -74,7 +74,8 @@ const jobController = {
     industryGet: async (req, res) => {
 
         try{
-            const industry = await jobIndustryModel.find();
+        
+            const industry = await jobIndustryModel.find().sort({ title: 1, createdAt: -1 });
 
             const industryInfo = await Promise.all(industry.map(async (iterate) => {
                 const amount_of_job = await jobModel.countDocuments({ job_industry:iterate._id  });
