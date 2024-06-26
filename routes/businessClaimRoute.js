@@ -8,4 +8,6 @@ router.post('/create', businessClaimController.create);
 // Route to list all business post 
 router.get('/list', businessClaimController.list);
 
+router.get('/approve', businessClaimController.approve);
+
 module.exports = router;
