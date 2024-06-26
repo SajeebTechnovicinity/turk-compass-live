@@ -45,7 +45,7 @@ const stateController = {
               model: "Country",
             },
           ])
-          .sort({ createdAt: -1 });
+          .sort({ name: 1, createdAt: -1 });
       } else {
         states = await stateModel
           .find()
@@ -55,7 +55,7 @@ const stateController = {
               model: "Country",
             },
           ])
-          .sort({ createdAt: -1 })
+          .sort({ name: 1, createdAt: -1 })
           .skip(skip)
           .limit(limit);
       }

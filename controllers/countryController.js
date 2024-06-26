@@ -27,7 +27,7 @@ const countryController = {
     // Method to list all countries
     list: async (req, res) => {
         try {
-            const countries = await countryModel.find().sort({createdAt:-1});
+            const countries = await countryModel.find().sort({ name: 1, createdAt: -1 });;
             res.status(200).send({
                 success: true,
                 message: "Countries Retrieved Successfully",
