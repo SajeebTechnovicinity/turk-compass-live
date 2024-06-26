@@ -2,6 +2,7 @@ const moment = require('moment');
 const { AuthUser } = require('../utils/helper');
 const jwt=require('jsonwebtoken');
 const userModel = require('../models/userModel');
+const paymentModel = require('../models/paymentModel');
 
 const stripe = require('stripe')(process.env.STRIPE_KEY);
 
@@ -74,6 +75,9 @@ const stripePaymentSuccess = async (req, res) => {
                     }
                 }
             );
+
+            paymentModel.create({type:"subscription", user_id: userInfo.id, amount: amount,payment_id:subscriptionId});
+
             return res.status(200).send({
                 success: true,
                 message: "Stripe payment successful",
