@@ -39,6 +39,34 @@ async function getAllDatesInMonth(year, month, city_name) {
           },
         },
         {
+          $lookup: {
+            from: "cities", // Ensure the collection name is correct
+            localField: "city_id",
+            foreignField: "_id",
+            as: "city_id",
+          },
+        },
+        {
+          $unwind: {
+            path: "$city_id",
+            preserveNullAndEmptyArrays: true, // If you want to keep events without a city
+          },
+        },
+        {
+          $lookup: {
+            from: "states", // Ensure the collection name is correct
+            localField: "state_id",
+            foreignField: "_id",
+            as: "state_id",
+          },
+        },
+        {
+          $unwind: {
+            path: "$state_id",
+            preserveNullAndEmptyArrays: true, // If you want to keep events without a city
+          },
+        },
+        {
           $project: {
             _id: 1,
             title: 1,
@@ -54,6 +82,8 @@ async function getAllDatesInMonth(year, month, city_name) {
             end_date: 1,
             status: 1,
             is_delete: 1,
+            state_id:1,
+            city_id: 1,
             createdAt: 1,
             updatedAt: 1,
           },
@@ -92,6 +122,8 @@ const eventController = {
         payment_amount,
         payment_method,
         tnx_number,
+        state_id,
+        city_id,
       } = req.body;
       var isbanerBase64 = await isBase64Image(banner);
       var updateInfo;
@@ -137,6 +169,8 @@ const eventController = {
             payment_amount,
             payment_method,
             tnx_number,
+            state_id,
+            city_id,
           }
         );
       } else {
@@ -159,6 +193,8 @@ const eventController = {
           payment_amount,
           payment_method,
           tnx_number,
+          state_id,
+          city_id,
         });
         eventId = updateInfo._id;
       }
@@ -285,6 +321,34 @@ const eventController = {
             },
           },
           {
+            $lookup: {
+              from: "cities", // Ensure the collection name is correct
+              localField: "city_id",
+              foreignField: "_id",
+              as: "city_id",
+            },
+          },
+          {
+            $unwind: {
+              path: "$city_id",
+              preserveNullAndEmptyArrays: true, // If you want to keep events without a city
+            },
+          },
+          {
+            $lookup: {
+              from: "states", // Ensure the collection name is correct
+              localField: "state_id",
+              foreignField: "_id",
+              as: "state_id",
+            },
+          },
+          {
+            $unwind: {
+              path: "$state_id",
+              preserveNullAndEmptyArrays: true, // If you want to keep events without a city
+            },
+          },
+          {
             $project: {
               _id: 1,
               title: 1,
@@ -299,6 +363,8 @@ const eventController = {
               start_date: 1,
               end_date: 1,
               status: 1,
+              state_id:1,
+              city_id:1,
               is_delete: 1,
               createdAt: 1,
               updatedAt: 1,
@@ -331,6 +397,34 @@ const eventController = {
             },
           },
           {
+            $lookup: {
+              from: "cities", // Ensure the collection name is correct
+              localField: "city_id",
+              foreignField: "_id",
+              as: "city_id",
+            },
+          },
+          {
+            $unwind: {
+              path: "$city_id",
+              preserveNullAndEmptyArrays: true, // If you want to keep events without a city
+            },
+          },
+          {
+            $lookup: {
+              from: "states", // Ensure the collection name is correct
+              localField: "state_id",
+              foreignField: "_id",
+              as: "state_id",
+            },
+          },
+          {
+            $unwind: {
+              path: "$state_id",
+              preserveNullAndEmptyArrays: true, // If you want to keep events without a city
+            },
+          },
+          {
             $project: {
               _id: 1,
               title: 1,
@@ -344,6 +438,8 @@ const eventController = {
               gallery: 1,
               start_date: 1,
               end_date: 1,
+              state_id: 1,
+              city_id:1,
               status: 1,
               is_delete: 1,
               createdAt: 1,
@@ -391,6 +487,34 @@ const eventController = {
           },
         },
         {
+          $lookup: {
+            from: "cities", // Ensure the collection name is correct
+            localField: "city_id",
+            foreignField: "_id",
+            as: "city_id",
+          },
+        },
+        {
+          $unwind: {
+            path: "$city_id",
+            preserveNullAndEmptyArrays: true, // If you want to keep events without a city
+          },
+        },
+        {
+          $lookup: {
+            from: "states", // Ensure the collection name is correct
+            localField: "state_id",
+            foreignField: "_id",
+            as: "state_id",
+          },
+        },
+        {
+          $unwind: {
+            path: "$state_id",
+            preserveNullAndEmptyArrays: true, // If you want to keep events without a city
+          },
+        },
+        {
           $project: {
             _id: 1,
             title: 1,
@@ -404,6 +528,8 @@ const eventController = {
             gallery: 1,
             start_date: 1,
             end_date: 1,
+            state_id: 1,
+            city_id: 1,
             status: 1,
             is_delete: 1,
             createdAt: 1,

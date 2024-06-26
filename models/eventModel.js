@@ -7,6 +7,14 @@ const eventSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         required: true,
     },
+    state_id: {
+        type: mongoose.Schema.Types.ObjectId,
+        required: true,
+    },
+    city_id: {
+        type: mongoose.Schema.Types.ObjectId,
+        required: true,
+    },
     company: {
         type: String,
     },
