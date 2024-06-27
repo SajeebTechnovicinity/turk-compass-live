@@ -66,11 +66,11 @@ const packageController=(req,res)=>{
                     "package_benefit": [
                         {
                             "details":"Full access to job listings and applications",
-                            "tooltip":"Subscribers enjoy unrestricted access to all job listings and application features, enhancing their job search capabilities"
+                            "tooltip":"Employers enjoy unrestricted access to all application features in the Turk’s Compass app."
                         },
                         {
                             "details":"Verified Blue Tick status",
-                            "tooltip":"Employers enjoy unrestricted access to all application features in the Turk’s Compass app."
+                            "tooltip":"Employers receive a verification badge, enhancing their credibility and trustworthiness in the eyes of the Turk’s Compass app's users and the job seekers."
                         },
                         // {
                         //     "details":"Review job applications and CVs within the app",
@@ -104,7 +104,7 @@ const packageController=(req,res)=>{
                         },         
                         {
                             "details":"Ad-supported experience",
-                            "tooltip":"In publishing and graphic design, Lorem ipsum is a placeholder text commonly"
+                            "tooltip":"This tier includes advertisements displayed throughout the app, which helps keep the basic features free for users."
                         },
                         {
                             "details":"No “Premium Employer” features",
