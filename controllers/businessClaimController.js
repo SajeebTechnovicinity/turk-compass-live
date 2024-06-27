@@ -176,7 +176,7 @@ const businessClaimController = {
           "mails",
           "claim_mail_turkish.ejs"
         );
-        email_subject = "Türk'ün Talep Postası";
+        email_subject = "Turk’s Compass’a  Postası";
       } else {
         emailTemplatePath = path.resolve(
           __dirname,
@@ -184,7 +184,7 @@ const businessClaimController = {
           "mails",
           "claim_mail.ejs"
         );
-        email_subject = "Turk's Claim Mail";
+        email_subject = "Turk's Compass's Claim Mail";
       }
 
       const emailTemplate = fs.readFileSync(emailTemplatePath, "utf-8");
