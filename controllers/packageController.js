@@ -66,7 +66,7 @@ const packageController=(req,res)=>{
                     "package_benefit": [
                         {
                             "details":"Full access to job listings and applications",
-                            "tooltip":"Employers enjoy unrestricted access to all application features in the Turk’s Compass app."
+                            "tooltip":"Subscribers enjoy unrestricted access to all job listings and application features, enhancing their job search capabilities"
                         },
                         {
                             "details":"Verified Blue Tick status",
