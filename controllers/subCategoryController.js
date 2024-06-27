@@ -76,7 +76,7 @@ const subCategoryController = {
             let subCategories = await subCategoryModel.find(query).populate({
                 path: "category",
                 model: "Category"
-            }).sort({ createdAt: -1 }).skip(skip).limit(limit);
+            }).sort({ name:1, createdAt: -1 }).skip(skip).limit(limit);
             
             // Iterate through each subcategory
             for (let subCategory of subCategories) {

@@ -68,7 +68,7 @@ const categoryController = {
                 query.name = { $nin: ["Member of Perlamant", "Promotion Calender"] };
             }
             
-            const categories = await categoryModel.find(query);
+            const categories = await categoryModel.find(query).sort({name:1});
             res.status(200).send({
                 success: true,
                 message: "Categories Retrieved Successfully",
