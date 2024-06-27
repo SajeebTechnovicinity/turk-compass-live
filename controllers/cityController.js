@@ -106,7 +106,7 @@ const cityController = {
                     'path':"state",
                     'model':'State'
                 },
-            ]).sort({createdAt:-1}).skip(skip)
+            ]).sort({name: 1, createdAt:-1}).skip(skip)
                 .limit(limit);;
             res.status(200).send({
                 success: true,
