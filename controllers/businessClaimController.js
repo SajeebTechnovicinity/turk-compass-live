@@ -115,27 +115,25 @@ const businessClaimController = {
   },
 
   approve: async (req, res) => {
-    
     try {
-        const password = "12345678Aa";
+      const password = "12345678Aa";
       const info = new URL(req.url, `http://${req.headers.host}`);
       const searchParams = info.searchParams;
       let id = searchParams.get("id");
-      
+
       let businessClaim = await businessClaimModel
-    .findOne({ _id: id })
-    .populate([
-        { path: "user", model: "User" },
-        { path: "business_post", model: "BusinessPost" }
-    ]);
-        
+        .findOne({ _id: id })
+        .populate([
+          { path: "user", model: "User" },
+          { path: "business_post", model: "BusinessPost" },
+        ]);
 
       let business_post_user_id;
 
       if (businessClaim.user.email != businessClaim.contact_email) {
         // check
         let contact_email = businessClaim.contact_email;
-        const exisiting = await userModel.findOne({ email:contact_email });
+        const exisiting = await userModel.findOne({ email: contact_email });
 
         if (exisiting) {
           return res.status(200).send({
@@ -144,30 +142,44 @@ const businessClaimController = {
           });
         }
 
-     
         //hashing the password
         const hashPassword = await bcrypt.hash(password, 10);
 
         const userInfo = await userModel.create({
           userName: businessClaim.contact_name,
-          email:contact_email,
+          email: contact_email,
           password: hashPassword,
+          package_type:'general_employer',
           usertype: "business-owner",
         });
         business_post_user_id = userInfo._id;
       } else {
         business_post_user_id = businessClaim.user._id;
+        let userDetailsForBusinessPost=await userModel.findById(businessClaim.user._id);
+
+        let businessPostCount = await businessPostModel.countDocuments({user:businessClaim.user._id});
+        if(businessPostCount>0)
+          {
+            return res.status(200).send({
+              success: false,
+              message: "Already a Business post created for this user.Please try with another email",
+            });
+          }
+        if(userDetailsForBusinessPost!='premium_employer')
+        {
+          await userModel.findOneAndUpdate({_id:businessClaim.user._id},{package_type:general_employer});
+        } 
       }
       let business_post_update_user = await businessPostModel.findOneAndUpdate(
         { _id: businessClaim.business_post },
-        { business_post_user_id,business_name:businessClaim.business_name }
+        { user:business_post_user_id, business_name: businessClaim.business_name }
       );
       let member = await businessClaimModel.findOneAndUpdate(
         { _id: id },
         { status: 1 }
       );
 
-      let emailTemplatePath,email_subject;
+      let emailTemplatePath, email_subject;
       let userDetails = await userModel.findById(business_post_user_id);
       if (userDetails.language == "tr") {
         emailTemplatePath = path.resolve(
@@ -213,10 +225,9 @@ const businessClaimController = {
         subject: email_subject,
         html: mailContent,
       };
-  
+
       // Send the email
       await transporter.sendMail(mailOptions);
-
 
       res.status(200).send({
         success: true,
