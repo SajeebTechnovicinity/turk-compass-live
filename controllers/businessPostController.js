@@ -6,6 +6,7 @@ const { uploadImageToCloudinary } = require("../utils/helper");
 const { AuthUser } = require("../utils/helper");
 const whistlistModel = require("../models/whistlistModel");
 const tagModel = require("../models/tagModel");
+const businessClaimModel = require("../models/businessClaimModel");
 
 // Define businessPostController methods
 const businessPostController = {
@@ -375,8 +376,8 @@ const businessPostController = {
       const tag = await tagModel.findOne({
         $or: [
           { name: { $regex: `.*${name}.*`, $options: "i" } },
-          { name_tr: { $regex: `.*${name}.*`, $options: "i" } }
-        ]
+          { name_tr: { $regex: `.*${name}.*`, $options: "i" } },
+        ],
       });
       //console.log("Tag"+tag);
 
@@ -538,10 +539,19 @@ const businessPostController = {
           model: "User",
         });
 
+      const user_info = await AuthUser(req);
+      const userId = user_info.id;
+
+      const claimCount = await businessClaimModel.countDocuments({
+        user: userId,
+        business_post: businessProfile._id,
+      });
+
       res.status(200).send({
         success: true,
         message: "User Profile Retrieved Successfully",
         businessProfile,
+        claimCount,
       });
     } catch (error) {
       console.log(error);
@@ -562,10 +572,19 @@ const businessPostController = {
       // const profile = await userModel.findById(user_id);
       const businessProfile = await businessPostModel.findOne({ _id: id });
 
+      const user_info = await AuthUser(req);
+      const userId = user_info.id;
+
+      const claimCount = await businessClaimModel.countDocuments({
+        user: userId,
+        business_post: id,
+      });
+
       res.status(200).send({
         success: true,
         message: "User Profile Retrieved Successfully",
         businessProfile,
+        claimCount,
       });
     } catch (error) {
       console.log(error);

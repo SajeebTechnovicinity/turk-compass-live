@@ -81,7 +81,7 @@ const registerController = async (req, res) => {
         "mails",
         "welcome_mail.ejs"
       );
-      subject = "Turk's  Welcome Email";
+      subject = "Turk's Compass's   Welcome Email";
     }
 
     const emailTemplate = fs.readFileSync(emailTemplatePath, "utf-8");

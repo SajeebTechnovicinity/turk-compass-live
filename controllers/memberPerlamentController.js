@@ -164,6 +164,7 @@ const memberPerlamentController = {
             const searchParams = info.searchParams;
             let zip = searchParams.get('zip');
             let state = searchParams.get('state');
+            let city = searchParams.get('city');
             let name = searchParams.get('name');
             let page = Number(searchParams.get('page')) || 1;
             let limit = Number(searchParams.get('limit')) || 12;
@@ -213,10 +214,16 @@ const memberPerlamentController = {
             //     query = {};
             // }
 
-            if (state!=null) {
+            if (state!=null && state!='') {
                 if(state!="all")
                 {
                     query.state =state;
+                }
+            }
+            if (city!=null && city!='') {
+                if(city!="all")
+                {
+                    query.city =city;
                 }
             }
             if(zip!=null)

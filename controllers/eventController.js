@@ -148,6 +148,14 @@ const eventController = {
 
       if (findEvent && id) {
         eventId = id;
+        let eventInfo= await eventModel.findOne({ _id: eventId });
+        if(banner==null || banner=="")
+        {
+          banner=eventInfo.banner;
+        }
+        if (gallery==null || gallery=="") {
+          gallery=eventInfo.gallery;
+        }
         updateInfo = await eventModel.findOneAndUpdate(
           { _id: id },
           {
@@ -210,10 +218,10 @@ const eventController = {
       });
     } catch (error) {
       console.log(error);
-      res.status(500).send({
+      res.status(403).send({
         success: false,
-        message: "Error  api",
-        error: error,
+        message: error.message,
+        error: error.message,
       });
     }
   },

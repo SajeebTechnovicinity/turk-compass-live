@@ -57,7 +57,7 @@ const userSchema=new mongoose.Schema({
     package_type:{
         type:String,
         default:null,
-        enum:['free','premium','job_seeker_free','premium_employer','job_seeker',null],
+        enum:['free','premium','job_seeker_free','premium_employer','job_seeker','general_employer',null],
     },
     job_seeker_free_start_date:{
         type:Date,

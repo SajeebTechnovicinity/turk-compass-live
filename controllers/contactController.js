@@ -33,7 +33,7 @@ const contactController = {
           "mails",
           "contact_mail_turkish.ejs"
         );
-        email_subject = "Turk'ün İletişim Mailiı";
+        email_subject = "Turk’s Compass’a  Mailiı";
       } else {
         emailTemplatePath = path.resolve(
           __dirname,
