@@ -170,7 +170,33 @@ const profileController = {
         .populate({
           path: "tag",
           model: "Tag",
+        })
+        .populate({
+          path: "user",
+          model: "User",
+        })
+        .populate({
+          path: "category",
+          model: "Category",
+        })
+        .populate({
+          path: "sub_category",
+          model: "SubCategory",
+        })
+        .populate({
+          path: "country",
+          model: "Country",
+        })
+        .populate({
+          path: "state",
+          model: "State",
+        })
+        .populate({
+          path: "city",
+          model: "City",
         });
+
+
 
       res.status(200).send({
         success: true,
