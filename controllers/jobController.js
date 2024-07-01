@@ -72,9 +72,7 @@ const jobController = {
         });
     },
     industryGet: async (req, res) => {
-
         try{
-        
             const industry = await jobIndustryModel.find().sort({ title: 1, createdAt: -1 });
 
             const industryInfo = await Promise.all(industry.map(async (iterate) => {
@@ -163,7 +161,6 @@ const jobController = {
             });
         }
         try{
-
             const {
                 job_title,
                 job_country,
@@ -242,6 +239,10 @@ const jobController = {
             .populate([{
                 path: "job_city",
                 model: "City",
+            }])
+            .populate([{
+                path: "user_id",
+                model: "User",
             }])
             .populate([{
                 path: "job_state",
@@ -869,6 +870,14 @@ const jobController = {
                 },
                 {
                     $lookup: {
+                        from: "users",
+                        localField:"user_id",
+                        foreignField:"_id",
+                        as: "owner_info",
+                    },
+                },
+                {
+                    $lookup: {
                         from: "jobapplies", // the collection name to join with
                         let: { jobId: "$_id" }, // variables to use in the pipeline
                         pipeline: [
@@ -1114,6 +1123,11 @@ const jobController = {
                             {
                                 path: "business_info", 
                                 model: "BusinessPost", 
+                            },
+                            {
+                                path: "user_id", 
+                                model: "User", 
+                                as: "Owner",
                             },
                             
                         ],
