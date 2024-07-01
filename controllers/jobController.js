@@ -837,117 +837,247 @@ const jobController = {
         //     searchArray
         // });
 
-        const job = await jobModel
-            .aggregate([
-                ...searchArray, // Spread searchArray into the pipeline stages
-                {
-                    $lookup: {
-                        from: "jobindustries",
-                        localField: "job_industry",
-                        foreignField: "_id",
-                        as: "job_industry_info",
-                    },
+        // pre
+        // const job = await jobModel
+        //     .aggregate([
+        //         ...searchArray, // Spread searchArray into the pipeline stages
+        //         {
+        //             $lookup: {
+        //                 from: "jobindustries",
+        //                 localField: "job_industry",
+        //                 foreignField: "_id",
+        //                 as: "job_industry_info",
+        //             },
+        //         },
+        //         {
+        //             $lookup: {
+        //                 from: "businessposts",
+        //                 localField: "business_info",
+        //                 foreignField: "_id",
+        //                 as: "company_info",
+        //             },
+        //         },
+        //         {
+        //             $lookup: {
+        //                 from: "cities",
+        //                 localField: "job_city",
+        //                 foreignField: "_id",
+        //                 as: "city_info",
+        //             },
+        //         },
+        //         {
+        //             $lookup: {
+        //                 from: "states",
+        //                 localField: "job_state",
+        //                 foreignField: "_id",
+        //                 as: "state_info",
+        //             },
+        //         },
+        //         {
+        //             $lookup: {
+        //                 from: "users",
+        //                 localField:"user_id",
+        //                 foreignField:"_id",
+        //                 as: "owner_info",
+        //             },
+        //         },
+        //         {
+        //             $lookup: {
+        //                 from: "jobapplies", // the collection name to join with
+        //                 let: { jobId: "$_id" }, // variables to use in the pipeline
+        //                 pipeline: [
+        //                     {
+        //                         $match: {
+        //                             $expr: {
+        //                                 $and: [
+        //                                     { $eq: ["$job_id", "$$jobId"] },
+        //                                     {
+        //                                         $eq: [
+        //                                             "$apply_by",
+        //                                             new mongoose.Types.ObjectId(user_id),
+        //                                         ],
+        //                                     },
+        //                                     { $eq: ["$status", 1] },
+        //                                 ],
+        //                             },
+        //                         },
+        //                     },
+        //                 ],
+        //                 as: "applications",
+        //             },
+        //         },
+        //         {
+        //             $lookup: {
+        //                 from: "jobwishlists", // the collection name to join with
+        //                 let: { jobId: "$_id" }, // variables to use in the pipeline
+        //                 pipeline: [
+        //                     {
+        //                         $match: {
+        //                             $expr: {
+        //                                 $and: [
+        //                                     { $eq: ["$job_id", "$$jobId"] },
+        //                                     {
+        //                                         $eq: ["$user_id", new mongoose.Types.ObjectId(user_id)],
+        //                                     },
+        //                                     { $eq: ["$status", 1] },
+        //                                 ],
+        //                             },
+        //                         },
+        //                     },
+        //                 ],
+        //                 as: "jobwishlist",
+        //             },
+        //         },
+        //         {
+        //             $addFields: {
+        //                 is_applied: {
+        //                     $cond: {
+        //                         if: { $gt: [{ $size: "$applications" }, 0] },
+        //                         then: true,
+        //                         else: false,
+        //                     },
+        //                 }, // check if applications array has any elements
+        //                 is_wishlist: {
+        //                     $cond: {
+        //                         if: { $gt: [{ $size: "$jobwishlist" }, 0] },
+        //                         then: true,
+        //                         else: false,
+        //                     },
+        //                 }, // check if applications array has any elements
+        //             },
+        //         },
+                
+        //     ])
+        //     .skip(skip)
+        //     .limit(limit).sort({ createdAt: -1 });;
+
+        const job = await jobModel.aggregate([
+            ...searchArray, // Spread searchArray into the pipeline stages
+            {
+                $lookup: {
+                    from: "jobindustries",
+                    localField: "job_industry",
+                    foreignField: "_id",
+                    as: "job_industry_info",
                 },
-                {
-                    $lookup: {
-                        from: "businessposts",
-                        localField: "business_info",
-                        foreignField: "_id",
-                        as: "company_info",
-                    },
+            },
+            {
+                $lookup: {
+                    from: "businessposts",
+                    localField: "business_info",
+                    foreignField: "_id",
+                    as: "company_info",
                 },
-                {
-                    $lookup: {
-                        from: "cities",
-                        localField: "job_city",
-                        foreignField: "_id",
-                        as: "city_info",
-                    },
+            },
+            {
+                $lookup: {
+                    from: "cities",
+                    localField: "job_city",
+                    foreignField: "_id",
+                    as: "city_info",
                 },
-                {
-                    $lookup: {
-                        from: "states",
-                        localField: "job_state",
-                        foreignField: "_id",
-                        as: "state_info",
-                    },
+            },
+            {
+                $lookup: {
+                    from: "states",
+                    localField: "job_state",
+                    foreignField: "_id",
+                    as: "state_info",
                 },
-                {
-                    $lookup: {
-                        from: "users",
-                        localField:"user_id",
-                        foreignField:"_id",
-                        as: "owner_info",
-                    },
+            },
+            {
+                $lookup: {
+                    from: "users",
+                    localField: "user_id",
+                    foreignField: "_id",
+                    as: "owner_info",
                 },
-                {
-                    $lookup: {
-                        from: "jobapplies", // the collection name to join with
-                        let: { jobId: "$_id" }, // variables to use in the pipeline
-                        pipeline: [
-                            {
-                                $match: {
-                                    $expr: {
-                                        $and: [
-                                            { $eq: ["$job_id", "$$jobId"] },
-                                            {
-                                                $eq: [
-                                                    "$apply_by",
-                                                    new mongoose.Types.ObjectId(user_id),
-                                                ],
-                                            },
-                                            { $eq: ["$status", 1] },
-                                        ],
-                                    },
+            },
+            {
+                $addFields: {
+                    owner_info: { $arrayElemAt: ["$owner_info", 0] } // Get the first element of the owner_info array
+                }
+            },
+            {
+                $lookup: {
+                    from: "jobapplies",
+                    let: { jobId: "$_id" },
+                    pipeline: [
+                        {
+                            $match: {
+                                $expr: {
+                                    $and: [
+                                        { $eq: ["$job_id", "$$jobId"] },
+                                        {
+                                            $eq: [
+                                                "$apply_by",
+                                                new mongoose.Types.ObjectId(user_id),
+                                            ],
+                                        },
+                                        { $eq: ["$status", 1] },
+                                    ],
                                 },
                             },
-                        ],
-                        as: "applications",
-                    },
+                        },
+                    ],
+                    as: "applications",
                 },
-                {
-                    $lookup: {
-                        from: "jobwishlists", // the collection name to join with
-                        let: { jobId: "$_id" }, // variables to use in the pipeline
-                        pipeline: [
-                            {
-                                $match: {
-                                    $expr: {
-                                        $and: [
-                                            { $eq: ["$job_id", "$$jobId"] },
-                                            {
-                                                $eq: ["$user_id", new mongoose.Types.ObjectId(user_id)],
-                                            },
-                                            { $eq: ["$status", 1] },
-                                        ],
-                                    },
+            },
+            {
+                $lookup: {
+                    from: "jobwishlists",
+                    let: { jobId: "$_id" },
+                    pipeline: [
+                        {
+                            $match: {
+                                $expr: {
+                                    $and: [
+                                        { $eq: ["$job_id", "$$jobId"] },
+                                        {
+                                            $eq: ["$user_id", new mongoose.Types.ObjectId(user_id)],
+                                        },
+                                        { $eq: ["$status", 1] },
+                                    ],
                                 },
                             },
-                        ],
-                        as: "jobwishlist",
+                        },
+                    ],
+                    as: "jobwishlist",
+                },
+            },
+            {
+                $addFields: {
+                    is_applied: {
+                        $cond: {
+                            if: { $gt: [{ $size: "$applications" }, 0] },
+                            then: true,
+                            else: false,
+                        },
+                    },
+                    is_wishlist: {
+                        $cond: {
+                            if: { $gt: [{ $size: "$jobwishlist" }, 0] },
+                            then: true,
+                            else: false,
+                        },
                     },
                 },
-                {
-                    $addFields: {
-                        is_applied: {
-                            $cond: {
-                                if: { $gt: [{ $size: "$applications" }, 0] },
-                                then: true,
-                                else: false,
-                            },
-                        }, // check if applications array has any elements
-                        is_wishlist: {
-                            $cond: {
-                                if: { $gt: [{ $size: "$jobwishlist" }, 0] },
-                                then: true,
-                                else: false,
-                            },
-                        }, // check if applications array has any elements
-                    },
-                },
-            ])
-            .skip(skip)
-            .limit(limit).sort({ createdAt: -1 });;
+            },
+            {
+                $match: {
+                    "owner_info.is_delete": false // Filter documents where owner_info.status is 1
+                }
+            },
+            {
+                $skip: skip
+            },
+            {
+                $limit: limit
+            },
+            {
+                $sort: { createdAt: -1 }
+            }
+        ]);
 
             const allJob = await jobModel
             .aggregate([
@@ -1114,7 +1244,7 @@ const jobController = {
             const info = new URL(req.url, `http://${req.headers.host}`);
             const searchParams = info.searchParams;
             var wishlist = await jobWishListModel
-                .find({ user_id: user_id })
+                .find({ user_id: user_id})
                 .populate([
                     {
                         path: "job_id",
@@ -1130,13 +1260,17 @@ const jobController = {
                             },
                             {
                                 path: "user_id", 
-                                model: "User", 
-                                as: "Owner",
+                                model: "User",
                             },
                             
                         ],
                     }
                 ]);
+
+              
+
+                wishlist = await wishlist.filter(item => item.job_id.user_id.is_delete == 0);
+        
 
 
                 const myApplyList = await jobApplyModel.find({ apply_by: user_id }).select('job_id');
