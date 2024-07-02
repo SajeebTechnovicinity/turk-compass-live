@@ -951,6 +951,9 @@ const jobController = {
         //     .skip(skip)
         //     .limit(limit).sort({ createdAt: -1 });;
 
+        const currentDate = new Date();
+        const thirtyDaysAgo = new Date(currentDate.setDate(currentDate.getDate() - 30));
+
         const job = await jobModel.aggregate([
             ...searchArray, // Spread searchArray into the pipeline stages
             {
@@ -1008,12 +1011,7 @@ const jobController = {
                                 $expr: {
                                     $and: [
                                         { $eq: ["$job_id", "$$jobId"] },
-                                        {
-                                            $eq: [
-                                                "$apply_by",
-                                                new mongoose.Types.ObjectId(user_id),
-                                            ],
-                                        },
+                                        { $eq: ["$apply_by", new mongoose.Types.ObjectId(user_id)] },
                                         { $eq: ["$status", 1] },
                                     ],
                                 },
@@ -1033,9 +1031,7 @@ const jobController = {
                                 $expr: {
                                     $and: [
                                         { $eq: ["$job_id", "$$jobId"] },
-                                        {
-                                            $eq: ["$user_id", new mongoose.Types.ObjectId(user_id)],
-                                        },
+                                        { $eq: ["$user_id", new mongoose.Types.ObjectId(user_id)] },
                                         { $eq: ["$status", 1] },
                                     ],
                                 },
@@ -1065,7 +1061,8 @@ const jobController = {
             },
             {
                 $match: {
-                    "owner_info.is_delete": false // Filter documents where owner_info.status is 1
+                    "owner_info.is_delete": false, // Filter documents where owner_info.is_delete is false
+                    createdAt: { $gte:thirtyDaysAgo }
                 }
             },
             {
@@ -1078,6 +1075,9 @@ const jobController = {
                 $sort: { createdAt: -1 }
             }
         ]);
+
+
+   
 
             const allJob = await jobModel
             .aggregate([

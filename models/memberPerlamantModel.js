@@ -55,11 +55,9 @@ const memberPerlamantSchema = new mongoose.Schema({
     },
     hill_office_telephone: {
         type: String,
-        required: true
     },
     hill_office_fax: {
         type: String,
-        required: true
     },
     constituency_office_main_office: {
         type: String,
@@ -67,11 +65,9 @@ const memberPerlamantSchema = new mongoose.Schema({
     },
     constituency_telephone: {
         type: String,
-        required: true
     },
     constituency_fax: {
         type: String,
-        required: true
     },
     status: {
         type: Number,

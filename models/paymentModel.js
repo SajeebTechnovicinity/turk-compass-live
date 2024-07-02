@@ -4,7 +4,7 @@ const paymentSchema = new mongoose.Schema(
   {
     type: {
         type: String,
-        enum: ["event", "subscription"],
+        enum: ["event", "subscription","banner"],
         required: true,
       },
     user_id: {

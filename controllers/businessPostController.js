@@ -250,10 +250,20 @@ const businessPostController = {
       let limit = Number(searchParams.get("limit")) || 12;
       let skip = (page - 1) * limit;
 
-      let query = { is_delete: false };
+  
+
+
+
+      const currentDate = new Date();
+      const thirtyDaysAgo = new Date(currentDate);
+      thirtyDaysAgo.setDate(currentDate.getDate() - 30);
+      
+      // let query = { is_delete: false,createdAt: { $gte: thirtyDaysAgo }};
+      let query = { is_delete: false};
 
       if (sub_category != null) {
-        query = { sub_category: sub_category, is_delete: false };
+        // query = { sub_category: sub_category, is_delete: false,createdAt: { $gte: thirtyDaysAgo }};
+        query = {sub_category: sub_category, is_delete: false};
       }
 
       const count = await businessPostModel.countDocuments(query);

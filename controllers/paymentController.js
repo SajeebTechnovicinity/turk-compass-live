@@ -36,15 +36,22 @@ const stripePaymentController=async(req,res)=>{
 
 const stripePaymentSuccess = async (req, res) => {
     const { sessionId } = req.body;
+  
     var user_data;
     var userInfo = await AuthUser(req);
 
     try {
         const session = await stripe.checkout.sessions.retrieve(sessionId);
 
+        
+
         if (session.payment_status === 'paid') {
+
+         
+
             const subscriptionId = session.subscription;
             const subscription = await stripe.subscriptions.retrieve(subscriptionId);
+
 
             if (!userInfo) {
                 return res.status(401).send({
@@ -52,6 +59,7 @@ const stripePaymentSuccess = async (req, res) => {
                     message: "Unauthorized user",
                 });
             }
+          
             const planId = subscription.plan.id;
             let planType = "free";
             const amount = subscription.plan.amount;
@@ -65,6 +73,7 @@ const stripePaymentSuccess = async (req, res) => {
             const durationInSeconds = subscription.current_period_end - subscription.current_period_start;
             const durationInDays = moment.duration(durationInSeconds, 'seconds').asDays();
 
+
             user_data = await userModel.findOneAndUpdate(
                 { _id: userInfo.id },
                 {
@@ -76,10 +85,8 @@ const stripePaymentSuccess = async (req, res) => {
                     }
                 }
             );
-
-            amount=amount/100;
-            paymentModel.create({type:"subscription", user_id: userInfo.id, amount: amount,payment_id:subscriptionId});
-
+           var payment=amount/100;
+            paymentModel.create({type:"subscription", user_id: userInfo.id, amount: payment,payment_id:subscriptionId});
             return res.status(200).send({
                 success: true,
                 message: "Stripe payment successful",

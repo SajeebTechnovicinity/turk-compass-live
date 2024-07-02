@@ -10,6 +10,9 @@ router.use("/app-info", require("./routes/appInfoRoute"));
 router.use("/contact", require("./routes/contactRoute"));
 router.use("/stripe", require("./routes/stripeRoute"));
 router.use("/faq", require("./routes/faqRoutes"));
+
+
+router.use("/banner", require("./routes/bannerRoute"));
 router.use(requestLogger);
 // middleware checks for all routes
 
