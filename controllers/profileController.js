@@ -1,11 +1,13 @@
 // Import necessary modules
 const userModel = require("../models/userModel");
 const bcrypt = require("bcrypt");
-const { uploadImageToCloudinary, isBase64Image } = require("../utils/helper");
+const { uploadImageToCloudinary, isBase64Image, sendPushNotification } = require("../utils/helper");
 const { AuthUser } = require("../utils/helper");
 const durationSlotModel = require("../models/durationSlotModel");
 const businessPostModel = require("../models/businessPostModel");
 const jobProfileModel = require("../models/jobProfileModel");
+const reservationModel = require("../models/reservationModel");
+const notificationModel = require("../models/notificationModel");
 // Define profile Controller methods
 const profileController = {
   // Method to create a new businessPost
@@ -53,7 +55,7 @@ const profileController = {
 
       const userCount = await userModel.countDocuments({ _id: user_id });
 
-      if (userCount==0) {
+      if (userCount == 0) {
         return res.status(401).send({
           success: true,
           message: "Unauthorized access",
@@ -152,7 +154,7 @@ const profileController = {
 
       const userCount = await userModel.countDocuments({ _id: user_id });
 
-      if (userCount==0) {
+      if (userCount == 0) {
         return res.status(401).send({
           success: true,
           message: "Unauthorized access",
@@ -195,8 +197,6 @@ const profileController = {
           path: "city",
           model: "City",
         });
-
-
 
       res.status(200).send({
         success: true,
@@ -385,13 +385,13 @@ const profileController = {
       if (work_visa) {
         query = { work_visa: work_visa };
       }
-      if (work_visa==0) {
+      if (work_visa == 0) {
         query = { work_visa: work_visa };
       }
       if (education) {
         query = { education: education };
       }
-      
+
       if (skill) {
         query = { skill: skill };
       }
@@ -401,7 +401,7 @@ const profileController = {
       if (eligibility) {
         query = { eligibility: eligibility };
       }
-      if (eligibility==0) {
+      if (eligibility == 0) {
         query = { eligibility: eligibility };
       }
       if (defalut_cv) {
@@ -540,7 +540,7 @@ const profileController = {
       user_id = user_info.id;
       const userCount = await userModel.countDocuments({ _id: user_id });
 
-      if (userCount==0) {
+      if (userCount == 0) {
         return res.status(401).send({
           success: true,
           message: "Unauthorized access",
@@ -614,27 +614,30 @@ const profileController = {
     }
   },
 
-  profileStatusActiveInactive:async (req, res) =>{
-    try{
+  profileStatusActiveInactive: async (req, res) => {
+    try {
       const info = new URL(req.url, `http://${req.headers.host}`);
       const searchParams = info.searchParams;
-      let id = searchParams.get('id');
-      let user=await userModel.findOne({_id:id});
-      let userInfo=await userModel.findOneAndUpdate({_id:id},{status:user.status==1?0:1});
-        res.status(200).send({
-            success: true,
-            message: 'Successfully Status Updated',
-            userInfo
-        });
-    }catch (error) {
-        console.log(error);
-        res.status(500).send({
-            success: false,
-            message: 'Error in fetching',
-            error: error.message
-        });
+      let id = searchParams.get("id");
+      let user = await userModel.findOne({ _id: id });
+      let userInfo = await userModel.findOneAndUpdate(
+        { _id: id },
+        { status: user.status == 1 ? 0 : 1 }
+      );
+      res.status(200).send({
+        success: true,
+        message: "Successfully Status Updated",
+        userInfo,
+      });
+    } catch (error) {
+      console.log(error);
+      res.status(500).send({
+        success: false,
+        message: "Error in fetching",
+        error: error.message,
+      });
     }
-},
+  },
   businessProfileActiveInactive: async (req, res) => {
     try {
       const info = new URL(req.url, `http://${req.headers.host}`);
@@ -645,8 +648,47 @@ const profileController = {
         { _id: id },
         { is_delete: !businessProfile.is_delete }
       );
+      if (businessProfile.is_delete === false) {
+        let today = new Date();
+        let todayStr = today.toISOString().split("T")[0]; // Convert to YYYY-MM-DD format
+
+        let reservations = await reservationModel
+          .find({
+            business_post: businessProfile._id,
+            slot_date: { $gte: todayStr },
+          })
+          .populate({
+            path: "user",
+            model: "User",
+          });
+        let reservationCancel = await reservationModel.findOneAndUpdate(
+          {
+            business_post: businessProfile._id,
+            slot_date: { $gte: todayStr },
+          },
+          { is_canceled: 1 }
+        );
+        let title = "Reservation Canceled";
+        let description = "Reservation canceled for inactive the business";
+
+        for (const is_reservation_available of reservations) {
+          let userInfo_individual = await userModel.findOne({ _id: is_reservation_available.user });
+          // Send push notification
+          sendPushNotification(title, description, userInfo_individual.device_token);
+        
+          // Create notification record in the database
+          await notificationModel.create({
+            user: userInfo_individual._id,
+            title: title,
+            description: description,
+            image: businessProfile.image,
+          });
+        }
+     }
+
       res.status(200).send({
         success: true,
+        // today: new Date(),
         message: "Successfully Status Updated",
         userInfo,
       });
