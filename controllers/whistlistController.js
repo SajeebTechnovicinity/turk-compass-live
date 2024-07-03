@@ -41,10 +41,16 @@ const whistlistController = {
         try {
             const user_info= await AuthUser(req);
             const user=user_info.id;
+            // res.status(200).send({
+            //     success: true,
+            //     message: "Whistlist Retrieved Successfully",
+            //     user
+            // });
             const whishlists = await whistlistModel.find({user:user}).populate([
                 {
                     path:"business_post",
                     model:"BusinessPost",
+                    match: { is_delete: false },
                     populate:({
                         path:"tag",
                         model:"Tag"
@@ -56,10 +62,12 @@ const whistlistController = {
                 },
             
             ]).sort({createdAt:-1});
+        
+            const filteredWishlists = whishlists.filter(wishlist => wishlist.business_post !== null);
             res.status(200).send({
                 success: true,
                 message: "Whistlist Retrieved Successfully",
-                whishlists
+                whishlists:filteredWishlists
             });
         } catch (error) {
             console.log(error);
