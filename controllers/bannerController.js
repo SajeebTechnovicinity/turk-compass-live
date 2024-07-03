@@ -7,18 +7,33 @@ const stripe = require('stripe')(process.env.STRIPE_KEY);
 
 const bannerController = {
     createUpdate: async (req, res) => {
-
-        const user_info = await AuthUser(req);
-        const user_id = user_info.id;
         try {
+            const user_info = await AuthUser(req);
+            const user_id = user_info.id;
             let { title,
                 offer_title,
                 link,
                 cover_img, id } = req.body;
             let isBase64 = isBase64Image(cover_img);
             var bannerInfo;
-            if (isBase64) {
+        
+            if (isBase64 && cover_img) {
                 cover_img = await uploadImageToCloudinary(cover_img);
+            }
+            if(id){
+                let query={title,offer_title,link}
+                if(cover_img){
+                    query.cover_img=cover_img
+                }
+                bannerInfo = await bannerModel.findByIdAndUpdate({_id:id},query,{new: true}),
+                res.status(200).send({
+                    success:true,
+                    message: "Successfully updated",
+                    bannerInfo
+                })
+                
+            }else{
+             
                 bannerInfo = await bannerModel.create({title,offer_title,link,cover_img,user_id})
             }
             // stripe payment
