@@ -18,21 +18,23 @@ const dashboardController = {
         const searchParams = info.searchParams;
         try {
             let activeUser = await userModel.countDocuments({is_delete: 0});
-            let inactiveUser = await userModel.countDocuments({
-                $or: [
-                  { is_delete: 1 },
-                  { status: 0 }
-                ]
-              });
-            let totalUser = await userModel.countDocuments({is_delete: false,status: 1});
+        
+            let totalUser = await userModel.countDocuments({is_delete: false,status: 1,is_email_verified:1})-1;
+            let inactiveUser = await userModel.countDocuments()-totalUser-1;
+            // let inactiveUser = await userModel.countDocuments({
+            //     $or: [
+            //       { is_delete: 1 },
+            //       { status: 0 }
+            //     ]
+            //   });
             let totalCanceledReservations = await reservationModel.countDocuments({is_canceled: 1});
             let totalConfirmedReservations = await reservationModel.countDocuments({is_canceled: 0});
             let totalJob = await jobModel.countDocuments({is_delete: 0});
-            let freeUser = await userModel.countDocuments({package_type:'free'});
-            let premiumUser = await userModel.countDocuments({package_type:'premium'});
-            let jobSeekerUser = await userModel.countDocuments({package_type:'job_seeker'});
-            let premium_employer= await userModel.countDocuments({package_type:'premium_employer'});
-            let general_employer= await userModel.countDocuments({package_type:'general_employer'});
+            let freeUser = await userModel.countDocuments({package_type:'free',is_delete: false,status: 1,is_email_verified:1});
+            let premiumUser = await userModel.countDocuments({package_type:'premium',is_delete: false,status: 1,is_email_verified:1});
+            let jobSeekerUser = await userModel.countDocuments({package_type:'job_seeker',is_delete: false,status: 1,is_email_verified:1});
+            let premium_employer= await userModel.countDocuments({package_type:'premium_employer',is_delete: false,status: 1,is_email_verified:1});
+            let general_employer= await userModel.countDocuments({package_type:'general_employer',is_delete: false,status: 1,is_email_verified:1});
             let totalActiveBusinessPost = await businessPostModel.countDocuments({is_delete: 0});
             let totalInactiveBusinessPost = await businessPostModel.countDocuments({is_delete: 1});
             let totalCategory= await categoryModel.countDocuments({is_delete:0})-2;
