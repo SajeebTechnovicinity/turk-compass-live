@@ -130,7 +130,8 @@ const businessClaimController = {
 
       let business_post_user_id;
 
-      if (businessClaim.user.email != businessClaim.contact_email) {
+
+      if (businessClaim.user.email !== businessClaim.contact_email) {
         // check
         let contact_email = businessClaim.contact_email;
         const exisiting = await userModel.findOne({ email: contact_email });
@@ -149,85 +150,152 @@ const businessClaimController = {
           userName: businessClaim.contact_name,
           email: contact_email,
           password: hashPassword,
-          package_type:'general_employer',
+          package_type: "general_employer",
           usertype: "business-owner",
         });
         business_post_user_id = userInfo._id;
+
+
+        let emailTemplatePath, email_subject;
+        let userDetails = await userModel.findById(business_post_user_id);
+        if (userDetails.language == "tr") {
+          emailTemplatePath = path.resolve(
+            __dirname,
+            "views",
+            "mails",
+            "claim_mail_turkish.ejs"
+          );
+          email_subject = "Turk’s Compass’a  Postası";
+        } else {
+          emailTemplatePath = path.resolve(
+            __dirname,
+            "views",
+            "mails",
+            "claim_mail.ejs"
+          );
+          email_subject = "Turk's Compass's Claim Mail";
+        }
+  
+        const emailTemplate = fs.readFileSync(emailTemplatePath, "utf-8");
+        const resetLink = "link";
+        const mailContent = ejs.render(emailTemplate, {
+          resetLink,
+          name: userDetails.userName,
+          password,
+        });
+        const transporter = nodemailer.createTransport({
+          host: "smtp.gmail.com",
+          port: 465,
+          secure: true, // Set to false for explicit TLS
+          auth: {
+            user: "turkscompass@gmail.com",
+            pass: "avrucxhaxvgdcjef",
+          },
+          tls: {
+            // Do not fail on invalid certificates
+            //rejectUnauthorized: false,
+          },
+        });
+        let mailOptions = {
+          from: process.env.EMAIL_USER,
+          to: userDetails.email,
+          subject: email_subject,
+          html: mailContent,
+        };
+  
+        // Send the email
+        await transporter.sendMail(mailOptions);
+
+
       } else {
         business_post_user_id = businessClaim.user._id;
-        let userDetailsForBusinessPost=await userModel.findById(businessClaim.user._id);
+        let userDetailsForBusinessPost = await userModel.findById(
+          businessClaim.user._id
+        );
 
-        let businessPostCount = await businessPostModel.countDocuments({user:businessClaim.user._id});
-        if(businessPostCount>0)
-          {
-            return res.status(200).send({
-              success: false,
-              message: "Already a Business post created for this user.Please try with another email",
-            });
-          }
-        if(userDetailsForBusinessPost!='premium_employer')
-        {
-          await userModel.findOneAndUpdate({_id:businessClaim.user._id},{package_type:general_employer});
-        } 
+        let businessPostCount = await businessPostModel.countDocuments({
+          user: businessClaim.user._id,
+        });
+        if (businessPostCount > 0) {
+          return res.status(200).send({
+            success: false,
+            message:
+              "Already a Business post created for this user.Please try with another email",
+          });
+        }
+        if (userDetailsForBusinessPost != "premium_employer") {
+          await userModel.findOneAndUpdate(
+            { _id: businessClaim.user._id },
+            { package_type: "general_employer" }
+          );
+        }
+
+        let emailTemplatePath, email_subject;
+        let userDetails = await userModel.findById(business_post_user_id);
+        if (userDetails.language == "tr") {
+          emailTemplatePath = path.resolve(
+            __dirname,
+            "views",
+            "mails",
+            "claim_mail_old_account_turkish.ejs"
+          );
+          email_subject = "Turk’s Compass’a  Postası";
+        } else {
+          emailTemplatePath = path.resolve(
+            __dirname,
+            "views",
+            "mails",
+            "claim_mail_old_account.ejs"
+          );
+          email_subject = "Turk's Compass's Claim Mail";
+        }
+  
+        const emailTemplate = fs.readFileSync(emailTemplatePath, "utf-8");
+        const resetLink = "link";
+        const mailContent = ejs.render(emailTemplate, {
+          resetLink,
+          name: userDetails.userName,
+          password,
+        });
+        const transporter = nodemailer.createTransport({
+          host: "smtp.gmail.com",
+          port: 465,
+          secure: true, // Set to false for explicit TLS
+          auth: {
+            user: "turkscompass@gmail.com",
+            pass: "avrucxhaxvgdcjef",
+          },
+          tls: {
+            // Do not fail on invalid certificates
+            //rejectUnauthorized: false,
+          },
+        });
+        let mailOptions = {
+          from: process.env.EMAIL_USER,
+          to: userDetails.email,
+          subject: email_subject,
+          html: mailContent,
+        };
+  
+        // Send the email
+        await transporter.sendMail(mailOptions);
+
+
+
       }
       let business_post_update_user = await businessPostModel.findOneAndUpdate(
         { _id: businessClaim.business_post },
-        { user:business_post_user_id, business_name: businessClaim.business_name }
+        {
+          user: business_post_user_id,
+          business_name: businessClaim.business_name,
+        }
       );
       let member = await businessClaimModel.findOneAndUpdate(
         { _id: id },
         { status: 1 }
       );
 
-      let emailTemplatePath, email_subject;
-      let userDetails = await userModel.findById(business_post_user_id);
-      if (userDetails.language == "tr") {
-        emailTemplatePath = path.resolve(
-          __dirname,
-          "views",
-          "mails",
-          "claim_mail_turkish.ejs"
-        );
-        email_subject = "Turk’s Compass’a  Postası";
-      } else {
-        emailTemplatePath = path.resolve(
-          __dirname,
-          "views",
-          "mails",
-          "claim_mail.ejs"
-        );
-        email_subject = "Turk's Compass's Claim Mail";
-      }
-
-      const emailTemplate = fs.readFileSync(emailTemplatePath, "utf-8");
-      const resetLink = "link";
-      const mailContent = ejs.render(emailTemplate, {
-        resetLink,
-        name: userDetails.userName,
-        password,
-      });
-      const transporter = nodemailer.createTransport({
-        host: "smtp.gmail.com",
-        port: 465,
-        secure: true, // Set to false for explicit TLS
-        auth: {
-          user: "turkscompass@gmail.com",
-          pass: "avrucxhaxvgdcjef",
-        },
-        tls: {
-          // Do not fail on invalid certificates
-          //rejectUnauthorized: false,
-        },
-      });
-      let mailOptions = {
-        from: process.env.EMAIL_USER,
-        to: userDetails.email,
-        subject: email_subject,
-        html: mailContent,
-      };
-
-      // Send the email
-      await transporter.sendMail(mailOptions);
+  
 
       res.status(200).send({
         success: true,
