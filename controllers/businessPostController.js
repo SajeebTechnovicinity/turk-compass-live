@@ -542,12 +542,25 @@ const businessPostController = {
       let user_id = searchParams.get("user_id");
 
       const profile = await userModel.findById(user_id);
+
+      const businessCount= await businessPostModel.countDocuments({ user: user_id });
+
+      if(businessCount<=0)
+      {
+        return res.status(403).send({
+          success: false,
+          message: "User does not have any business",
+        });
+      }
+  
       const businessProfile = await businessPostModel
         .findOne({ user: user_id })
         .populate({
           path: "user",
           model: "User",
         });
+
+
 
       const user_info = await AuthUser(req);
       const userId = user_info.id;
