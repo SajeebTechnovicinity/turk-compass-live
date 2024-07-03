@@ -1093,8 +1093,6 @@ const jobController = {
         ]);
 
 
-   
-
             const allJob = await jobModel
             .aggregate([
                 ...searchArray, // Spread searchArray into the pipeline stages

@@ -106,8 +106,12 @@ const bannerController = {
         thirtyDaysAgo.setDate(currentDate.getDate() - 30);
         
         let query = { payment_status:1,createdAt: { $gte: thirtyDaysAgo }};
-
-        const bannerList=await bannerModel.find(query)
+        // const bannerList=await bannerModel.find(query)
+        var random = Math.floor(Math.random())
+        const bannerList = await bannerModel.aggregate([
+            { $match: query },
+            { $sample:  { size: 10 } } // Adjust the size as needed
+        ]);
         res.status(200).send({
             success: true,
             message: "banner list",
