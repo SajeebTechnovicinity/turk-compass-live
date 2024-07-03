@@ -973,6 +973,22 @@ const jobController = {
                 },
             },
             {
+                $addFields: {
+                    company_info: {
+                        $filter: {
+                            input: "$company_info",
+                            as: "company",
+                            cond: { $eq: ["$$company.is_delete", false] }
+                        }
+                    }
+                }
+            },
+            {
+                $match: {
+                    company_info: { $ne: [] } // Filter out documents where company_info is an empty array
+                }
+            },
+            {
                 $lookup: {
                     from: "cities",
                     localField: "job_city",

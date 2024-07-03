@@ -19,7 +19,7 @@ const bannerController = {
             var bannerInfo;
             if (isBase64) {
                 cover_img = await uploadImageToCloudinary(cover_img);
-                bannerInfo = await bannerModel.create({ title, offer_title, link, cover_img,user_id })
+                bannerInfo = await bannerModel.create({title,offer_title,link,cover_img,user_id})
             }
             // stripe payment
             let bannerId = bannerInfo._id;

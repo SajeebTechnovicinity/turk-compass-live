@@ -432,12 +432,14 @@ const verifyCodeController = async (req, res) => {
 const resetPasswordController = async (req, res) => {
   const { email } = req.body;
   var userInfo = await userModel.findOne({ email: email });
+  var lang="en"
   if (!userInfo) {
     return res.status(403).send({
       success: false,
       message: "No user found",
     });
   }
+  lang=userInfo.language;
   if (userInfo.is_delete==1) {
     return res.status(403).send({
       success: false,
@@ -448,7 +450,7 @@ const resetPasswordController = async (req, res) => {
 
   userInfo = await userModel.findOneAndUpdate(
     { email: email }, // Query criteria to find the document
-    { reset_code: code, reset_code_time: new Date() }, // Update object
+    { reset_code: code,reset_code_time: new Date() }, // Update object
     { new: true } // Option to return the updated document
   );
 
@@ -471,6 +473,7 @@ const resetPasswordController = async (req, res) => {
     name: userInfo.userName,
     date: new Date(),
     code: userInfo.reset_code,
+    lang:lang,
   });
   const transporter = nodemailer.createTransport({
     host: "smtp.gmail.com",
