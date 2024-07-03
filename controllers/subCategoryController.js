@@ -81,7 +81,7 @@ const subCategoryController = {
             // Iterate through each subcategory
             for (let subCategory of subCategories) {
                 // Count the number of business posts for the current subcategory
-                let businessPostCount = await businessPostModel.countDocuments({ sub_category: subCategory._id });
+                let businessPostCount = await businessPostModel.countDocuments({ sub_category: subCategory._id,is_delete:false });
                 
                 console.log(`Subcategory: ${subCategory.name}, Business Post Count: ${businessPostCount}`);
                 // Attach the businessPostCount to the current subcategory object
