@@ -19,8 +19,8 @@ const dashboardController = {
         try {
             let activeUser = await userModel.countDocuments({is_delete: 0});
         
-            let totalUser = await userModel.countDocuments({is_delete: false,status: 1,is_email_verified:1})-1;
-            let inactiveUser = await userModel.countDocuments()-totalUser-1;
+            let totalUser = await userModel.countDocuments({is_delete: false,status: 1,is_email_verified:1});
+            let inactiveUser = await userModel.countDocuments()-totalUser;
             // let inactiveUser = await userModel.countDocuments({
             //     $or: [
             //       { is_delete: 1 },
