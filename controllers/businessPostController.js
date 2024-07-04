@@ -281,7 +281,7 @@ const businessPostController = {
           { path: "city", model: "City" },
           { path: "tag", model: "Tag" },
         ])
-        .sort({ createdAt: -1 })
+        .sort({ business_name: 1 })
         .skip(skip)
         .limit(limit);
 
@@ -347,7 +347,7 @@ const businessPostController = {
           { path: "state", model: "State" },
           { path: "city", model: "City" },
         ])
-        .sort({ createdAt: -1 })
+        .sort({ business_name:1 })
         .skip(skip)
         .limit(limit);
 
@@ -514,7 +514,7 @@ const businessPostController = {
             model: "Tag",
           },
         ])
-        .sort({ createdAt: -1 })
+        .sort({ business_name:1 })
         .skip(skip)
         .limit(limit);
 

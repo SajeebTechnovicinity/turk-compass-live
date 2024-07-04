@@ -9,5 +9,6 @@ router.post('/create', businessClaimController.create);
 router.get('/list', businessClaimController.list);
 
 router.get('/approve', businessClaimController.approve);
+router.get('/reject', businessClaimController.reject);
 
 module.exports = router;
