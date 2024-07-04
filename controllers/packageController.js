@@ -22,6 +22,24 @@ const packageController=(req,res)=>{
                     ],
                 },
                 {
+                    'title':"job_seeker",
+                    'description':{job_seeker_access:0,ads:0,compass:0,monthly_price:1.99,verify_employers:0,review_job_applications:0,custom_questions:0,stripe_product:'price_1PIkNPJ4eJxlN0V7xWTlJeDr'},
+                    "package_benefit": [
+                        {
+                            "details":"Access to job listings and job application features",
+                            "tooltip":"Subscribers can view and apply for job opportunities listed in the app, providing a valuable resource for those seeking employment."
+                        },
+                        {
+                            "details":"Ad-supported experience",
+                            "tooltip":"Despite the low monthly fee, this tier still includes advertisements, ensuring the subscription remains affordable while generating revenue."
+                        },
+                        {
+                            "details":"No Compass+ access",
+                            "tooltip":"Users do not have access to premium features like AI-supported personalized advice or resume and cover letter building tools."
+                        }
+                    ]
+                },
+                {
                     'title':"premium",
                     'description':{job_seeker_access:0,ads:0,compass:0,monthly_price:4.99,verify_employers:4.99,review_job_applications:0,custom_questions:0,stripe_product:'price_1PDKejJ4eJxlN0V78W518dgE'},
                     "package_benefit": [
@@ -42,22 +60,27 @@ const packageController=(req,res)=>{
                    
                 },
                 {
-                    'title':"job_seeker",
-                    'description':{job_seeker_access:0,ads:0,compass:0,monthly_price:1.99,verify_employers:0,review_job_applications:0,custom_questions:0,stripe_product:'price_1PIkNPJ4eJxlN0V7xWTlJeDr'},
+                    'title':"general_employer",
+                    'description':{job_seeker_access:0,ads:0,compass:0,monthly_price:0,verify_employers:0,review_job_applications:0,custom_questions:0},
                     "package_benefit": [
                         {
-                            "details":"Access to job listings and job application features",
-                            "tooltip":"Subscribers can view and apply for job opportunities listed in the app, providing a valuable resource for those seeking employment."
+                            "details":"Access to basic app features",
+                            "tooltip":"Employers can explore essential functionalities of the Turk’s Compass app, such as browsing through the main categories of businesses and services without any cost."
                         },
+                        {
+                            "details":"View business listings and events",
+                            "tooltip":"Employers can see various business listings, including restaurants, healthcare providers, and other services, as well as upcoming community events and promotions."
+                        },         
                         {
                             "details":"Ad-supported experience",
-                            "tooltip":"Despite the low monthly fee, this tier still includes advertisements, ensuring the subscription remains affordable while generating revenue."
+                            "tooltip":"This tier includes advertisements displayed throughout the app, which helps keep the basic features free for users."
                         },
                         {
-                            "details":"No Compass+ access",
-                            "tooltip":"Users do not have access to premium features like AI-supported personalized advice or resume and cover letter building tools."
-                        }
+                            "details":"No “Premium Employer” features",
+                            "tooltip":"The Basic Employer tier lacks premium features such as the Blue Tick status badge and the ability to ask custom questions to job applicants on the job portal."
+                        },
                     ]
+    
                 },
                 {
                     'title':"premium_employer",
@@ -89,30 +112,7 @@ const packageController=(req,res)=>{
                             "tooltip":"This tier provides an ad-free experience for employers, allowing them to focus solely on managing job postings and applications without distractions."
                         }
                     ]
-                },
-                {
-                    'title':"general_employer",
-                    'description':{job_seeker_access:0,ads:0,compass:0,monthly_price:0,verify_employers:0,review_job_applications:0,custom_questions:0},
-                    "package_benefit": [
-                        {
-                            "details":"Access to basic app features",
-                            "tooltip":"Employers can explore essential functionalities of the Turk’s Compass app, such as browsing through the main categories of businesses and services without any cost."
-                        },
-                        {
-                            "details":"View business listings and events",
-                            "tooltip":"Employers can see various business listings, including restaurants, healthcare providers, and other services, as well as upcoming community events and promotions."
-                        },         
-                        {
-                            "details":"Ad-supported experience",
-                            "tooltip":"This tier includes advertisements displayed throughout the app, which helps keep the basic features free for users."
-                        },
-                        {
-                            "details":"No “Premium Employer” features",
-                            "tooltip":"The Basic Employer tier lacks premium features such as the Blue Tick status badge and the ability to ask custom questions to job applicants on the job portal."
-                        },
-                    ]
-    
-                },
+                }
           ]
         )
     }catch(error){
