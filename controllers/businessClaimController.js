@@ -116,7 +116,26 @@ const businessClaimController = {
 
   approve: async (req, res) => {
     try {
-      const password = "12345678Aa";
+
+      //random password with at least one uppercase letter, one lowercase letter, one digit, and at least 8 characters in length:
+      const uppercase = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+      const lowercase = "abcdefghijklmnopqrstuvwxyz";
+      const digits = "0123456789";
+      const allChars = uppercase + lowercase + digits;
+  
+      let password = "";
+      password += uppercase[Math.floor(Math.random() * uppercase.length)];
+      password += lowercase[Math.floor(Math.random() * lowercase.length)];
+      password += digits[Math.floor(Math.random() * digits.length)];
+  
+      for (let i = 3; i < 8; i++) {
+          password += allChars[Math.floor(Math.random() * allChars.length)];
+      }
+  
+      // Shuffle the password to avoid predictable sequences
+      password = password.split('').sort(() => 0.5 - Math.random()).join('');
+
+      //const password = "12345678Aa";
       const info = new URL(req.url, `http://${req.headers.host}`);
       const searchParams = info.searchParams;
       let id = searchParams.get("id");
@@ -129,7 +148,6 @@ const businessClaimController = {
         ]);
 
       let business_post_user_id;
-
 
       if (businessClaim.user.email !== businessClaim.contact_email) {
         // check
@@ -155,7 +173,6 @@ const businessClaimController = {
         });
         business_post_user_id = userInfo._id;
 
-
         let emailTemplatePath, email_subject;
         let userDetails = await userModel.findById(business_post_user_id);
         if (userDetails.language == "tr") {
@@ -175,7 +192,7 @@ const businessClaimController = {
           );
           email_subject = "Turk's Compass's Claim Mail";
         }
-  
+
         const emailTemplate = fs.readFileSync(emailTemplatePath, "utf-8");
         const resetLink = "link";
         const mailContent = ejs.render(emailTemplate, {
@@ -202,11 +219,9 @@ const businessClaimController = {
           subject: email_subject,
           html: mailContent,
         };
-  
+
         // Send the email
         await transporter.sendMail(mailOptions);
-
-
       } else {
         business_post_user_id = businessClaim.user._id;
         let userDetailsForBusinessPost = await userModel.findById(
@@ -249,7 +264,7 @@ const businessClaimController = {
           );
           email_subject = "Turk's Compass's Claim Mail";
         }
-  
+
         const emailTemplate = fs.readFileSync(emailTemplatePath, "utf-8");
         const resetLink = "link";
         const mailContent = ejs.render(emailTemplate, {
@@ -276,12 +291,9 @@ const businessClaimController = {
           subject: email_subject,
           html: mailContent,
         };
-  
+
         // Send the email
         await transporter.sendMail(mailOptions);
-
-
-
       }
       let business_post_update_user = await businessPostModel.findOneAndUpdate(
         { _id: businessClaim.business_post },
@@ -295,11 +307,132 @@ const businessClaimController = {
         { status: 1 }
       );
 
-  
-
       res.status(200).send({
         success: true,
         message: "Successfully Approved",
+      });
+    } catch (error) {
+      console.log(error);
+      res.status(200).send({
+        success: false,
+        message: error.message,
+        error: error.message,
+      });
+    }
+  },
+
+  reject: async (req, res) => {
+    try {
+      const info = new URL(req.url, `http://${req.headers.host}`);
+      const searchParams = info.searchParams;
+      let id = searchParams.get("id");
+
+      let businessClaim = await businessClaimModel
+        .findOne({ _id: id })
+        .populate([
+          { path: "user", model: "User" },
+          { path: "business_post", model: "BusinessPost" },
+        ]);
+
+      if (businessClaim.user.email !== businessClaim.contact_email) {
+        let emailTemplatePath, email_subject;
+
+        emailTemplatePath = path.resolve(
+          __dirname,
+          "views",
+          "mails",
+          "claim_mail_reject.ejs"
+        );
+        email_subject = "Turk's Compass's Claim Reject Mail";
+
+        const emailTemplate = fs.readFileSync(emailTemplatePath, "utf-8");
+
+        const resetLink = "link";
+
+        const mailContent = ejs.render(emailTemplate, {
+          resetLink,
+        });
+
+        const transporter = nodemailer.createTransport({
+          host: "smtp.gmail.com",
+          port: 465,
+          secure: true, // Set to false for explicit TLS
+          auth: {
+            user: "turkscompass@gmail.com",
+            pass: "avrucxhaxvgdcjef",
+          },
+          tls: {
+            // Do not fail on invalid certificates
+            //rejectUnauthorized: false,
+          },
+        });
+
+        let mailOptions = {
+          from: process.env.EMAIL_USER,
+          to: businessClaim.contact_email,
+          subject: email_subject,
+          html: mailContent,
+        };
+
+        // Send the email
+        await transporter.sendMail(mailOptions);
+      } else {
+        let emailTemplatePath, email_subject;
+        let userDetails = await userModel.findById(businessClaim.user._id);
+        if (userDetails.language == "tr") {
+          emailTemplatePath = path.resolve(
+            __dirname,
+            "views",
+            "mails",
+            "claim_mail_reject_turkish.ejs"
+          );
+          email_subject = "Turk’s Compass’a Reddetmek Postası";
+        } else {
+          emailTemplatePath = path.resolve(
+            __dirname,
+            "views",
+            "mails",
+            "claim_mail_reject.ejs"
+          );
+          email_subject = "Turk's Compass's Claim Mail";
+        }
+
+        const emailTemplate = fs.readFileSync(emailTemplatePath, "utf-8");
+        const resetLink = "link";
+        const mailContent = ejs.render(emailTemplate, {
+          resetLink,
+        });
+        const transporter = nodemailer.createTransport({
+          host: "smtp.gmail.com",
+          port: 465,
+          secure: true, // Set to false for explicit TLS
+          auth: {
+            user: "turkscompass@gmail.com",
+            pass: "avrucxhaxvgdcjef",
+          },
+          tls: {
+            // Do not fail on invalid certificates
+            //rejectUnauthorized: false,
+          },
+        });
+        let mailOptions = {
+          from: process.env.EMAIL_USER,
+          to: userDetails.email,
+          subject: email_subject,
+          html: mailContent,
+        };
+
+        // Send the email
+        await transporter.sendMail(mailOptions);
+      }
+      let member = await businessClaimModel.findOneAndUpdate(
+        { _id: id },
+        { status: 2 }
+      );
+
+      res.status(200).send({
+        success: true,
+        message: "Successfully Rejected",
       });
     } catch (error) {
       console.log(error);
