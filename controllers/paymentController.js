@@ -107,16 +107,30 @@ const paymentReport=async(req,res)=>{
 
         // $gte: startOfDay(new Date(startDate)),
         // $lte: endOfDay(new Date(endDate))
-    const payments = await paymentModel.find({
-        "date": {
-            $gte: new Date(startDate),
-            $lte: new Date(endDate)
-        },
-        "type":type
-    }).populate([{
-        path: "user_id",
-        model: "User",
-    }]);
+    let payments;
+    if(startDate!=null && endDate!=null)
+    {
+        payments = await paymentModel.find({
+            "date": {
+                $gte: new Date(startDate),
+                $lte: new Date(endDate)
+            },
+            "type":type
+        }).populate([{
+            path: "user_id",
+            model: "User",
+        }]);
+    }
+    else
+    {
+        payments = await paymentModel.find({
+            "type":type
+        }).populate([{
+            path: "user_id",
+            model: "User",
+        }]);
+    }
+   
 
 
     res.status(200).send(
@@ -131,7 +145,7 @@ const paymentReport=async(req,res)=>{
 
     }
     catch (error) {
-        return res.status(500).send(error);
+        return res.status(200).send(error.message);
     }
 
 }

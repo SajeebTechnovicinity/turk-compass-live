@@ -7,16 +7,29 @@ const {
 } = require("../utils/helper");
 const bannerModel = require("../models/bannerModel");
 const paymentModel = require("../models/paymentModel");
+const appInfoModel = require("../models/appInfoModel");
 const stripe = require("stripe")(process.env.STRIPE_KEY);
 
 const bannerController = {
   createUpdate: async (req, res) => {
     try {
+   
       const user_info = await AuthUser(req);
       const user_id = user_info.id;
       let { title, offer_title, link, cover_img, id } = req.body;
       let isBase64 = isBase64Image(cover_img);
       var bannerInfo;
+
+      const appInfo = await appInfoModel.findOne();
+      const ads_price = appInfo.ads_price;
+      if (ads_price <= 0) {
+        res.status(401).send({
+          success: false,
+          message: "Ads price must be greater than zero",
+          error: "Ads price must be greater than zero",
+        });
+      }
+
 
       if (isBase64 && cover_img) {
         cover_img = await uploadImageToCloudinary(cover_img);
@@ -50,7 +63,7 @@ const bannerController = {
       //   return res.status(400).send("Invalid amount");
       // }
 
-      const amountInCents = 10 * 100;
+      const amountInCents = ads_price * 100;
 
       // Create a Stripe checkout session
 
@@ -156,15 +169,12 @@ const bannerController = {
 
     const totalPages = Math.ceil(count / limit);
 
-
     const bannerList = await bannerModel
       .find(query)
-      .populate(
-        {
-            path:'user_id',
-            model:'User'
-        }
-      )
+      .populate({
+        path: "user_id",
+        model: "User",
+      })
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(limit);
