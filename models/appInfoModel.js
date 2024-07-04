@@ -42,6 +42,10 @@ const appInfoSchema = new mongoose.Schema({
         type: Number,
         default: 100
     },
+    ads_price: {
+        type: Number,
+        default: 10
+    },
     status: {
         type: Number,
         default: 1,
