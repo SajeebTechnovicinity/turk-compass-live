@@ -300,6 +300,8 @@ const businessClaimController = {
         {
           user: business_post_user_id,
           business_name: businessClaim.business_name,
+          image:businessClaim.business_post.image,
+          cover_image: businessClaim.business_post.cover_image,
         }
       );
       let member = await businessClaimModel.findOneAndUpdate(
