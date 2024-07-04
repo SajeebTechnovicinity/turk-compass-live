@@ -118,6 +118,26 @@ const bannerController = {
             bannerList
         })
     },
+    userWiseBannerList:async (req, res) => {
+        const user_info = await AuthUser(req);
+        const user_id = user_info.id;
+        const currentDate = new Date();
+        const thirtyDaysAgo = new Date(currentDate);
+        thirtyDaysAgo.setDate(currentDate.getDate() - 30);
+        
+        let query = { payment_status:1, user:user_id};
+        // const bannerList=await bannerModel.find(query)
+        var random = Math.floor(Math.random())
+        const bannerList = await bannerModel.aggregate([
+            { $match: query },
+          
+        ]).sort({createdAt:1});
+        res.status(200).send({
+            success: true,
+            message: "banner list",
+            bannerList
+        })
+    },
     allList:async (req, res) => {
         let query = { is_delete:0};
         const bannerList=await bannerModel.find(query)
@@ -131,7 +151,7 @@ const bannerController = {
         const user_info = await AuthUser(req);
         const user_id = user_info.id;
         let query = {user_id:user_id};
-        const bannerList=await bannerModel.find(query)
+        const bannerList=await bannerModel.find(query).sort({ createdAt: -1 });
         res.status(200).send({
             success: true,
             message: "banner list",
