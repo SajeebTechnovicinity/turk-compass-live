@@ -350,9 +350,9 @@ const jobController = {
         .limit(limit)
         .sort({ createdAt: -1 });
 
-      candidate_list = await candidate_list.filter(
-        (candidate) => candidate.job_profile !== null
-      );
+      // candidate_list = await candidate_list.filter(
+      //   (candidate) => candidate.job_profile !== null
+      // );
 
       const count = await jobApplyModel
         .find({ job_id: job_id })
