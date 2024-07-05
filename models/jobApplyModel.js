@@ -20,7 +20,7 @@ const jobApplySchema = new mongoose.Schema({
     },
     job_profile: {
         type: mongoose.Schema.Types.ObjectId,
-        required: true,
+        required: false,
     },
     job_status:{
         type: Number,

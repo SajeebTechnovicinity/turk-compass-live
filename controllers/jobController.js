@@ -392,14 +392,14 @@ const jobController = {
 
       var apply_by;
       var job_profile;
-      if (!profile) {
-        res.status(403).send({
-          success: false,
-          message: "First create candidate profile",
-        });
-      }
+      // if (!profile) {
+      //   res.status(403).send({
+      //     success: false,
+      //     message: "First create candidate profile",
+      //   });
+      // }
       apply_by = user_id;
-      job_profile = profile._id;
+      job_profile = profile ? profile._id: null;
 
       let isapply = await jobApplyModel.findOne({
         job_id: job_id,
@@ -483,11 +483,9 @@ const jobController = {
           },
         ],
       };
-      // Send the email
-      if(candidate_info_data && candidate_info_data.package_type=="general_employer")
-      {
-        await transporter.sendMail(mailOptions);
-      }
+      if(package_type=="general_employer"){
+          await transporter.sendMail(mailOptions);
+        }
      
 
       // mail
