@@ -484,7 +484,11 @@ const jobController = {
         ],
       };
       // Send the email
-      await transporter.sendMail(mailOptions);
+      if(candidate_info_data && candidate_info_data.package_type=="general_employer")
+      {
+        await transporter.sendMail(mailOptions);
+      }
+     
 
       // mail
       res.status(200).send({
