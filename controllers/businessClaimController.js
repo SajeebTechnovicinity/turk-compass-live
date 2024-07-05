@@ -170,6 +170,7 @@ const businessClaimController = {
           password: hashPassword,
           package_type: "general_employer",
           usertype: "business-owner",
+          claimed_account:1
         });
         business_post_user_id = userInfo._id;
 
