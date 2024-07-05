@@ -108,29 +108,35 @@ const paymentReport=async(req,res)=>{
         // $gte: startOfDay(new Date(startDate)),
         // $lte: endOfDay(new Date(endDate))
     let payments;
-    if(startDate!=null && endDate!=null)
-    {
+    console.log(startDate);
+    console.log(endDate);
+    const moment = require('moment'); // Make sure to install moment.js using `npm install moment`
+
+    if (startDate != null && endDate != null) {
+        // Convert startDate and endDate to Date objects
+        let start = moment(startDate).startOf('day').toDate();
+        let end = moment(endDate).add(1, 'days').startOf('day').toDate();
+    
         payments = await paymentModel.find({
             "date": {
-                $gte: new Date(startDate),
-                $lte: new Date(endDate)
+                $gte: start,
+                $lte: end
             },
-            "type":type
+            "type": type
         }).populate([{
             path: "user_id",
-            model: "User",
+            model: "User"
         }]);
-    }
-    else
-    {
+        console.log("payment");
+        console.log(payments);
+    } else {
         payments = await paymentModel.find({
-            "type":type
+            "type": type
         }).populate([{
             path: "user_id",
-            model: "User",
+            model: "User"
         }]);
     }
-   
 
 
     res.status(200).send(
