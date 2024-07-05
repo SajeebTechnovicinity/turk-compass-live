@@ -228,6 +228,8 @@ const socialLoginController = async (req, res) => {
   try {
     const { email, key } = req.body;
     const record = { email: email };
+
+    let user;
     // validation
     if (!email || !(key === "tk19992")) {
       return res.status(200).send({
@@ -236,7 +238,7 @@ const socialLoginController = async (req, res) => {
       });
     }
     // check
-    const user = await userModel.findOne(record);
+    user = await userModel.findOne(record);
 
     if(user && user.is_delete==true){
       return res.status(403).send({
@@ -252,7 +254,7 @@ const socialLoginController = async (req, res) => {
     }
 
     if (!user) {
-      const user = await userModel.create({
+      user = await userModel.create({
         email: email,
         slot_duration: 0,
         is_multiple_reservation_available: 0,
@@ -288,7 +290,7 @@ const socialLoginController = async (req, res) => {
         user_info: user,
       };
     }
-    const userName = user.userName;
+    const userName = user ? user.userName: "";
     let is_user = user;
     if (is_user) {
       const id = user.id;
