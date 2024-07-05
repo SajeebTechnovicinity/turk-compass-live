@@ -312,10 +312,10 @@ const socialLoginController = async (req, res) => {
     }
   } catch (error) {
     console.log(error);
-    res.status(500).send({
+    res.status(403).send({
       success: false,
-      message: "error in login api dfgh",
-      error: error,
+      message: error.message,
+      error: error.message,
     });
   }
 };
