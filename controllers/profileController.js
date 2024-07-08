@@ -648,11 +648,12 @@ const profileController = {
         { _id: id },
         { is_delete: !businessProfile.is_delete }
       );
+      let todayStr,reservations;
       if (businessProfile.is_delete === false) {
         let today = new Date();
-        let todayStr = today.toISOString().split("T")[0]; // Convert to YYYY-MM-DD format
+        todayStr = today.toISOString().split("T")[0]; // Convert to YYYY-MM-DD format
 
-        let reservations = await reservationModel
+        reservations  = await reservationModel
           .find({
             business_post: businessProfile._id,
             slot_date: { $gte: todayStr },
@@ -688,6 +689,9 @@ const profileController = {
 
       res.status(200).send({
         success: true,
+        businessProfile:businessProfile._id,
+        reservations,
+        todayStr,
         // today: new Date(),
         message: "Successfully Status Updated",
         userInfo,
