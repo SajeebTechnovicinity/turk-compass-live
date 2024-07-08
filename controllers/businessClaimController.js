@@ -303,6 +303,7 @@ const businessClaimController = {
           business_name: businessClaim.business_name,
           image:businessClaim.business_post.image,
           cover_image: businessClaim.business_post.cover_image,
+          is_delete: businessClaim.business_post.is_delete,
         }
       );
       let member = await businessClaimModel.findOneAndUpdate(
