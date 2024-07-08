@@ -182,6 +182,13 @@ const businessPostController = {
         _id: businessPostId,
       });
 
+      if(businessPostDetails.is_delete==true)
+        {
+            return res.status(200).send({
+                success: false,
+                message: 'Business post is inactived'
+            });
+        }
       //upload image & cover image
       if (image == null || image == "") {
         image = businessPostDetails.image;
