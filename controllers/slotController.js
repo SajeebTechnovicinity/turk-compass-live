@@ -28,7 +28,16 @@ const slotController = {
                     message: 'No business post available'
                 });
             }
+        
             const business_post_details = await businessPostModel.findOne({ user: user_id });
+
+            if(business_post_details.is_delete==true)
+            {
+                return res.status(200).send({
+                    success: false,
+                    message: 'Business post is inactived'
+                });
+            }
             const business_post = business_post_details._id;
             const duration = user_info.slot_duration;
     
@@ -99,6 +108,13 @@ const slotController = {
         let skip = (page - 1) * limit;
         try {
             const business_post_details=await businessPostModel.findOne({_id:business_post});
+            if(business_post_details.is_delete==true)
+                {
+                    return res.status(200).send({
+                        success: false,
+                        message: 'Business post is inactived'
+                    });
+                }
             const userDetails=await userModel.findOne({_id:business_post_details.user});
             console.log(userDetails.from_date_vacation,userDetails.to_date_vacation,date);
             const currentDate = new Date(date);
@@ -159,6 +175,13 @@ const slotController = {
             }
 
             let business_post_details=await businessPostModel.findOne({user:user_id});
+            if(business_post_details.is_delete==true)
+                {
+                    return res.status(200).send({
+                        success: false,
+                        message: 'Business post is inactived'
+                    });
+                }
             business_post=business_post_details._id;
 
             // Aggregate slots to get the count of slots for each date and business post
@@ -361,6 +384,14 @@ const slotController = {
                 });
             }
             const business_post_details = await businessPostModel.findOne({ user: user_id });
+
+            if(business_post_details.is_delete==true)
+                {
+                    return res.status(200).send({
+                        success: false,
+                        message: 'Business post is inactived'
+                    });
+                }
             const business_post = business_post_details._id;
             const duration = user_info.slot_duration;
 
