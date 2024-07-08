@@ -570,11 +570,18 @@ const businessPostController = {
         business_post: businessProfile._id,
       });
 
+      const claimApproveCount = await businessClaimModel.countDocuments({
+        user: userId,
+        business_post: businessProfile._id,
+        status:1
+      });
+
       res.status(200).send({
         success: true,
         message: "User Profile Retrieved Successfully",
         businessProfile,
         claimCount,
+        claimApproveCount
       });
     } catch (error) {
       console.log(error);
@@ -603,11 +610,19 @@ const businessPostController = {
         business_post: id,
       });
 
+      const claimApproveCount = await businessClaimModel.countDocuments({
+        user: userId,
+        business_post: businessProfile._id,
+        status:1
+      });
+
+
       res.status(200).send({
         success: true,
         message: "User Profile Retrieved Successfully",
         businessProfile,
         claimCount,
+        claimApproveCount
       });
     } catch (error) {
       console.log(error);
