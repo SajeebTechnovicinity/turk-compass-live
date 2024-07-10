@@ -40,6 +40,25 @@ const businessPostController = {
     try {
       let is_reservation_available;
       let is_multiple_reservation_available;
+
+      if (country == null || country=='') {
+        return res.status(200).send({
+          success: false,
+          message: "Country is required",
+        });
+      }
+      if (state== null || state=='') {
+        return res.status(200).send({
+          success: false,
+          message: "State is required",
+        });
+      }
+      if (city== null || city=='') {
+        return res.status(200).send({
+          success: false,
+          message: "City is required",
+        });
+      }
       if ((user_name != null) & (email != null) && password != null) {
         // check
         const exisiting = await userModel.findOne({ email });
@@ -182,13 +201,12 @@ const businessPostController = {
         _id: businessPostId,
       });
 
-      if(businessPostDetails.is_delete==true)
-        {
-            return res.status(200).send({
-                success: false,
-                message: 'Business post is inactived'
-            });
-        }
+      if (businessPostDetails.is_delete == true) {
+        return res.status(200).send({
+          success: false,
+          message: "Business post is inactived",
+        });
+      }
       //upload image & cover image
       if (image == null || image == "") {
         image = businessPostDetails.image;
@@ -257,20 +275,16 @@ const businessPostController = {
       let limit = Number(searchParams.get("limit")) || 12;
       let skip = (page - 1) * limit;
 
-  
-
-
-
       const currentDate = new Date();
       const thirtyDaysAgo = new Date(currentDate);
       thirtyDaysAgo.setDate(currentDate.getDate() - 30);
-      
+
       // let query = { is_delete: false,createdAt: { $gte: thirtyDaysAgo }};
-      let query = { is_delete: false};
+      let query = { is_delete: false };
 
       if (sub_category != null) {
         // query = { sub_category: sub_category, is_delete: false,createdAt: { $gte: thirtyDaysAgo }};
-        query = {sub_category: sub_category, is_delete: false};
+        query = { sub_category: sub_category, is_delete: false };
       }
 
       const count = await businessPostModel.countDocuments(query);
@@ -354,7 +368,7 @@ const businessPostController = {
           { path: "state", model: "State" },
           { path: "city", model: "City" },
         ])
-        .sort({ business_name:1 })
+        .sort({ business_name: 1 })
         .skip(skip)
         .limit(limit);
 
@@ -521,7 +535,7 @@ const businessPostController = {
             model: "Tag",
           },
         ])
-        .sort({ business_name:1 })
+        .sort({ business_name: 1 })
         .skip(skip)
         .limit(limit);
 
@@ -550,24 +564,23 @@ const businessPostController = {
 
       const profile = await userModel.findById(user_id);
 
-      const businessCount= await businessPostModel.countDocuments({ user: user_id });
+      const businessCount = await businessPostModel.countDocuments({
+        user: user_id,
+      });
 
-      if(businessCount<=0)
-      {
+      if (businessCount <= 0) {
         return res.status(403).send({
           success: false,
           message: "User does not have any business",
         });
       }
-  
+
       const businessProfile = await businessPostModel
         .findOne({ user: user_id })
         .populate({
           path: "user",
           model: "User",
         });
-
-
 
       const user_info = await AuthUser(req);
       const userId = user_info.id;
@@ -580,7 +593,7 @@ const businessPostController = {
       const claimApproveCount = await businessClaimModel.countDocuments({
         user: userId,
         business_post: businessProfile._id,
-        status:1
+        status: 1,
       });
 
       res.status(200).send({
@@ -588,7 +601,7 @@ const businessPostController = {
         message: "User Profile Retrieved Successfully",
         businessProfile,
         claimCount,
-        claimApproveCount
+        claimApproveCount,
       });
     } catch (error) {
       console.log(error);
@@ -620,16 +633,15 @@ const businessPostController = {
       const claimApproveCount = await businessClaimModel.countDocuments({
         user: userId,
         business_post: businessProfile._id,
-        status:1
+        status: 1,
       });
-
 
       res.status(200).send({
         success: true,
         message: "User Profile Retrieved Successfully",
         businessProfile,
         claimCount,
-        claimApproveCount
+        claimApproveCount,
       });
     } catch (error) {
       console.log(error);
