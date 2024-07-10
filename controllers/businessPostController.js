@@ -208,15 +208,15 @@ const businessPostController = {
         });
       }
       //upload image & cover image
-      if (image == null || image == "") {
-        image = businessPostDetails.image;
-      } else {
+      if (image != null && image != "") {
         image = await uploadImageToCloudinary(image);
-      }
-      if (cover_image != null || image != "") {
-        cover_image = businessPostDetails.cover_image;
       } else {
+        image = businessPostDetails.image;
+      }
+      if (cover_image != null && cover_image != "") {
         cover_image = await uploadImageToCloudinary(cover_image);
+      } else {
+        cover_image =  businessPostDetails.cover_image;
       }
 
       const businessPostInfo = await businessPostModel.findOneAndUpdate(
