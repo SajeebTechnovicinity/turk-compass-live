@@ -315,7 +315,7 @@ const jobController = {
       var src_query = {};
       var src_city_query = {};
       if (city) {
-        src_city_query = { ...src_query, city: new mongoose.Types.ObjectId(city) };
+        src_city_query = { ...src_query, _id: new mongoose.Types.ObjectId(city) };
       }
       if (state) {
         src_query = { ...src_query, state: new mongoose.Types.ObjectId(state) };
