@@ -591,7 +591,7 @@ const businessPostController = {
       });
 
       const claimApproveCount = await businessClaimModel.countDocuments({
-        user: userId,
+        // user: userId,
         business_post: businessProfile._id,
         status: 1,
       });
@@ -631,7 +631,7 @@ const businessPostController = {
       });
 
       const claimApproveCount = await businessClaimModel.countDocuments({
-        user: userId,
+        // user: userId,
         business_post: businessProfile._id,
         status: 1,
       });
