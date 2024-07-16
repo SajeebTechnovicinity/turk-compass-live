@@ -321,6 +321,9 @@ const jobController = {
       if (eligibility) {
         src_query = { ...src_query, eligibility: eligibility };
       }
+      if (work_visa) {
+        src_query = { ...src_query, work_visa: work_visa };
+      }
 
       var candidate_list = await jobApplyModel
         .find({ job_id: job_id })
