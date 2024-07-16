@@ -52,7 +52,7 @@ const packageController = (req, res) => {
                 {
                     'title': "premium",
                     "name": "Premium",
-                    'description': { job_seeker_access: 0, ads: 0, compass: 0, monthly_price: 4.99, verify_employers: 4.99, review_job_applications: 0, custom_questions: 0, stripe_product: 'price_1PDKejJ4eJxlN0V78W518dgE' },
+                    'description': { job_seeker_access: 0, ads: 0, compass: 0, monthly_price: 4.99, verify_employers: 4.99, review_job_applications: 0, custom_questions: 0, stripe_product: 'price_1Pd2luJ4eJxlN0V79rrAz8oR' },
                     "package_benefit": [
                         {
                             "details": "İş listelerine ve başvurulara tam erişim",
