@@ -356,13 +356,11 @@ const jobController = {
         .limit(limit)
         .sort({ createdAt: -1 });
 
-        if(city ||
-          eligibility ||
-          work_visa){
-              candidate_list = candidate_list.filter(candidate => 
-              candidate.job_profile !== null && 
-              candidate.job_profile.city !== null
-          );
+        if(city ||eligibility ||work_visa){
+                candidate_list =  await candidate_list.filter(candidate => 
+                candidate.job_profile !== null && 
+                candidate.job_profile.city !== null
+           );
             
           }
 
