@@ -306,6 +306,7 @@ const jobController = {
       let city = searchParams.get("city");
       let state = searchParams.get("state");
       let eligibility = searchParams.get("eligibility");
+      let work_visa = searchParams.get("work_visa");
       let job_id = searchParams.get("job_id");
       let page = Number(searchParams.get("page")) || 1;
       let limit = Number(searchParams.get("limit")) || 12;
