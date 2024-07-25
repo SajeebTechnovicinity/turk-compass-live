@@ -16,6 +16,9 @@ const consulttateSchema = new mongoose.Schema({
     email: {
         type: String,
     },
+    web: {
+        type: String,
+    },
     opening_info: {
         type: [{
             opening_info: String,
