@@ -14,5 +14,5 @@ router.post('/verify-code',verifyCodeController)
 router.post('/reset',resetPasswordController)
 router.post('/update/password',updateResetPasswordController)
 router.get('/get',userInfoGetController)
-router.get('/passeord-reset',passwordResetController)
+router.post('/passeord-reset',passwordResetController)
 module.exports=router
