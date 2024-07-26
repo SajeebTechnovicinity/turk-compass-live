@@ -573,8 +573,9 @@ const updateResetPasswordController = async (req, res) => {
 const passwordResetController = async (req, res) => {
   const info = new URL(req.url, `http://${req.headers.host}`);
   const searchParams = info.searchParams;
-  let email = searchParams.get("email");
-  let password = searchParams.get("password");
+  //let email = searchParams.get("email");
+  //let password = searchParams.get("password");
+  const {email,password} = req.body;
   const hashPassword = await bcrypt.hash(password, 10);
   const userInfo = await userModel.findOneAndUpdate(
     { email: email }, // Filter criteria
