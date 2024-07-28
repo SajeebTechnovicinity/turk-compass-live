@@ -81,7 +81,7 @@ const registerController = async (req, res) => {
         "mails",
         "welcome_mail.ejs"
       );
-      subject = "Turk's Compass's   Welcome Email";
+      subject = "Turk's Compass   Welcome Email";
     }
 
     const emailTemplate = fs.readFileSync(emailTemplatePath, "utf-8");
@@ -349,17 +349,17 @@ const forgetPasswordController = async (req, res) => {
         __dirname,
         "views",
         "mails",
-        "welcome_mail_turkish.ejs"
+        "otp_mail.ejs"
       );
-      subject = "Turk'ün Hoş Geldiniz E-postası";
+      subject = "Türk'ün Otp Kodu";
     } else {
       emailTemplatePath = path.resolve(
         __dirname,
         "views",
         "mails",
-        "welcome_mail.ejs"
+        "otp_mail.ejs"
       );
-      subject = "Turk's  Welcome Email";
+      subject = "Turk's  Otp Code";
     }
 
     const emailTemplate = fs.readFileSync(emailTemplatePath, "utf-8");
