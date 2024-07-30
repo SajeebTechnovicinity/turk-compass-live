@@ -1363,6 +1363,81 @@ const jobController = {
       });
     }
   },
+
+  edit: async (req, res) => {
+    const user_info = await AuthUser(req);
+    const user_id = user_info.id;
+    const businessInfo = await businessPostModel.findOne({ user: user_id });
+
+    // Uncommented res.status to send the response
+    if (businessInfo === null) {
+      return res.status(403).send({
+        success: false,
+        message: "First store your business Account",
+      });
+    }
+    try {
+      const {
+        job_title,
+        job_country,
+        job_city,
+        job_state,
+        salary_type,
+        description,
+        skill,
+        id,
+        requirement,
+        benefit,
+        question,
+        job_industry,
+        job_type,
+        candidate_require,
+        location,
+        salary,
+      } = req.body;
+
+      const jobInfo = await jobModel.updateOne({_id:id},{
+        business_info: businessInfo._id,
+        user_id,
+        salary_type,
+        job_title,
+        job_country,
+        job_city,
+        job_state,
+        description,
+        skill,
+        requirement,
+        benefit,
+        question,
+        job_industry,
+        job_type,
+        candidate_require,
+        location,
+        salary,
+      });
+      try {
+        res.status(201).send({
+          success: true,
+          message: "Successfully Job Updated",
+          jobInfo,
+        });
+      } catch (error) {
+        console.log(error);
+        res.status(500).send({
+          success: false,
+          message: "error in jobController api",
+          error: error,
+        });
+      }
+    } catch (error) {
+      console.log(error);
+      res.status(500).send({
+        success: false,
+        message: "Error in creating memberPerlament",
+        error: error.message,
+      });
+    }
+  },
 };
 
 module.exports = { jobController };
