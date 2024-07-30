@@ -145,7 +145,7 @@ const businessPostController = {
       });
       res.status(201).send({
         success: true,
-        message: "Business Post Created Successfully",
+        message: "Business Profile Created Successfully",
         businessPostInfo,
       });
     } catch (error) {

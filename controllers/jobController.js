@@ -216,7 +216,7 @@ const jobController = {
       try {
         res.status(201).send({
           success: true,
-          message: "Successfully Job Created",
+          message: "Job Posting is created successfully",
           jobInfo,
         });
       } catch (error) {
@@ -503,7 +503,7 @@ const jobController = {
       // mail
       res.status(200).send({
         success: true,
-        message: "Successfully",
+        message: "Applied to the job posting successfully.Check your notification for update",
         store_data,
       });
     } catch (error) {
