@@ -1438,6 +1438,45 @@ const jobController = {
       });
     }
   },
+
+  jobActiveInactive: async (req, res) => {
+    const info = new URL(req.url, `http://${req.headers.host}`);
+    const searchParams = info.searchParams;
+    const job_id = searchParams.get("job_id");
+
+    var job_info=await jobModel.findOne({_id: job_id});
+
+    var job = await jobModel.findOneAndUpdate(
+      { _id: job_id },
+      { status:!job_info.status }
+    );
+    res.status(200).send({
+      success: true,
+      message: "Successfully status updated",
+      job
+    });
+
+  },
+
+  jobTimeUpdate: async (req, res) => {
+    const info = new URL(req.url, `http://${req.headers.host}`);
+    const searchParams = info.searchParams;
+    const job_id = searchParams.get("job_id");
+
+    var job_info=await jobModel.findOne({_id: job_id});
+
+    const job = await jobModel.findOneAndUpdate(
+      { _id: job_id },
+      { $set: { status: 1, createdAt: new Date() } },
+      { new: true } // This option returns the updated document
+    );
+    res.status(200).send({
+      success: true,
+      message: "Successfully status updated",
+      job
+    });
+
+  },
 };
 
 module.exports = { jobController };

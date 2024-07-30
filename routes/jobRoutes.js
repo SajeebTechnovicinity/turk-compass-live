@@ -26,4 +26,7 @@ router.get('/wish-list',jobController.myJobwishList)
 
 router.get('/industry-wise-amount',jobController.industryWiseJob)
 router.post('/edit',jobController.edit);
+router.get('/jobActiveInactive',jobController.jobActiveInactive)
+router.get('/jobTimeUpdate',jobController.jobTimeUpdate)
+
 module.exports=router
