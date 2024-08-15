@@ -32,7 +32,7 @@ const packageController = (req, res) => {
                 {
                     'title': "job_seeker",
                     "name": "İş Arayan",
-                    'description': { job_seeker_access: 0, ads: 0, compass: 0, monthly_price: 1.99, verify_employers: 0, review_job_applications: 0, custom_questions: 0, stripe_product: 'price_1Pd2k5J4eJxlN0V7xVP2jQcs' },
+                    'description': { job_seeker_access: 0, ads: 0, compass: 0, monthly_price: 1.99, verify_employers: 0, review_job_applications: 0, custom_questions: 0, stripe_product: 'price_1PnjT8FRINEpGtYyehgCG15F' },
                     "package_benefit": [
                         {
                             "details": "İş listelerine ve iş başvurusu özelliklerine erişim",
@@ -52,7 +52,7 @@ const packageController = (req, res) => {
                 {
                     'title': "premium",
                     "name": "Premium",
-                    'description': { job_seeker_access: 0, ads: 0, compass: 0, monthly_price: 4.99, verify_employers: 4.99, review_job_applications: 0, custom_questions: 0, stripe_product: 'price_1Pd3PjJ4eJxlN0V7g1AKSYub' },
+                    'description': { job_seeker_access: 0, ads: 0, compass: 0, monthly_price: 4.99, verify_employers: 4.99, review_job_applications: 0, custom_questions: 0, stripe_product: 'price_1PnjTyFRINEpGtYysqj8cmnO' },
                     "package_benefit": [
                         {
                             "details": "İş listelerine ve başvurulara tam erişim",
@@ -98,7 +98,7 @@ const packageController = (req, res) => {
                 {
                     'title': "premium_employer",
                     'name':"Premium İşletme",
-                    'description': { job_seeker_access: 0, ads: 0, compass: 0, monthly_price: 9.99, verify_employers: 0, review_job_applications: 0, custom_questions: 10, stripe_product: 'price_1Pd2ijJ4eJxlN0V7gulxNJdx' },
+                    'description': { job_seeker_access: 0, ads: 0, compass: 0, monthly_price: 9.99, verify_employers: 0, review_job_applications: 0, custom_questions: 10, stripe_product: 'price_1PnjTfFRINEpGtYyByUdAr2H' },
                     "package_benefit": ["Full access to job listings and applications", "Ad-free experience", "Access to Compass+ features including AI supported personalized advice, resume and cover letter building"],
                     "package_benefit": [
                         {
