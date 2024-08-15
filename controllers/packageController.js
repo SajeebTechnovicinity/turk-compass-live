@@ -7,9 +7,13 @@ const packageController = (req, res) => {
         const lang = searchParams.get("language");
         var result;
 
+
+        
         if (lang == "tr") {
             result = [
                 {
+
+                    
                     'title': "free",
                     'name': "Temel",
                     'description': { job_seeker_access: 0, ads: 0, compass: 0, monthly_price: 0, verify_employers: 0, review_job_applications: 0, custom_questions: 0 },
