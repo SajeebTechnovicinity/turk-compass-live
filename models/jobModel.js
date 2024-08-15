@@ -69,7 +69,11 @@ const jobSchema = new mongoose.Schema({
     is_delete: {
         type: Boolean,
         default: false
+    },
+    createdAt: {
+        type: Date,
+        default: Date.now
     }
-},{ timestamps: true });
+});
 
 module.exports = mongoose.model("Job", jobSchema);

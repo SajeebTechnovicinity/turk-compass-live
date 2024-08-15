@@ -1463,13 +1463,18 @@ const jobController = {
     const searchParams = info.searchParams;
     const job_id = searchParams.get("job_id");
 
+
+    console.log(new Date());
+
     var job_info=await jobModel.findOne({_id: job_id});
 
     const job = await jobModel.findOneAndUpdate(
       { _id: job_id },
-      { $set: { status: 1, createdAt: new Date() } },
-      { new: true } // This option returns the updated document
+      { status: 1, createdAt: Date.now() },  // Set createdAt to the current timestamp
+      { new: true }  // Return the updated document
     );
+
+
     res.status(200).send({
       success: true,
       message: "Successfully status updated",
