@@ -143,9 +143,9 @@ const jobController = {
     let page = Number(searchParams.get("page")) || 1;
     let limit = Number(searchParams.get("limit")) || 12;
     let skip = (page - 1) * limit;
-    let query = {};
+    let query = {status:1};
     if (industry_id) {
-      query = { job_industry: new mongoose.Types.ObjectId(industry_id) };
+      query = { job_industry: new mongoose.Types.ObjectId(industry_id) ,status:1 };
     }
     let job = await jobModel
       .find(query)
@@ -312,7 +312,7 @@ const jobController = {
       let limit = Number(searchParams.get("limit")) || 12;
       let skip = (page - 1) * limit;
 
-      var src_query = {};
+      var src_query = {status:1};
       var src_city_query = {};
       if (city) {
         src_city_query = { ...src_query, _id: new mongoose.Types.ObjectId(city) };
