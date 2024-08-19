@@ -110,7 +110,7 @@ const registerController = async (req, res) => {
       },
     });
     const mailOptions = {
-      from: process.env.EMAIL_USER,
+      from: 'turkscompass@gmail.com',
       to: email,
       subject: subject,
       html: mailContent,
