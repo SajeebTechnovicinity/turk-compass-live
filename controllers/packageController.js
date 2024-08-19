@@ -121,10 +121,10 @@ const packageController = (req, res) => {
                             "details": "İş başvurusunda bulunanlar için özel sorular",
                             "tooltip": "İşverenler, başvuranların yanıtlaması için özel sorular oluşturabilir, böylece en alakalı bilgileri alırlar."
                         },
-                        {
-                            "details": "Ayda 1 banner reklam",
-                            "tooltip": "İşverenler, ayda bir ücretsiz banner reklamı kazanırlar."
-                        },
+                        // {
+                        //     "details": "Ayda 1 banner reklam",
+                        //     "tooltip": "İşverenler, ayda bir ücretsiz banner reklamı kazanırlar."
+                        // },
                         {
                             "details": "Reklamsız deneyim",
                             "tooltip": "Bu katman, işverenler için reklamsız bir deneyim sağlar, böylece iş ilanlarını ve başvurularını yönetmeye odaklanabilirler."
@@ -241,10 +241,10 @@ const packageController = (req, res) => {
                             "details": "Custom questions for job applicants",
                             "tooltip": "Employers can create tailored questions for applicants to answer, ensuring they receive the most relevant information."
                         },
-                        {
-                            "details": "1 banner ad per month",
-                            "tooltip": "Employers are awarded one free banner ad per month to promote their business or job openings within the app."
-                        },
+                        // {
+                        //     "details": "1 banner ad per month",
+                        //     "tooltip": "Employers are awarded one free banner ad per month to promote their business or job openings within the app."
+                        // },
                         {
                             "details": "Ad-free experience",
                             "tooltip": "This tier provides an ad-free experience for employers, allowing them to focus solely on managing job postings and applications without distractions."
