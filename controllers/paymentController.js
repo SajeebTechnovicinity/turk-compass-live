@@ -35,14 +35,37 @@ const stripePaymentController=async(req,res)=>{
 }
 
 const stripePaymentSuccess = async (req, res) => {
-    const { sessionId } = req.body;
+    const { sessionId,payment_method,payment_trnx_number } = req.body;
   
     var user_data;
     var userInfo = await AuthUser(req);
 
     try {
-        const session = await stripe.checkout.sessions.retrieve(sessionId);
+        
+        if(payment_method=="apple_pay" || payment_method=="google_pay"){
+        
+            user_data = await userModel.findOneAndUpdate(
+                { _id: userInfo.id },
+                {
+                    $set: {
+                        payment_method: payment_method,
+                        payment_trnx_number: payment_trnx_number,
+                    }
+                }
+            );
 
+
+
+            return res.status(200).send({
+                success: true,
+                message: payment_method+" payment successful",
+                user_data
+            });
+
+
+        }
+
+        const session = await stripe.checkout.sessions.retrieve(sessionId);
         
 
         if (session.payment_status === 'paid') {

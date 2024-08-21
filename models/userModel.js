@@ -116,7 +116,15 @@ const userSchema=new mongoose.Schema({
     is_delete: {
         type: Boolean,
         default: 0, // Default value is set to 0
-    }
+    },
+    payment_method:{
+        type:String,
+        default:null
+    },
+    payment_trnx_number:{
+        type:String,
+        default:null
+    },
 },{timestamps:true})
 
     module.exports=mongoose.model("User",userSchema)
