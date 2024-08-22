@@ -143,9 +143,12 @@ const jobController = {
     let page = Number(searchParams.get("page")) || 1;
     let limit = Number(searchParams.get("limit")) || 12;
     let skip = (page - 1) * limit;
-    let query = {status:1};
+    let query = { status: 1 };
     if (industry_id) {
-      query = { job_industry: new mongoose.Types.ObjectId(industry_id) ,status:1 };
+      query = {
+        job_industry: new mongoose.Types.ObjectId(industry_id),
+        status: 1,
+      };
     }
     let job = await jobModel
       .find(query)
@@ -312,10 +315,13 @@ const jobController = {
       let limit = Number(searchParams.get("limit")) || 12;
       let skip = (page - 1) * limit;
 
-      var src_query = {status:1};
+      var src_query = { status: 1 };
       var src_city_query = {};
       if (city) {
-        src_city_query = { ...src_query, _id: new mongoose.Types.ObjectId(city) };
+        src_city_query = {
+          ...src_query,
+          _id: new mongoose.Types.ObjectId(city),
+        };
       }
       if (state) {
         src_query = { ...src_query, state: new mongoose.Types.ObjectId(state) };
@@ -356,15 +362,13 @@ const jobController = {
         .limit(limit)
         .sort({ createdAt: -1 });
 
-        if(city ||eligibility ||work_visa){
-                candidate_list =  await candidate_list.filter(candidate => 
-                candidate.job_profile !== null && 
-                candidate.job_profile.city !== null
-           );
-            
-          }
-
-    
+      if (city || eligibility || work_visa) {
+        candidate_list = await candidate_list.filter(
+          (candidate) =>
+            candidate.job_profile !== null &&
+            candidate.job_profile.city !== null
+        );
+      }
 
       const count = await jobApplyModel
         .find({ job_id: job_id })
@@ -411,7 +415,7 @@ const jobController = {
       //   });
       // }
       apply_by = user_id;
-      job_profile = profile ? profile._id: null;
+      job_profile = profile ? profile._id : null;
 
       let isapply = await jobApplyModel.findOne({
         job_id: job_id,
@@ -474,8 +478,8 @@ const jobController = {
         port: 465,
         secure: true, // Set to false for explicit TLS
         auth: {
-           user: "turkscompass@gmail.com",
-           pass: "avrucxhaxvgdcjef",
+          user: "turkscompass@gmail.com",
+          pass: "avrucxhaxvgdcjef",
         },
         tls: {
           // Do not fail on invalid certificates
@@ -495,15 +499,15 @@ const jobController = {
           },
         ],
       };
-      if(package_type=="general_employer"){
-          await transporter.sendMail(mailOptions);
-        }
-     
+      if (package_type == "general_employer") {
+        await transporter.sendMail(mailOptions);
+      }
 
       // mail
       res.status(200).send({
         success: true,
-        message: "Applied to the job posting successfully. Check your notifications for updates",
+        message:
+          "Applied to the job posting successfully. Check your notifications for updates",
         store_data,
       });
     } catch (error) {
@@ -869,6 +873,11 @@ const jobController = {
     let skip = (page - 1) * limit;
 
     var searchArray = [];
+    searchArray.push({
+      $match: {
+        status: 1, // Perform a regex search for job_title
+      },
+    });
     if (job_title) {
       const searchRegex = new RegExp(job_title, "i"); // it will be search like
       searchArray.push({
@@ -1396,25 +1405,28 @@ const jobController = {
         salary,
       } = req.body;
 
-      const jobInfo = await jobModel.updateOne({_id:id},{
-        business_info: businessInfo._id,
-        user_id,
-        salary_type,
-        job_title,
-        job_country,
-        job_city,
-        job_state,
-        description,
-        skill,
-        requirement,
-        benefit,
-        question,
-        job_industry,
-        job_type,
-        candidate_require,
-        location,
-        salary,
-      });
+      const jobInfo = await jobModel.updateOne(
+        { _id: id },
+        {
+          business_info: businessInfo._id,
+          user_id,
+          salary_type,
+          job_title,
+          job_country,
+          job_city,
+          job_state,
+          description,
+          skill,
+          requirement,
+          benefit,
+          question,
+          job_industry,
+          job_type,
+          candidate_require,
+          location,
+          salary,
+        }
+      );
       try {
         res.status(201).send({
           success: true,
@@ -1444,18 +1456,17 @@ const jobController = {
     const searchParams = info.searchParams;
     const job_id = searchParams.get("job_id");
 
-    var job_info=await jobModel.findOne({_id: job_id});
+    var job_info = await jobModel.findOne({ _id: job_id });
 
     var job = await jobModel.findOneAndUpdate(
       { _id: job_id },
-      { status:!job_info.status }
+      { status: !job_info.status }
     );
     res.status(200).send({
       success: true,
       message: "Successfully status updated",
-      job
+      job,
     });
-
   },
 
   jobTimeUpdate: async (req, res) => {
@@ -1463,24 +1474,21 @@ const jobController = {
     const searchParams = info.searchParams;
     const job_id = searchParams.get("job_id");
 
-
     console.log(new Date());
 
-    var job_info=await jobModel.findOne({_id: job_id});
+    var job_info = await jobModel.findOne({ _id: job_id });
 
     const job = await jobModel.findOneAndUpdate(
       { _id: job_id },
-      { status: 1, createdAt: Date.now() },  // Set createdAt to the current timestamp
-      { new: true }  // Return the updated document
+      { status: 1, createdAt: Date.now() }, // Set createdAt to the current timestamp
+      { new: true } // Return the updated document
     );
-
 
     res.status(200).send({
       success: true,
       message: "Successfully status updated",
-      job
+      job,
     });
-
   },
 };
 
