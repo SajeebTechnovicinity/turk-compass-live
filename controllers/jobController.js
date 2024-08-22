@@ -1464,7 +1464,7 @@ const jobController = {
     );
     res.status(200).send({
       success: true,
-      message: "Successfully status updated",
+      message: "Job Listing Deleted Successfully",
       job,
     });
   },
