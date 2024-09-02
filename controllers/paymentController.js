@@ -35,7 +35,7 @@ const stripePaymentController=async(req,res)=>{
 }
 
 const stripePaymentSuccess = async (req, res) => {
-    const { sessionId,payment_method,payment_trnx_number } = req.body;
+    const { package_type,package_start_date,package_end_date,package_duration,sessionId,payment_method,payment_trnx_number } = req.body;
   
     var user_data;
     var userInfo = await AuthUser(req);
@@ -48,6 +48,10 @@ const stripePaymentSuccess = async (req, res) => {
                 { _id: userInfo.id },
                 {
                     $set: {
+                        package_type: package_type,
+                        package_start_date: package_start_date,
+                        package_end_date: package_end_date,
+                        package_duration: package_duration,
                         payment_method: payment_method,
                         payment_trnx_number: payment_trnx_number,
                     }
