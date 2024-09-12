@@ -447,7 +447,7 @@ const jobController = {
       var company_mail = company_info.email;
 
       if (company_info && job_info) {
-        let title = "New Job Applied";
+        let title = "New Job Applied $$$$".job_info._id;
         let description = job_info.job_title;
         sendPushNotification(title, description, company_info.device_token);
         let job_info_data = jobProfileModel.findOne({ user_id: user_id });
