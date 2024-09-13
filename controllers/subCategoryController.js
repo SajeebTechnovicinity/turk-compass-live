@@ -73,10 +73,23 @@ const subCategoryController = {
         const totalPages = Math.ceil(count / limit);
 
         try {
-            let subCategories = await subCategoryModel.find(query).populate({
-                path: "category",
-                model: "Category"
-            }).sort({ name:1, createdAt: -1 }).skip(skip).limit(limit);
+            let subCategories;
+
+            if(category!=null)
+            {
+                subCategories = await subCategoryModel.find(query).populate({
+                    path: "category",
+                    model: "Category"
+                }).sort({ name:1, createdAt: -1 });
+            }
+            else
+            {
+                subCategories = await subCategoryModel.find(query).populate({
+                    path: "category",
+                    model: "Category"
+                }).sort({ name:1, createdAt: -1 }).skip(skip).limit(limit);
+            }
+       
             
             // Iterate through each subcategory
             for (let subCategory of subCategories) {
