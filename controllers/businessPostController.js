@@ -389,6 +389,84 @@ const businessPostController = {
     }
   },
 
+  compareList: async (req, res) => {
+    try {
+      const user_info = await AuthUser(req);
+      const userId = user_info.id;
+
+      const info = new URL(req.url, `http://${req.headers.host}`);
+      const searchParams = info.searchParams;
+      let sub_category = searchParams.get("sub_category");
+
+      let page = Number(searchParams.get("page")) || 1;
+      let limit = Number(searchParams.get("limit")) || 12;
+      let skip = (page - 1) * limit;
+
+      const currentDate = new Date();
+      const thirtyDaysAgo = new Date(currentDate);
+      thirtyDaysAgo.setDate(currentDate.getDate() - 30);
+
+      // let query = { is_delete: false,createdAt: { $gte: thirtyDaysAgo }};
+      let query = { is_delete: false, is_compare: false };
+
+      if (sub_category != null) {
+        // query = { sub_category: sub_category, is_delete: false,createdAt: { $gte: thirtyDaysAgo }};
+        query = { sub_category: sub_category, is_delete: false, is_compare: false };
+      }
+
+
+      const count = await businessPostModel.countDocuments(query);
+
+      const totalPages = Math.ceil(count / limit);
+
+      const businessPosts = await businessPostModel
+        .find(query)
+        .populate([
+          { path: "category", model: "Category" },
+          { path: "sub_category", model: "SubCategory" },
+          { path: "user", model: "User" },
+          { path: "country", model: "Country" },
+          { path: "state", model: "State" },
+          { path: "city", model: "City" },
+          { path: "tag", model: "Tag" },
+        ])
+        .sort({ business_name: 1 })
+        .skip(skip)
+        .limit(limit);
+
+      // Check if each business post is in the user's wishlist
+      const businessPostsWithWishlistInfo = await Promise.all(
+        businessPosts.map(async (post) => {
+          const wishlistEntry = await whistlistModel.countDocuments({
+            user: userId,
+            business_post: post._id,
+          });
+
+          return {
+            ...post.toObject(),
+            is_wishlist: wishlistEntry,
+          };
+        })
+      );
+
+      res.status(200).send({
+        success: true,
+        message: "Business Posts Retrieved Successfully",
+        totalPages,
+        totalCount: count,
+        currentPage: page,
+        businessPosts: businessPostsWithWishlistInfo,
+      });
+    } catch (error) {
+      console.log(error);
+      res.status(500).send({
+        success: false,
+        message: "Error in fetching categories",
+        error: error.message,
+      });
+    }
+  },
+
   search: async (req, res) => {
     try {
       const info = new URL(req.url, `http://${req.headers.host}`);
@@ -652,6 +730,73 @@ const businessPostController = {
       });
     }
   },
+
+   // Method to edit businessPost
+   updateAddress: async (req, res) => {
+
+
+    let message=null;
+    let {
+      address,
+    } = req.body;
+    console.log(req.body);
+    try {
+      const info = new URL(req.url, `http://${req.headers.host}`);
+      const searchParams = info.searchParams;
+      let businessPostId = searchParams.get("id");
+      let is_reservation_available;
+      let is_multiple_reservation_available;
+
+      let businessPostCount = await businessPostModel.countDocuments({
+        _id: businessPostId,
+      });
+      if (businessPostCount == 0) {
+        res.status(200).send({
+          success: false,
+          message: "No Business Post available",
+        });
+      }
+      let businessPostDetails = await businessPostModel.findOne({
+        _id: businessPostId,
+      });
+
+      if (businessPostDetails.is_delete == true) {
+        return res.status(200).send({
+          success: false,
+          message: "Business post is inactived",
+        });
+      }
+
+      if(address==businessPostDetails.address){
+        message="Igore Address Update";
+      }
+      else{
+        message="Address Updated";
+      }
+
+      const businessPostInfo = await businessPostModel.findOneAndUpdate(
+        { _id: businessPostDetails._id },
+        {
+          address: address,
+          is_compare: true
+        }
+      );
+      res.status(201).send({
+        success: true,
+        message: message,
+        businessPostInfo,
+      });
+    } catch (error) {
+      console.log(error);
+      res.status(200).send({
+        success: false,
+        message: error.message,
+        error: error.message,
+      });
+    }
+  },
+
+
 };
 
 // Export businessPostController

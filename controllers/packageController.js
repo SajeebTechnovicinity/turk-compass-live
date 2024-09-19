@@ -36,7 +36,7 @@ const packageController = (req, res) => {
                 {
                     'title': "job_seeker",
                     "name": "İş Arayan",
-                    'description': { job_seeker_access: 0, ads: 0, compass: 0, monthly_price: 1.99, verify_employers: 0, review_job_applications: 0, custom_questions: 0, stripe_product: 'price_1PpXdkFRINEpGtYyacHhjWWP' },
+                    'description': { job_seeker_access: 0, ads: 0, compass: 0, monthly_price: 1.99, verify_employers: 0, review_job_applications: 0, custom_questions: 0, stripe_product: 'price_1Q0lOKFRINEpGtYyQGTjxHlF' },
                     "package_benefit": [
                         {
                             "details": "İş listelerine ve iş başvurusu özelliklerine erişim",
@@ -56,7 +56,7 @@ const packageController = (req, res) => {
                 {
                     'title': "premium",
                     "name": "Premium",
-                    'description': { job_seeker_access: 0, ads: 0, compass: 0, monthly_price: 4.99, verify_employers: 4.99, review_job_applications: 0, custom_questions: 0, stripe_product: 'price_1PpXd1FRINEpGtYyjefFS8xv' },
+                    'description': { job_seeker_access: 0, ads: 0, compass: 0, monthly_price: 4.99, verify_employers: 4.99, review_job_applications: 0, custom_questions: 0, stripe_product: 'price_1Q0lOMFRINEpGtYynP57PZox' },
                     "package_benefit": [
                         {
                             "details": "İş listelerine ve başvurulara tam erişim",
@@ -102,7 +102,7 @@ const packageController = (req, res) => {
                 {
                     'title': "premium_employer",
                     'name':"Premium İşletme",
-                    'description': { job_seeker_access: 0, ads: 0, compass: 0, monthly_price: 9.99, verify_employers: 0, review_job_applications: 0, custom_questions: 10, stripe_product: 'price_1PpXeTFRINEpGtYytfiI82O1' },
+                    'description': { job_seeker_access: 0, ads: 0, compass: 0, monthly_price: 9.99, verify_employers: 0, review_job_applications: 0, custom_questions: 10, stripe_product: 'price_1Q0lOFFRINEpGtYyA5VLTHge' },
                     "package_benefit": ["Full access to job listings and applications", "Ad-free experience", "Access to Compass+ features including AI supported personalized advice, resume and cover letter building"],
                     "package_benefit": [
                         {
@@ -158,7 +158,7 @@ const packageController = (req, res) => {
                 {
                     'title': "job_seeker",
                     'name': "Job Seeker ",
-                    'description': { job_seeker_access: 0, ads: 0, compass: 0, monthly_price: 1.99, verify_employers: 0, review_job_applications: 0, custom_questions: 0, stripe_product: 'price_1PpXdkFRINEpGtYyacHhjWWP' },
+                    'description': { job_seeker_access: 0, ads: 0, compass: 0, monthly_price: 1.99, verify_employers: 0, review_job_applications: 0, custom_questions: 0, stripe_product: 'price_1Q0lOKFRINEpGtYyQGTjxHlF' },
                     "package_benefit": [
                         {
                             "details": "Access to job listings and job application features",
@@ -177,7 +177,7 @@ const packageController = (req, res) => {
                 {
                     'title': "premium",
                     'name': "Premium",
-                    'description': { job_seeker_access: 0, ads: 0, compass: 0, monthly_price: 4.99, verify_employers: 4.99, review_job_applications: 0, custom_questions: 0, stripe_product: 'price_1PpXd1FRINEpGtYyjefFS8xv' },
+                    'description': { job_seeker_access: 0, ads: 0, compass: 0, monthly_price: 4.99, verify_employers: 4.99, review_job_applications: 0, custom_questions: 0, stripe_product: 'price_1Q0lOMFRINEpGtYynP57PZox' },
                     "package_benefit": [
                         {
                             "details": "Full access to job listings and applications",
@@ -222,7 +222,7 @@ const packageController = (req, res) => {
                 {
                     'title': "premium_employer",
                     'name':"Premium Business ",
-                    'description': { job_seeker_access: 0, ads: 0, compass: 0, monthly_price: 9.99, verify_employers: 0, review_job_applications: 0, custom_questions: 10, stripe_product: 'price_1PpXeTFRINEpGtYytfiI82O1' },
+                    'description': { job_seeker_access: 0, ads: 0, compass: 0, monthly_price: 9.99, verify_employers: 0, review_job_applications: 0, custom_questions: 10, stripe_product: 'price_1Q0lOFFRINEpGtYyA5VLTHge' },
                     "package_benefit": ["Full access to job listings and applications", "Ad-free experience", "Access to Compass+ features including AI supported personalized advice, resume and cover letter building"],
                     "package_benefit": [
                         {
