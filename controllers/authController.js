@@ -102,7 +102,7 @@ const registerController = async (req, res) => {
       secure: true, // Set to false for explicit TLS
       auth: {
         user: "turkscompass@gmail.com",
-        pass: "avrucxhaxvgdcjef",
+        pass: "cjgwnhbsumbzgsog",
       },
       tls: {
         // Do not fail on invalid certificates
@@ -375,7 +375,7 @@ const forgetPasswordController = async (req, res) => {
       secure: true, // Set to false for explicit TLS
       auth: {
         user: "turkscompass@gmail.com",
-        pass: "avrucxhaxvgdcjef",
+        pass: "cjgwnhbsumbzgsog",
       },
       tls: {
         // Do not fail on invalid certificates
@@ -483,7 +483,7 @@ const resetPasswordController = async (req, res) => {
     secure: true, // Set to false for explicit TLS
     auth: {
       user: "turkscompass@gmail.com",
-      pass: "avrucxhaxvgdcjef",
+      pass: "cjgwnhbsumbzgsog",
     },
     tls: {
       // Do not fail on invalid certificates

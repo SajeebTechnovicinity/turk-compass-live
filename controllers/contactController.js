@@ -58,7 +58,7 @@ const contactController = {
         secure: true, // Set to false for explicit TLS
         auth: {
           user: "turkscompass@gmail.com",
-          pass: "avrucxhaxvgdcjef",
+          pass: "cjgwnhbsumbzgsog",
         },
         tls: {
           // Do not fail on invalid certificates
