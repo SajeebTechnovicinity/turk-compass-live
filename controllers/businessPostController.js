@@ -407,11 +407,11 @@ const businessPostController = {
       thirtyDaysAgo.setDate(currentDate.getDate() - 30);
 
       // let query = { is_delete: false,createdAt: { $gte: thirtyDaysAgo }};
-      let query = { is_delete: false, is_compare: false };
+      let query = { is_delete: false };
 
       if (sub_category != null) {
         // query = { sub_category: sub_category, is_delete: false,createdAt: { $gte: thirtyDaysAgo }};
-        query = { sub_category: sub_category, is_delete: false, is_compare: false };
+        query = { sub_category: sub_category, is_delete: false };
       }
 
 
