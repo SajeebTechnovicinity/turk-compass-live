@@ -24,7 +24,7 @@ const memberPerlamentController = {
             console.log(error);
             res.status(200).send({
                 success: false,
-                message: 'Error in creating memberPerlament',
+                message: error.message,
                 error: error.message
             });
         }
