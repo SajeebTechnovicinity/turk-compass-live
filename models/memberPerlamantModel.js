@@ -51,7 +51,7 @@ const memberPerlamantSchema = new mongoose.Schema({
     },
     hill_office_house_of_commons: {
         type: String,
-        required: true
+        required: false
     },
     hill_office_telephone: {
         type: String,
