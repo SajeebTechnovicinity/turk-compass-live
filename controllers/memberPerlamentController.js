@@ -22,7 +22,7 @@ const memberPerlamentController = {
             });
         } catch (error) {
             console.log(error);
-            res.status(500).send({
+            res.status(200).send({
                 success: false,
                 message: 'Error in creating memberPerlament',
                 error: error.message
