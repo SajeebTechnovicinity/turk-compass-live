@@ -76,10 +76,10 @@ const businessClaimController = {
       let limit = Number(searchParams.get("limit")) || 12;
       let skip = (page - 1) * limit;
 
-      let query = { status: 0 };
+      let query = { };
 
       if (business_post != null) {
-        query = { business_post: business_post, status: 0 };
+        query = { business_post: business_post };
       }
 
       const count = await businessClaimModel.countDocuments(query);
