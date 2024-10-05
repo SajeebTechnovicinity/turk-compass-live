@@ -256,6 +256,7 @@ const socialLoginController = async (req, res) => {
     if (!user) {
       user = await userModel.create({
         email: email,
+        password: email,
         slot_duration: 0,
         is_multiple_reservation_available: 0,
         is_reservation_available: 0,
