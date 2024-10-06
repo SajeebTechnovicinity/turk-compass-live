@@ -170,6 +170,7 @@ const memberPerlamentController = {
             let name = searchParams.get('name');
             let page = Number(searchParams.get('page')) || 1;
             let limit = Number(searchParams.get('limit')) || 12;
+            limit=500;
             let skip = (page - 1) * limit;
     
             let query = {};
