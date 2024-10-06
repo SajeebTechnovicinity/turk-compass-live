@@ -80,11 +80,9 @@ const memberPerlamentController = {
         const info = new URL(req.url, `http://${req.headers.host}`);
         const searchParams = info.searchParams;
         let page = Number(searchParams.get('page')) || 1;
-        let limit = Number(searchParams.get('limit')) || 500;
-        if(limit==20)
-        {
-            limit=500;
-        }
+        let limit = Number(searchParams.get('limit')) || 12;
+        limit=500;
+    
         let skip = (page - 1) * limit;
 
         try {
