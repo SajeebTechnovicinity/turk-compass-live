@@ -108,7 +108,9 @@ const stripePaymentSuccess = async (req, res) => {
                         package_type: planType,
                         package_start_date: startDate,
                         package_end_date: endDate,
-                        package_duration: durationInDays
+                        package_duration: durationInDays,
+                        stripe_subscription_id: subscriptionId,
+
                     }
                 }
             );

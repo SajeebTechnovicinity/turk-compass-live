@@ -8,6 +8,7 @@ const businessPostModel = require("../models/businessPostModel");
 const jobProfileModel = require("../models/jobProfileModel");
 const reservationModel = require("../models/reservationModel");
 const notificationModel = require("../models/notificationModel");
+const stripe = require('stripe')(process.env.STRIPE_KEY);
 // Define profile Controller methods
 const profileController = {
   // Method to create a new businessPost
@@ -571,9 +572,16 @@ const profileController = {
     try {
       const user_info = await AuthUser(req);
       user_id = user_info.id;
+      //delete the stripe subscription id
+      const user = await userModel.findOne({ _id: user_id });
+      if (user.stripe_subscription_id) {
+        await stripe.subscriptions.update(user.stripe_subscription_id, {
+          cancel_at_period_end: true, // Optional: Cancels at the end of the billing cycle
+        });
+      }
       let userInfo = await userModel.findOneAndUpdate(
         { _id: user_id },
-        { is_delete: true }
+        { is_delete: true,stripe_subscription_id:null }
       );
       res.status(200).send({
         success: true,
@@ -595,10 +603,31 @@ const profileController = {
       const searchParams = info.searchParams;
       let id = searchParams.get("id");
       let user = await userModel.findOne({ _id: id });
-      let userInfo = await userModel.findOneAndUpdate(
-        { _id: id },
-        { is_delete: !user.is_delete }
-      );
+      if(user.is_delete==true){
+        let userUpdate = await userModel.findOneAndUpdate(
+          { _id: id },
+          { is_delete: false,package_type:'free' }
+        );
+      }
+      else{
+        let businessProfile = await businessPostModel.findOne({ user: id });
+        if(!businessProfile){
+          //cancel the subscription
+          if (user.stripe_subscription_id) {
+            await stripe.subscriptions.update(user.stripe_subscription_id, {
+              cancel_at_period_end: true, // Optional: Cancels at the end of the billing cycle
+            });
+          }
+        }
+        let userUpdate = await userModel.findOneAndUpdate(
+          { _id: id },
+          { is_delete: true,package_type:null }
+        );
+      }
+      // let userInfo = await userModel.findOneAndUpdate(
+      //   { _id: id },
+      //   { is_delete: !user.is_delete }
+      // );
       res.status(200).send({
         success: true,
         message: "Successfully Status Updated",

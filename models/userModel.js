@@ -73,6 +73,10 @@ const userSchema=new mongoose.Schema({
         type:String,
         default:null
     },
+    stripe_subscription_id:{
+        type:String,
+        default:null
+    },
     is_reservation_available:{
         type:Boolean,
         default:0
