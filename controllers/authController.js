@@ -73,7 +73,7 @@ const registerController = async (req, res) => {
         "mails",
         "welcome_mail_turkish.ejs"
       );
-      subject = "Turk'ün Hoş Geldiniz E-postası";
+      subject = "Turk's Compass'e Hoş Geldiniz";
     } else {
       emailTemplatePath = path.resolve(
         __dirname,
@@ -81,7 +81,7 @@ const registerController = async (req, res) => {
         "mails",
         "welcome_mail.ejs"
       );
-      subject = "Turk's Compass   Welcome Email";
+      subject = "Welcome to Turk's Compass";
     }
 
     const emailTemplate = fs.readFileSync(emailTemplatePath, "utf-8");
