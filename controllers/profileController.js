@@ -621,7 +621,7 @@ const profileController = {
         }
         let userUpdate = await userModel.findOneAndUpdate(
           { _id: id },
-          { is_delete: true,package_type:null }
+          { is_delete: true,package_type:null,stripe_subscription_id:null }
         );
       }
       // let userInfo = await userModel.findOneAndUpdate(
