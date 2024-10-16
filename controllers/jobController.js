@@ -250,7 +250,7 @@ const jobController = {
 
     const job = await jobModel
 
-      .find({ user_id: user_id })
+      .find({ user_id: user_id, status: 1 })
       .populate([{ path: "job_industry", model: "JobIndustry" }])
       .populate([
         {
