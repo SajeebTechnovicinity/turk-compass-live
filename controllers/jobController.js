@@ -87,6 +87,7 @@ const jobController = {
         industry.map(async (iterate) => {
           const amount_of_job = await jobModel.countDocuments({
             job_industry: iterate._id,
+            status : 1
           });
 
           return {

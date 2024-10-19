@@ -9,6 +9,8 @@ const nodemailer = require("nodemailer");
 const userController = require("./userController");
 const { sendPushNotification, AuthUser } = require("../utils/helper");
 const { userInfo } = require("os");
+const axios = require('axios');
+const jwkToPem = require('jwk-to-pem');
 
 const registerController = async (req, res) => {
   try {
@@ -93,7 +95,7 @@ const registerController = async (req, res) => {
       code,
     });
     let userEmailVerficationCodeUpdate = await userModel.findOneAndUpdate(
-      {email: email },
+      { email: email },
       { email_verification_code: code, forget_password_code_time: new Date() }
     );
     const transporter = nodemailer.createTransport({
@@ -110,7 +112,7 @@ const registerController = async (req, res) => {
       },
     });
     const mailOptions = {
-      from: 'turkscompass@gmail.com',
+      from: "turkscompass@gmail.com",
       to: email,
       subject: subject,
       html: mailContent,
@@ -123,7 +125,7 @@ const registerController = async (req, res) => {
       success: true,
       message: "successfully Register User",
       data: info,
-      code:code
+      code: code,
     });
   } catch (error) {
     console.log(error);
@@ -147,28 +149,26 @@ const loginController = async (req, res) => {
     }
     // check
     const user = await userModel.findOne({ email: email });
-    if (user==null) {
+    if (user == null) {
       return res.status(404).send({
         success: false,
         message: "Email or password invalid",
       });
     }
 
-
-    if(user && user.is_delete==true){
+    if (user && user.is_delete == true) {
       return res.status(403).send({
-          success:false,
-          message:'Your account is deleted'
-      })
-  }
-
-  if(user && user.status==0){
-      return res.status(403).send({
-          success:false,
-          message:'Your account is not activated'
-      })
+        success: false,
+        message: "Your account is deleted",
+      });
     }
 
+    if (user && user.status == 0) {
+      return res.status(403).send({
+        success: false,
+        message: "Your account is not activated",
+      });
+    }
 
     const userName = user.userName;
 
@@ -240,17 +240,17 @@ const socialLoginController = async (req, res) => {
     // check
     user = await userModel.findOne(record);
 
-    if(user && user.is_delete==true){
+    if (user && user.is_delete == true) {
       return res.status(403).send({
-          success:false,
-          message:'Your account is deleted'
-      })
-  }
-  if(user && user.status==0){
+        success: false,
+        message: "Your account is deleted",
+      });
+    }
+    if (user && user.status == 0) {
       return res.status(403).send({
-          success:false,
-          message:'Your account is not activated'
-      })
+        success: false,
+        message: "Your account is not activated",
+      });
     }
 
     if (!user) {
@@ -260,7 +260,7 @@ const socialLoginController = async (req, res) => {
         slot_duration: 0,
         is_multiple_reservation_available: 0,
         is_reservation_available: 0,
-        is_email_verified:1
+        is_email_verified: 1,
       });
       const id = user.id;
       const userName = user.userName && "";
@@ -291,7 +291,7 @@ const socialLoginController = async (req, res) => {
         user_info: user,
       };
     }
-    const userName = user ? user.userName: "";
+    const userName = user ? user.userName : "";
     let is_user = user;
     if (is_user) {
       const id = user.id;
@@ -341,7 +341,6 @@ const forgetPasswordController = async (req, res) => {
       { email_verification_code: code, forget_password_code_time: new Date() }, // Update object
       { new: true } // Option to return the updated document
     );
-
 
     let emailTemplatePath;
     let language = userInfo.language;
@@ -396,7 +395,7 @@ const forgetPasswordController = async (req, res) => {
     res.status(200).send({
       success: true,
       message: "Successfully Send again Email Verification Code",
-      code:code
+      code: code,
     });
   } catch (error) {
     console.log(error);
@@ -408,42 +407,42 @@ const forgetPasswordController = async (req, res) => {
   }
 };
 const verifyCodeController = async (req, res) => {
-    const { email,code } = req.body;
-    var userInfo = await userModel.findOne({ email: email });
-    if (!userInfo) {
-        res.status(403).send({
-          success: false,
-          message: "No user found",
-        }); 
-    }
-    if(code == userInfo.email_verification_code)
-    {
-        var userUpdate=await userModel.findOneAndUpdate({ email: email},{is_email_verified:1 });
-        return  res.status(200).send({
-            success: true,
-            message: "Your Email is verified now",
-          }); 
-    }
-    else
-    {
-        return  res.status(403).send({
-            success: false,
-            message: "Incorrect OTP",
-          });
-    }
+  const { email, code } = req.body;
+  var userInfo = await userModel.findOne({ email: email });
+  if (!userInfo) {
+    res.status(403).send({
+      success: false,
+      message: "No user found",
+    });
+  }
+  if (code == userInfo.email_verification_code) {
+    var userUpdate = await userModel.findOneAndUpdate(
+      { email: email },
+      { is_email_verified: 1 }
+    );
+    return res.status(200).send({
+      success: true,
+      message: "Your Email is verified now",
+    });
+  } else {
+    return res.status(403).send({
+      success: false,
+      message: "Incorrect OTP",
+    });
+  }
 };
 const resetPasswordController = async (req, res) => {
   const { email } = req.body;
   var userInfo = await userModel.findOne({ email: email });
-  var lang="en"
+  var lang = "en";
   if (!userInfo) {
     return res.status(403).send({
       success: false,
       message: "No user found",
     });
   }
-  lang=userInfo.language;
-  if (userInfo.is_delete==1) {
+  lang = userInfo.language;
+  if (userInfo.is_delete == 1) {
     return res.status(403).send({
       success: false,
       message: "User is deleted or not activated",
@@ -453,7 +452,7 @@ const resetPasswordController = async (req, res) => {
 
   userInfo = await userModel.findOneAndUpdate(
     { email: email }, // Query criteria to find the document
-    { reset_code: code,reset_code_time: new Date() }, // Update object
+    { reset_code: code, reset_code_time: new Date() }, // Update object
     { new: true } // Option to return the updated document
   );
 
@@ -476,7 +475,7 @@ const resetPasswordController = async (req, res) => {
     name: userInfo.userName,
     date: new Date(),
     code: userInfo.reset_code,
-    lang:lang,
+    lang: lang,
   });
   const transporter = nodemailer.createTransport({
     host: "smtp.gmail.com",
@@ -504,16 +503,16 @@ const resetPasswordController = async (req, res) => {
     success: true,
     message: "successfully reset code send to your mail",
     userInfo,
-    code:code
+    code: code,
   });
 };
 
 const changePassword = async (req, res) => {
-  const {password} = req.body;
+  const { password } = req.body;
   const hashPassword = await bcrypt.hash(password, 10);
   const userInfo = await AuthUser(req);
 
-  let UserId=userInfo.id;
+  let UserId = userInfo.id;
 
   const user = await userModel.findOneAndUpdate(
     { _id: UserId }, // Filter criteria
@@ -525,8 +524,7 @@ const changePassword = async (req, res) => {
     message: "successfully password updated",
     user,
   });
-
-}
+};
 
 const updateResetPasswordController = async (req, res) => {
   const { email, password, code } = req.body;
@@ -576,7 +574,7 @@ const passwordResetController = async (req, res) => {
   const searchParams = info.searchParams;
   //let email = searchParams.get("email");
   //let password = searchParams.get("password");
-  const {email,password} = req.body;
+  const { email, password } = req.body;
   const hashPassword = await bcrypt.hash(password, 10);
   const userInfo = await userModel.findOneAndUpdate(
     { email: email }, // Filter criteria
@@ -616,6 +614,49 @@ const userInfoGetController = async (req, res) => {
   });
 };
 
+const decodeToken = async (req, res) => {
+  const info = new URL(req.url, `http://${req.headers.host}`);
+  const searchParams = info.searchParams;
+  let page = Number(searchParams.get("page")) || 1;
+  let limit = Number(searchParams.get("limit")) || 12;
+  let skip = (page - 1) * limit;
+
+  const { token } = req.body;
+
+  try {
+    // Step 1: Fetch Apple's public keys
+    const appleKeysUrl = "https://appleid.apple.com/auth/keys";
+    const appleKeys = (await axios.get(appleKeysUrl)).data.keys;
+
+    // Step 2: Decode the JWT header to get the key ID (kid)
+    const jwtHeader = JSON.parse(
+      Buffer.from(token.split(".")[0], "base64").toString()
+    );
+
+    // Step 3: Find the matching key by `kid`
+    const matchingKey = appleKeys.find((key) => key.kid === jwtHeader.kid);
+    if (!matchingKey) throw new Error("Matching key not found");
+
+    // Step 4: Convert the matching JWK key to PEM format
+    const publicKey = jwkToPem(matchingKey);
+
+    // Step 5: Verify the token using the public key and RS256 algorithm
+    const decodedToken = jwt.verify(token, publicKey, {
+      algorithms: ["RS256"],
+    });
+
+    console.log("Decoded Token:", decodedToken);
+    return res.status(200).send({
+      success: true,
+      message: "Token decoded successfully",
+      decodedToken,
+    });
+  } catch (error) {
+    console.error("Token validation failed:", error.message);
+    throw error;
+  }
+};
+
 module.exports = {
   registerController,
   forgetPasswordController,
@@ -627,4 +668,5 @@ module.exports = {
   passwordResetController,
   verifyCodeController,
   changePassword,
+  decodeToken,
 };
