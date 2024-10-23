@@ -87,7 +87,7 @@ const jobController = {
         industry.map(async (iterate) => {
           const amount_of_job = await jobModel.countDocuments({
             job_industry: iterate._id,
-            status : 1
+            status: 1,
           });
 
           return {
@@ -448,7 +448,7 @@ const jobController = {
       var company_mail = company_info.email;
 
       if (company_info && job_info) {
-        let title = "New Job Applied $$$$"+job_info._id;
+        let title = "New Job Applied $$$$" + job_info._id;
         let description = job_info.job_title;
         sendPushNotification(title, description, company_info.device_token);
         let job_info_data = jobProfileModel.findOne({ user_id: user_id });
@@ -1463,11 +1463,19 @@ const jobController = {
       { _id: job_id },
       { status: !job_info.status }
     );
-    res.status(200).send({
-      success: true,
-      message: "Job Listing Deleted Successfully",
-      job,
-    });
+    if (job.status == 1) {
+      res.status(200).send({
+        success: true,
+        message: "Job Listing Deleted Successfully",
+        job,
+      });
+    } else {
+      res.status(200).send({
+        success: true,
+        message: "Job Listing Reposted Successfully",
+        job,
+      });
+    }
   },
 
   jobTimeUpdate: async (req, res) => {
