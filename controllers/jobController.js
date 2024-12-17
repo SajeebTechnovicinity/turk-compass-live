@@ -85,11 +85,17 @@ const jobController = {
 
       const industryInfo = await Promise.all(
         industry.map(async (iterate) => {
+          
+          //"owner_info.is_delete": false, // Filter documents where owner_info.is_delete is false
+          //createdAt: { $gte: thirtyDaysAgo },
           const amount_of_job = await jobModel.countDocuments({
             job_industry: iterate._id,
             status: 1,
+            createdAt: { $gte: new Date(new Date().setDate(new Date().getDate() - 30)) },
+            is_delete: false,
           });
 
+ 
           return {
             ...iterate.toObject(),
             amount_of_job: amount_of_job,
@@ -879,7 +885,7 @@ const jobController = {
         status: 1, // Perform a regex search for job_title
       },
     });
-    if (job_title) {
+    if (job_title && job_title != "") {
       const searchRegex = new RegExp(job_title, "i"); // it will be search like
       searchArray.push({
         $match: {
@@ -887,15 +893,16 @@ const jobController = {
         },
       });
     }
-    if (job_type) {
+    if (job_type && job_type != "") {
       searchArray.push({ $match: { job_type: job_type } });
     }
-    if (job_city) {
+    if (job_city && job_city != "") {
       searchArray.push({
         $match: { job_city: new mongoose.Types.ObjectId(job_city) },
       });
     }
-    if (job_industry) {
+    if (job_industry && job_industry != "") {
+      
       searchArray.push({
         $match: { job_industry: new mongoose.Types.ObjectId(job_industry) },
       });
