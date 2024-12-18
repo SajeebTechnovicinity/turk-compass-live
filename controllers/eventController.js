@@ -30,7 +30,7 @@ async function getAllDatesInMonth(year, month, city_name) {
         {
           $match: {
             is_payment_complete: true,
-            city_name: city_name,
+            //city_name: city_name,
             is_delete: false,
             $and: [
               { startDate: { $lte: dateSt } },
@@ -301,7 +301,7 @@ const eventController = {
           {
             $match: {
               is_payment_complete: true,
-              city_name: city_name,
+              //city_name: city_name,
               is_delete: false,
               $or: [
                 {
