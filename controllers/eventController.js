@@ -396,7 +396,7 @@ const eventController = {
           {
             $match: {
               is_payment_complete: true,
-              city_name: city_name,
+              //city_name: city_name,
               is_delete: false,
               $and: [
                 { startDate: { $lte: date } },
